@@ -1,0 +1,10 @@
+E:\SVN\NewWisoftUpdateTool\NewWisoftUpdateTool\bin\Debug\NewWisoftUpdateTool.exe
+E:\SVN\NewWisoftUpdateTool\NewWisoftUpdateTool\bin\Debug\NewWisoftUpdateTool.pdb
+E:\SVN\NewWisoftUpdateTool\NewWisoftUpdateTool\obj\x86\Debug\ResolveAssemblyReference.cache
+E:\SVN\NewWisoftUpdateTool\NewWisoftUpdateTool\obj\x86\Debug\NewWisoftUpdateTool.MainForm.resources
+E:\SVN\NewWisoftUpdateTool\NewWisoftUpdateTool\obj\x86\Debug\NewWisoftUpdateTool.Resource.resources
+E:\SVN\NewWisoftUpdateTool\NewWisoftUpdateTool\obj\x86\Debug\NewWisoftUpdateTool.ui.MainProTree.resources
+E:\SVN\NewWisoftUpdateTool\NewWisoftUpdateTool\obj\x86\Debug\GenerateResource.read.1.tlog
+E:\SVN\NewWisoftUpdateTool\NewWisoftUpdateTool\obj\x86\Debug\GenerateResource.write.1.tlog
+E:\SVN\NewWisoftUpdateTool\NewWisoftUpdateTool\obj\x86\Debug\NewWisoftUpdateTool.exe
+E:\SVN\NewWisoftUpdateTool\NewWisoftUpdateTool\obj\x86\Debug\NewWisoftUpdateTool.pdb
