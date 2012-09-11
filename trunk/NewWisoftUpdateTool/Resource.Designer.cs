@@ -74,6 +74,13 @@ namespace NewWisoftUpdateTool {
 			}
 		}
 		
+		internal static System.Drawing.Bitmap database {
+			get {
+				object obj = ResourceManager.GetObject("database", resourceCulture);
+				return ((System.Drawing.Bitmap)(obj));
+			}
+		}
+		
 		internal static System.Drawing.Bitmap paper_content_pencil_48 {
 			get {
 				object obj = ResourceManager.GetObject("paper_content_pencil_48", resourceCulture);
