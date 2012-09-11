@@ -36,9 +36,14 @@ namespace NewWisoftUpdateTool.ui
 		/// </summary>
 		private void InitializeComponent()
 		{
+			this.components = new System.ComponentModel.Container();
 			this.panel1 = new System.Windows.Forms.Panel();
 			this.treeView1 = new System.Windows.Forms.TreeView();
+			this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
+			this.deleteMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.saveMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.panel1.SuspendLayout();
+			this.contextMenuStrip1.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// panel1
@@ -58,6 +63,27 @@ namespace NewWisoftUpdateTool.ui
 			this.treeView1.Name = "treeView1";
 			this.treeView1.Size = new System.Drawing.Size(241, 359);
 			this.treeView1.TabIndex = 0;
+			this.treeView1.MouseDown += new System.Windows.Forms.MouseEventHandler(this.TreeView1MouseDown);
+			// 
+			// contextMenuStrip1
+			// 
+			this.contextMenuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+									this.deleteMenuItem,
+									this.saveMenuItem});
+			this.contextMenuStrip1.Name = "contextMenuStrip1";
+			this.contextMenuStrip1.Size = new System.Drawing.Size(101, 48);
+			// 
+			// deleteMenuItem
+			// 
+			this.deleteMenuItem.Name = "deleteMenuItem";
+			this.deleteMenuItem.Size = new System.Drawing.Size(100, 22);
+			this.deleteMenuItem.Text = "删除";
+			// 
+			// saveMenuItem
+			// 
+			this.saveMenuItem.Name = "saveMenuItem";
+			this.saveMenuItem.Size = new System.Drawing.Size(100, 22);
+			this.saveMenuItem.Text = "保存";
 			// 
 			// MainProTree
 			// 
@@ -67,8 +93,12 @@ namespace NewWisoftUpdateTool.ui
 			this.Name = "MainProTree";
 			this.Size = new System.Drawing.Size(241, 359);
 			this.panel1.ResumeLayout(false);
+			this.contextMenuStrip1.ResumeLayout(false);
 			this.ResumeLayout(false);
 		}
+		private System.Windows.Forms.ToolStripMenuItem saveMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem deleteMenuItem;
+		private System.Windows.Forms.ContextMenuStrip contextMenuStrip1;
 		private System.Windows.Forms.TreeView treeView1;
 		private System.Windows.Forms.Panel panel1;
 	}

@@ -18,7 +18,7 @@ namespace NewWisoftUpdateTool.ui
 	/// </summary>
 	public partial class MainProTree : UserControl
 	{
-		private List<string> wifilelist=new List<string>{"mypackage.wi"};
+		private List<string> wifilelist=new List<string>{"mypackage.wi","行政许可(aims)5.1.1.wi"};
 		
 		public List<string> Wifilelist {
 			get { return wifilelist; }
@@ -43,6 +43,7 @@ namespace NewWisoftUpdateTool.ui
 			il.Images.Add("configProperty",global::NewWisoftUpdateTool.Resource.preferences);
 			il.Images.Add("manualConfig",global::NewWisoftUpdateTool.Resource.paper_content_pencil_48);
 			il.Images.Add("perviewAll",global::NewWisoftUpdateTool.Resource.preview);
+			il.Images.Add("editSql",global::NewWisoftUpdateTool.Resource.database);
 			this.treeView1.ImageList = il;
 			for (int i = 0; i < wifilelist.Count; i++) {
 				TreeNode fileroot = new TreeNode(wifilelist[i]);
@@ -52,9 +53,28 @@ namespace NewWisoftUpdateTool.ui
 				TreeNode selectPackfile = new TreeNode("选择打包文件");
 				selectPackfile.ImageKey="selectPackfile";
 				selectPackfile.SelectedImageKey="selectPackfile";
-				selectPackfile.
+				
+				TreeNode manualConfig = new TreeNode("手动修改配置");
+				manualConfig.ImageKey="manualConfig";
+				manualConfig.SelectedImageKey="manualConfig";
+				
+				TreeNode editSql = new TreeNode("编写SQL语句");
+				editSql.ImageKey="editSql";
+				editSql.SelectedImageKey="editSql";
+				
 				fileroot.Nodes.Add(selectPackfile);
+				fileroot.Nodes.Add(manualConfig);
+				fileroot.Nodes.Add(editSql);
+				
 				this.treeView1.Nodes.Add(fileroot);
+			}
+		}
+		
+		void TreeView1MouseDown(object sender, MouseEventArgs e)
+		{
+			if(e.Button== MouseButtons.Right)
+			{
+				 this.treeView1.ContextMenuStrip = this.contextMenuStrip1;
 			}
 		}
 	}
