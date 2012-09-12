@@ -42,6 +42,10 @@ namespace NewWisoftUpdateTool.ui
 			this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
 			this.deleteMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.saveMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.newMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.saveAllMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.saveByPathMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.deleteAllMenuTtem = new System.Windows.Forms.ToolStripMenuItem();
 			this.panel1.SuspendLayout();
 			this.contextMenuStrip1.SuspendLayout();
 			this.SuspendLayout();
@@ -68,22 +72,50 @@ namespace NewWisoftUpdateTool.ui
 			// contextMenuStrip1
 			// 
 			this.contextMenuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+									this.newMenuItem,
 									this.deleteMenuItem,
-									this.saveMenuItem});
+									this.deleteAllMenuTtem,
+									this.saveMenuItem,
+									this.saveAllMenuItem,
+									this.saveByPathMenuItem});
 			this.contextMenuStrip1.Name = "contextMenuStrip1";
-			this.contextMenuStrip1.Size = new System.Drawing.Size(101, 48);
+			this.contextMenuStrip1.Size = new System.Drawing.Size(153, 158);
 			// 
 			// deleteMenuItem
 			// 
 			this.deleteMenuItem.Name = "deleteMenuItem";
-			this.deleteMenuItem.Size = new System.Drawing.Size(100, 22);
+			this.deleteMenuItem.Size = new System.Drawing.Size(152, 22);
 			this.deleteMenuItem.Text = "删除";
 			// 
 			// saveMenuItem
 			// 
 			this.saveMenuItem.Name = "saveMenuItem";
-			this.saveMenuItem.Size = new System.Drawing.Size(100, 22);
+			this.saveMenuItem.Size = new System.Drawing.Size(152, 22);
 			this.saveMenuItem.Text = "保存";
+			// 
+			// newMenuItem
+			// 
+			this.newMenuItem.Name = "newMenuItem";
+			this.newMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.newMenuItem.Text = "新建";
+			// 
+			// saveAllMenuItem
+			// 
+			this.saveAllMenuItem.Name = "saveAllMenuItem";
+			this.saveAllMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.saveAllMenuItem.Text = "保存全部";
+			// 
+			// saveByPathMenuItem
+			// 
+			this.saveByPathMenuItem.Name = "saveByPathMenuItem";
+			this.saveByPathMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.saveByPathMenuItem.Text = "另存为……";
+			// 
+			// deleteAllMenuTtem
+			// 
+			this.deleteAllMenuTtem.Name = "deleteAllMenuTtem";
+			this.deleteAllMenuTtem.Size = new System.Drawing.Size(152, 22);
+			this.deleteAllMenuTtem.Text = "删除全部";
 			// 
 			// MainProTree
 			// 
@@ -96,6 +128,10 @@ namespace NewWisoftUpdateTool.ui
 			this.contextMenuStrip1.ResumeLayout(false);
 			this.ResumeLayout(false);
 		}
+		private System.Windows.Forms.ToolStripMenuItem saveByPathMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem saveAllMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem deleteAllMenuTtem;
+		private System.Windows.Forms.ToolStripMenuItem newMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem saveMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem deleteMenuItem;
 		private System.Windows.Forms.ContextMenuStrip contextMenuStrip1;

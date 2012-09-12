@@ -72,9 +72,32 @@ namespace NewWisoftUpdateTool.ui
 		
 		void TreeView1MouseDown(object sender, MouseEventArgs e)
 		{
-			if(e.Button== MouseButtons.Right)
+			TreeNode currNode = this.treeView1.GetNodeAt(e.X, e.Y);
+			if (currNode != null)
 			{
-				 this.treeView1.ContextMenuStrip = this.contextMenuStrip1;
+			 
+				if(e.Button== MouseButtons.Right)
+				{
+					this.newMenuItem.Visible = false;
+					this.deleteAllMenuTtem.Visible = false;
+					this.saveAllMenuItem.Visible = false;
+					this.saveByPathMenuItem.Visible = true;
+					this.saveMenuItem.Visible = true;
+					this.deleteMenuItem.Visible = true;
+					currNode.ContextMenuStrip = this.contextMenuStrip1;
+				}
+			}
+			else
+			{
+				this.newMenuItem.Visible = true;
+				this.deleteAllMenuTtem.Visible = true;
+				this.saveAllMenuItem.Visible = true;
+				this.saveByPathMenuItem.Visible = false;
+				this.saveMenuItem.Visible = false;
+				this.deleteMenuItem.Visible = false;
+				this.newMenuItem.Visible = true;
+				this.treeView1.SelectedNode = null;
+				this.treeView1.ContextMenuStrip = this.contextMenuStrip1;
 			}
 		}
 	}
