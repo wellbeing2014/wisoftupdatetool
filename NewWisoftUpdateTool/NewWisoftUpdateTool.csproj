@@ -65,6 +65,18 @@
     <Compile Include="ui\MainProTree.Designer.cs">
       <DependentUpon>MainProTree.cs</DependentUpon>
     </Compile>
+    <Compile Include="ui\MainProView.cs" />
+    <Compile Include="ui\MainProView.Designer.cs">
+      <DependentUpon>MainProView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ui\SubView_overview.cs" />
+    <Compile Include="ui\SubView_overview.Designer.cs">
+      <DependentUpon>SubView_overview.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ui\SubView_select.cs" />
+    <Compile Include="ui\SubView_select.Designer.cs">
+      <DependentUpon>SubView_select.cs</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <Folder Include="ui" />
@@ -79,6 +91,15 @@
     </EmbeddedResource>
     <EmbeddedResource Include="ui\MainProTree.resx">
       <DependentUpon>MainProTree.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ui\MainProView.resx">
+      <DependentUpon>MainProView.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ui\SubView_overview.resx">
+      <DependentUpon>SubView_overview.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ui\SubView_select.resx">
+      <DependentUpon>SubView_select.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.Targets" />
