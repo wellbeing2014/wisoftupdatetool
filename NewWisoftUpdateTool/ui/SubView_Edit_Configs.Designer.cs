@@ -1,14 +1,14 @@
 ﻿/*
  * 由SharpDevelop创建。
  * 用户： wellbeing
- * 日期: 2012/9/16
- * 时间: 21:25
+ * 日期: 2012/9/22
+ * 时间: 20:36
  * 
  * 要改变这种模板请点击 工具|选项|代码编写|编辑标准头文件
  */
 namespace NewWisoftUpdateTool.ui
 {
-	partial class SubView_select
+	partial class SubView_Edit_Configs
 	{
 		/// <summary>
 		/// Designer variable used to keep track of non-visual components.
@@ -36,26 +36,11 @@ namespace NewWisoftUpdateTool.ui
 		/// </summary>
 		private void InitializeComponent()
 		{
-			this.panel1 = new System.Windows.Forms.Panel();
-			this.SuspendLayout();
 			// 
-			// panel1
+			// SubView_Edit_Configs
 			// 
-			this.panel1.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.panel1.Location = new System.Drawing.Point(0, 0);
-			this.panel1.Name = "panel1";
-			this.panel1.Size = new System.Drawing.Size(535, 400);
-			this.panel1.TabIndex = 0;
-			// 
-			// SubView_select
-			// 
-			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.Controls.Add(this.panel1);
-			this.Name = "SubView_select";
-			this.Size = new System.Drawing.Size(535, 400);
-			this.ResumeLayout(false);
+			this.Name = "SubView_Edit_Configs";
 		}
-		private System.Windows.Forms.Panel panel1;
 	}
 }

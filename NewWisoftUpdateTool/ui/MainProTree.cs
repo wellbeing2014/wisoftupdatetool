@@ -11,19 +11,24 @@ using System.ComponentModel;
 using System.Drawing;
 using System.Windows.Forms;
 using System.Collections.Generic;
+using NewWisoftUpdateTool.common;
 namespace NewWisoftUpdateTool.ui
 {
 	/// <summary>
 	/// Description of MainProTree.
 	/// </summary>
+	
 	public partial class MainProTree : UserControl
 	{
-		private List<string> wifilelist=new List<string>{"mypackage.wi","行政许可(aims)5.1.1.wi"};
+		private List<WiFile> wifilelist=new List<WiFile>{new WiFile("mypackage.wi"),new WiFile("行政许可(aims)5.1.1.wi")};
 		
-		public List<string> Wifilelist {
+		public List<WiFile> Wifilelist {
 			get { return wifilelist; }
 			set { wifilelist = value; }
 		}
+		
+		
+		public event MainProTreeClickEventHandler MainProTreeClick;		
 		public MainProTree()
 		{
 			//
@@ -36,6 +41,8 @@ namespace NewWisoftUpdateTool.ui
 			//
 		}
 		
+		
+		
 		public void LoadWifile()
 		{
 			ImageList il = new ImageList();
@@ -46,21 +53,26 @@ namespace NewWisoftUpdateTool.ui
 			il.Images.Add("editSql",global::NewWisoftUpdateTool.Resource.database);
 			this.treeView1.ImageList = il;
 			for (int i = 0; i < wifilelist.Count; i++) {
-				TreeNode fileroot = new TreeNode(wifilelist[i]);
+				TreeNode fileroot = new TreeNode(wifilelist[i].Filename);
+				fileroot.ToolTipText = "文件地址"+wifilelist[i].FullPath;
 				fileroot.ImageKey="configProperty";
 				fileroot.SelectedImageKey="configProperty";
+				fileroot.Tag = wifilelist[i];
 				
 				TreeNode selectPackfile = new TreeNode("选择打包文件");
 				selectPackfile.ImageKey="selectPackfile";
 				selectPackfile.SelectedImageKey="selectPackfile";
+				selectPackfile.Tag = PackProcess.Select_Files;
 				
 				TreeNode manualConfig = new TreeNode("手动修改配置");
 				manualConfig.ImageKey="manualConfig";
 				manualConfig.SelectedImageKey="manualConfig";
+				manualConfig.Tag = PackProcess.Edit_Configs;
 				
 				TreeNode editSql = new TreeNode("编写SQL语句");
 				editSql.ImageKey="editSql";
 				editSql.SelectedImageKey="editSql";
+				editSql.Tag = PackProcess.Edit_Sql;
 				
 				fileroot.Nodes.Add(selectPackfile);
 				fileroot.Nodes.Add(manualConfig);
@@ -73,11 +85,14 @@ namespace NewWisoftUpdateTool.ui
 		void TreeView1MouseDown(object sender, MouseEventArgs e)
 		{
 			TreeNode currNode = this.treeView1.GetNodeAt(e.X, e.Y);
+			
 			if (currNode != null)
 			{
 			 
-				if(e.Button== MouseButtons.Right)
-				{
+				if(currNode.Parent==null)
+				{	
+					if(e.Button== MouseButtons.Right)
+					{
 					this.newMenuItem.Visible = false;
 					this.deleteAllMenuTtem.Visible = false;
 					this.saveAllMenuItem.Visible = false;
@@ -85,6 +100,7 @@ namespace NewWisoftUpdateTool.ui
 					this.saveMenuItem.Visible = true;
 					this.deleteMenuItem.Visible = true;
 					currNode.ContextMenuStrip = this.contextMenuStrip1;
+					}
 				}
 			}
 			else
@@ -99,6 +115,28 @@ namespace NewWisoftUpdateTool.ui
 				this.treeView1.SelectedNode = null;
 				this.treeView1.ContextMenuStrip = this.contextMenuStrip1;
 			}
+		}
+		
+		void TreeView1AfterSelect(object sender, TreeViewEventArgs e)
+		{
+			PackProcess type = null;
+			WiFile wifile = null;
+			if(e.Node.Parent==null)
+			{
+				type = PackProcess.Define_Base;
+				wifile = (WiFile)e.Node.Tag;
+			}
+			 else 
+			 {
+			 	type =(PackProcess)e.Node.Tag;
+			 	wifile = (WiFile)e.Node.Parent.Tag;
+			 }
+			MainProTreeClick(this,new MainProTreeClickEventArgs(type,wifile));
+		}
+		
+		public void setMainProTreeEdited(PackProcess type)
+		{
+			
 		}
 	}
 }

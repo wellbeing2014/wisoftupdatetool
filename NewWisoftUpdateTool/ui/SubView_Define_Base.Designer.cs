@@ -8,7 +8,7 @@
  */
 namespace NewWisoftUpdateTool.ui
 {
-	partial class SubView_overview
+	partial class SubView_Define_Base
 	{
 		/// <summary>
 		/// Designer variable used to keep track of non-visual components.
