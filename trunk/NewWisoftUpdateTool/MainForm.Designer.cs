@@ -40,9 +40,11 @@ namespace NewWisoftUpdateTool
 			this.fileMenu = new System.Windows.Forms.ToolStripMenuItem();
 			this.splitContainer1 = new System.Windows.Forms.SplitContainer();
 			this.mainProTree1 = new NewWisoftUpdateTool.ui.MainProTree();
+			this.mainProView1 = new NewWisoftUpdateTool.ui.MainProView();
 			this.menuStrip1.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
 			this.splitContainer1.Panel1.SuspendLayout();
+			this.splitContainer1.Panel2.SuspendLayout();
 			this.splitContainer1.SuspendLayout();
 			this.SuspendLayout();
 			// 
@@ -52,7 +54,7 @@ namespace NewWisoftUpdateTool
 									this.fileMenu});
 			this.menuStrip1.Location = new System.Drawing.Point(0, 0);
 			this.menuStrip1.Name = "menuStrip1";
-			this.menuStrip1.Size = new System.Drawing.Size(560, 25);
+			this.menuStrip1.Size = new System.Drawing.Size(677, 25);
 			this.menuStrip1.TabIndex = 0;
 			this.menuStrip1.Text = "menuStrip1";
 			// 
@@ -72,8 +74,12 @@ namespace NewWisoftUpdateTool
 			// splitContainer1.Panel1
 			// 
 			this.splitContainer1.Panel1.Controls.Add(this.mainProTree1);
-			this.splitContainer1.Size = new System.Drawing.Size(560, 318);
-			this.splitContainer1.SplitterDistance = 186;
+			// 
+			// splitContainer1.Panel2
+			// 
+			this.splitContainer1.Panel2.Controls.Add(this.mainProView1);
+			this.splitContainer1.Size = new System.Drawing.Size(677, 367);
+			this.splitContainer1.SplitterDistance = 224;
 			this.splitContainer1.TabIndex = 1;
 			// 
 			// mainProTree1
@@ -83,15 +89,25 @@ namespace NewWisoftUpdateTool
 									| System.Windows.Forms.AnchorStyles.Right)));
 			this.mainProTree1.Location = new System.Drawing.Point(3, 3);
 			this.mainProTree1.Name = "mainProTree1";
-			this.mainProTree1.Size = new System.Drawing.Size(180, 312);
+			this.mainProTree1.Size = new System.Drawing.Size(218, 361);
 			this.mainProTree1.TabIndex = 0;
 			this.mainProTree1.Wifilelist = null;
+			// 
+			// mainProView1
+			// 
+			this.mainProView1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+									| System.Windows.Forms.AnchorStyles.Left) 
+									| System.Windows.Forms.AnchorStyles.Right)));
+			this.mainProView1.Location = new System.Drawing.Point(3, 3);
+			this.mainProView1.Name = "pictureBox1";
+			this.mainProView1.Size = new System.Drawing.Size(443, 361);
+			this.mainProView1.TabIndex = 0;
 			// 
 			// MainForm
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(560, 343);
+			this.ClientSize = new System.Drawing.Size(677, 392);
 			this.Controls.Add(this.splitContainer1);
 			this.Controls.Add(this.menuStrip1);
 			this.MainMenuStrip = this.menuStrip1;
@@ -100,11 +116,13 @@ namespace NewWisoftUpdateTool
 			this.menuStrip1.ResumeLayout(false);
 			this.menuStrip1.PerformLayout();
 			this.splitContainer1.Panel1.ResumeLayout(false);
+			this.splitContainer1.Panel2.ResumeLayout(false);
 			((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).EndInit();
 			this.splitContainer1.ResumeLayout(false);
 			this.ResumeLayout(false);
 			this.PerformLayout();
 		}
+		private NewWisoftUpdateTool.ui.MainProView mainProView1;
 		private NewWisoftUpdateTool.ui.MainProTree mainProTree1;
 		private System.Windows.Forms.SplitContainer splitContainer1;
 		private System.Windows.Forms.ToolStripMenuItem fileMenu;

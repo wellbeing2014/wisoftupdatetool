@@ -10,6 +10,8 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
+using NewWisoftUpdateTool.common;
+using NewWisoftUpdateTool.ui;
 
 namespace NewWisoftUpdateTool
 {
@@ -18,6 +20,7 @@ namespace NewWisoftUpdateTool
 	/// </summary>
 	public partial class MainForm : Form
 	{
+		public WiFile current_wifile = null;
 		public MainForm()
 		{
 			//
@@ -28,6 +31,14 @@ namespace NewWisoftUpdateTool
 			//
 			// TODO: Add constructor code after the InitializeComponent() call.
 			//
+			this.mainProTree1.MainProTreeClick+= new MainProTreeClickEventHandler(MainForm_MainProTreeClick);
+		}
+		
+		private void MainForm_MainProTreeClick(object sender, MainProTreeClickEventArgs e)
+		{
+			current_wifile = e.EditWiFile;
+			this.mainProView1.current_wifile
+			this.mainProView1.setViewVisible(e.NodeType);
 		}
 	}
 }

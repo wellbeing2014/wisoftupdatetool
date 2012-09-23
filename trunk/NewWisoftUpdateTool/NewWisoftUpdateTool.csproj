@@ -51,6 +51,9 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="common\MainProTreeClickEventArgs.cs" />
+    <Compile Include="common\PackProcess.cs" />
+    <Compile Include="common\WiFile.cs" />
     <Compile Include="MainForm.cs" />
     <Compile Include="MainForm.Designer.cs">
       <DependentUpon>MainForm.cs</DependentUpon>
@@ -69,17 +72,46 @@
     <Compile Include="ui\MainProView.Designer.cs">
       <DependentUpon>MainProView.cs</DependentUpon>
     </Compile>
-    <Compile Include="ui\SubView_overview.cs" />
-    <Compile Include="ui\SubView_overview.Designer.cs">
-      <DependentUpon>SubView_overview.cs</DependentUpon>
+    <Compile Include="ui\SubView_Define_Base.cs" />
+    <Compile Include="ui\SubView_Define_Base.Designer.cs">
+      <DependentUpon>SubView_Define_Base.cs</DependentUpon>
     </Compile>
-    <Compile Include="ui\SubView_select.cs" />
-    <Compile Include="ui\SubView_select.Designer.cs">
-      <DependentUpon>SubView_select.cs</DependentUpon>
+    <Compile Include="ui\SubView_Edit_Configs.cs" />
+    <Compile Include="ui\SubView_Edit_Configs.Designer.cs">
+      <DependentUpon>SubView_Edit_Configs.cs</DependentUpon>
     </Compile>
+    <Compile Include="ui\SubView_Edit_Sql.cs" />
+    <Compile Include="ui\SubView_Edit_Sql.Designer.cs">
+      <DependentUpon>SubView_Edit_Sql.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ui\SubView_Select_Files.cs" />
+    <Compile Include="ui\SubView_Select_Files.Designer.cs">
+      <DependentUpon>SubView_Select_Files.cs</DependentUpon>
+    </Compile>
+    <Compile Include="XMLpad\FindAndReplaceForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="XMLpad\FindAndReplaceForm.designer.cs">
+      <DependentUpon>FindAndReplaceForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="XMLpad\Globals.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="XMLpad\InputBox.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="XMLpad\XmlEditor.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="XMLpad\XmlEditor.Designer.cs">
+      <DependentUpon>XmlEditor.cs</DependentUpon>
+    </Compile>
+    <Compile Include="XMLpad\XmlFoldingStrategy.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="ui" />
+    <Folder Include="common" />
+    <Folder Include="XMLpad" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="MainForm.resx">
@@ -95,11 +127,23 @@
     <EmbeddedResource Include="ui\MainProView.resx">
       <DependentUpon>MainProView.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="ui\SubView_overview.resx">
-      <DependentUpon>SubView_overview.cs</DependentUpon>
+    <EmbeddedResource Include="ui\SubView_Define_Base.resx">
+      <DependentUpon>SubView_Define_Base.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="ui\SubView_select.resx">
-      <DependentUpon>SubView_select.cs</DependentUpon>
+    <EmbeddedResource Include="ui\SubView_Select_Files.resx">
+      <DependentUpon>SubView_Select_Files.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="XMLpad\FindAndReplaceForm.resx">
+      <DependentUpon>FindAndReplaceForm.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="XMLpad\InputBox.resx">
+      <DependentUpon>InputBox.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="XMLpad\XmlEditor.resx">
+      <DependentUpon>XmlEditor.cs</DependentUpon>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.Targets" />
