@@ -119,7 +119,7 @@ namespace NewWisoftUpdateTool.ui
 		
 		void TreeView1AfterSelect(object sender, TreeViewEventArgs e)
 		{
-			PackProcess type = null;
+			PackProcess type ;
 			WiFile wifile = null;
 			if(e.Node.Parent==null)
 			{

@@ -37,7 +37,7 @@ namespace NewWisoftUpdateTool
 		private void MainForm_MainProTreeClick(object sender, MainProTreeClickEventArgs e)
 		{
 			current_wifile = e.EditWiFile;
-			this.mainProView1.current_wifile
+			this.mainProView1.WifileDataBinding(e.EditWiFile);
 			this.mainProView1.setViewVisible(e.NodeType);
 		}
 	}

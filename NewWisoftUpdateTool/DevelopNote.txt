@@ -1,0 +1,4 @@
+﻿2012-09-25
+-----------------
+1\mainprotree节点，变更 当前的 wifile ，响应给 mainform 和 mainview ,通知他们 的current_wifle
+2\每个wifile 具备一个文件夹与之对应，让wifle具备创建updateinfo.xml的功能，并能随时能保存配置修改。
