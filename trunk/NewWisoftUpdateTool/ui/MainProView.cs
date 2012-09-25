@@ -67,7 +67,7 @@ namespace NewWisoftUpdateTool.ui
 			setViewVisible(PackProcess.Select_Files);
 		}
 		
-		private void WifileDataBinding(WiFile wifile)
+		public void WifileDataBinding(WiFile wifile)
 		{
 			this.current_wifile = wifile;
 			

@@ -54,6 +54,7 @@
     <Compile Include="common\MainProTreeClickEventArgs.cs" />
     <Compile Include="common\PackProcess.cs" />
     <Compile Include="common\WiFile.cs" />
+    <Compile Include="common\XmlHelper.cs" />
     <Compile Include="MainForm.cs" />
     <Compile Include="MainForm.Designer.cs">
       <DependentUpon>MainForm.cs</DependentUpon>
@@ -63,6 +64,145 @@
     <Compile Include="Resource.Designer.cs">
       <DependentUpon>Resource.resx</DependentUpon>
       <AutoGen>True</AutoGen>
+    </Compile>
+    <Compile Include="TextEditor\Src\Actions\BookmarkActions.cs" />
+    <Compile Include="TextEditor\Src\Actions\CaretActions.cs" />
+    <Compile Include="TextEditor\Src\Actions\ClipBoardActions.cs" />
+    <Compile Include="TextEditor\Src\Actions\FoldActions.cs" />
+    <Compile Include="TextEditor\Src\Actions\FormatActions.cs" />
+    <Compile Include="TextEditor\Src\Actions\HomeEndActions.cs" />
+    <Compile Include="TextEditor\Src\Actions\IEditAction.cs" />
+    <Compile Include="TextEditor\Src\Actions\MiscActions.cs" />
+    <Compile Include="TextEditor\Src\Actions\SelectionActions.cs" />
+    <Compile Include="TextEditor\Src\Document\AbstractSegment.cs" />
+    <Compile Include="TextEditor\Src\Document\BookmarkManager\Bookmark.cs" />
+    <Compile Include="TextEditor\Src\Document\BookmarkManager\BookmarkEventHandler.cs" />
+    <Compile Include="TextEditor\Src\Document\BookmarkManager\BookmarkManager.cs" />
+    <Compile Include="TextEditor\Src\Document\BookmarkManager\BookmarkManagerMemento.cs" />
+    <Compile Include="TextEditor\Src\Document\DefaultDocument.cs" />
+    <Compile Include="TextEditor\Src\Document\DefaultTextEditorProperties.cs" />
+    <Compile Include="TextEditor\Src\Document\DocumentEventArgs.cs" />
+    <Compile Include="TextEditor\Src\Document\DocumentFactory.cs" />
+    <Compile Include="TextEditor\Src\Document\FoldingStrategy\FoldingManager.cs" />
+    <Compile Include="TextEditor\Src\Document\FoldingStrategy\FoldMarker.cs" />
+    <Compile Include="TextEditor\Src\Document\FoldingStrategy\IFoldingStrategy.cs" />
+    <Compile Include="TextEditor\Src\Document\FoldingStrategy\IndentFoldingStrategy.cs" />
+    <Compile Include="TextEditor\Src\Document\FormattingStrategy\DefaultFormattingStrategy.cs" />
+    <Compile Include="TextEditor\Src\Document\FormattingStrategy\IFormattingStrategy.cs" />
+    <Compile Include="TextEditor\Src\Document\HighlightingStrategy\DefaultHighlightingStrategy.cs" />
+    <Compile Include="TextEditor\Src\Document\HighlightingStrategy\FontContainer.cs" />
+    <Compile Include="TextEditor\Src\Document\HighlightingStrategy\HighlightBackground.cs" />
+    <Compile Include="TextEditor\Src\Document\HighlightingStrategy\HighlightColor.cs" />
+    <Compile Include="TextEditor\Src\Document\HighlightingStrategy\HighlightInfo.cs" />
+    <Compile Include="TextEditor\Src\Document\HighlightingStrategy\HighlightingColorNotFoundException.cs" />
+    <Compile Include="TextEditor\Src\Document\HighlightingStrategy\HighlightingDefinitionInvalidException.cs" />
+    <Compile Include="TextEditor\Src\Document\HighlightingStrategy\HighlightingDefinitionParser.cs" />
+    <Compile Include="TextEditor\Src\Document\HighlightingStrategy\HighlightingManager.cs" />
+    <Compile Include="TextEditor\Src\Document\HighlightingStrategy\HighlightingStrategyFactory.cs" />
+    <Compile Include="TextEditor\Src\Document\HighlightingStrategy\HighlightRuleSet.cs" />
+    <Compile Include="TextEditor\Src\Document\HighlightingStrategy\IHighlightingStrategy.cs" />
+    <Compile Include="TextEditor\Src\Document\HighlightingStrategy\NextMarker.cs" />
+    <Compile Include="TextEditor\Src\Document\HighlightingStrategy\PrevMarker.cs" />
+    <Compile Include="TextEditor\Src\Document\HighlightingStrategy\Span.cs" />
+    <Compile Include="TextEditor\Src\Document\HighlightingStrategy\SpanStack.cs" />
+    <Compile Include="TextEditor\Src\Document\HighlightingStrategy\SyntaxModes\FileSyntaxModeProvider.cs" />
+    <Compile Include="TextEditor\Src\Document\HighlightingStrategy\SyntaxModes\ISyntaxModeFileProvider.cs" />
+    <Compile Include="TextEditor\Src\Document\HighlightingStrategy\SyntaxModes\ResourceSyntaxModeProvider.cs" />
+    <Compile Include="TextEditor\Src\Document\HighlightingStrategy\SyntaxModes\SyntaxMode.cs" />
+    <Compile Include="TextEditor\Src\Document\HighlightingStrategy\TextWord.cs" />
+    <Compile Include="TextEditor\Src\Document\IDocument.cs" />
+    <Compile Include="TextEditor\Src\Document\ISegment.cs" />
+    <Compile Include="TextEditor\Src\Document\ITextEditorProperties.cs" />
+    <Compile Include="TextEditor\Src\Document\LineManager\DeferredEventList.cs" />
+    <Compile Include="TextEditor\Src\Document\LineManager\LineManager.cs" />
+    <Compile Include="TextEditor\Src\Document\LineManager\LineManagerEventArgs.cs" />
+    <Compile Include="TextEditor\Src\Document\LineManager\LineSegment.cs" />
+    <Compile Include="TextEditor\Src\Document\LineManager\LineSegmentTree.cs" />
+    <Compile Include="TextEditor\Src\Document\MarkerStrategy\MarkerStrategy.cs" />
+    <Compile Include="TextEditor\Src\Document\MarkerStrategy\TextMarker.cs" />
+    <Compile Include="TextEditor\Src\Document\Selection\ColumnRange.cs" />
+    <Compile Include="TextEditor\Src\Document\Selection\DefaultSelection.cs" />
+    <Compile Include="TextEditor\Src\Document\Selection\ISelection.cs" />
+    <Compile Include="TextEditor\Src\Document\Selection\SelectionManager.cs" />
+    <Compile Include="TextEditor\Src\Document\TextAnchor.cs" />
+    <Compile Include="TextEditor\Src\Document\TextBufferStrategy\GapTextBufferStrategy.cs" />
+    <Compile Include="TextEditor\Src\Document\TextBufferStrategy\ITextBufferStrategy.cs" />
+    <Compile Include="TextEditor\Src\Document\TextBufferStrategy\StringTextBufferStrategy.cs" />
+    <Compile Include="TextEditor\Src\Document\TextLocation.cs" />
+    <Compile Include="TextEditor\Src\Document\TextUtilities.cs" />
+    <Compile Include="TextEditor\Src\Gui\AbstractMargin.cs" />
+    <Compile Include="TextEditor\Src\Gui\BracketHighlighter.cs" />
+    <Compile Include="TextEditor\Src\Gui\BrushRegistry.cs" />
+    <Compile Include="TextEditor\Src\Gui\Caret.cs" />
+    <Compile Include="TextEditor\Src\Gui\CompletionWindow\AbstractCompletionWindow.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="TextEditor\Src\Gui\CompletionWindow\CodeCompletionListView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="TextEditor\Src\Gui\CompletionWindow\CodeCompletionWindow.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="TextEditor\Src\Gui\CompletionWindow\DeclarationViewWindow.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="TextEditor\Src\Gui\CompletionWindow\ICompletionData.cs" />
+    <Compile Include="TextEditor\Src\Gui\CompletionWindow\ICompletionDataProvider.cs" />
+    <Compile Include="TextEditor\Src\Gui\DrawableLine.cs" />
+    <Compile Include="TextEditor\Src\Gui\FoldMargin.cs" />
+    <Compile Include="TextEditor\Src\Gui\GutterMargin.cs" />
+    <Compile Include="TextEditor\Src\Gui\HRuler.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="TextEditor\Src\Gui\IconBarMargin.cs" />
+    <Compile Include="TextEditor\Src\Gui\Ime.cs" />
+    <Compile Include="TextEditor\Src\Gui\InsightWindow\IInsightDataProvider.cs" />
+    <Compile Include="TextEditor\Src\Gui\InsightWindow\InsightWindow.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="TextEditor\Src\Gui\TextArea.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="TextEditor\Src\Gui\TextAreaClipboardHandler.cs" />
+    <Compile Include="TextEditor\Src\Gui\TextAreaControl.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="TextEditor\Src\Gui\TextAreaDragDropHandler.cs" />
+    <Compile Include="TextEditor\Src\Gui\TextAreaMouseHandler.cs" />
+    <Compile Include="TextEditor\Src\Gui\TextAreaUpdate.cs" />
+    <Compile Include="TextEditor\Src\Gui\TextEditorControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="TextEditor\Src\Gui\TextEditorControlBase.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="TextEditor\Src\Gui\TextView.cs" />
+    <Compile Include="TextEditor\Src\Gui\ToolTipRequestEventArgs.cs" />
+    <Compile Include="TextEditor\Src\Undo\IUndoableOperation.cs" />
+    <Compile Include="TextEditor\Src\Undo\UndoableDelete.cs" />
+    <Compile Include="TextEditor\Src\Undo\UndoableInsert.cs" />
+    <Compile Include="TextEditor\Src\Undo\UndoableReplace.cs" />
+    <Compile Include="TextEditor\Src\Undo\UndoQueue.cs" />
+    <Compile Include="TextEditor\Src\Undo\UndoStack.cs" />
+    <Compile Include="TextEditor\Src\Util\AugmentableRedBlackTree.cs" />
+    <Compile Include="TextEditor\Src\Util\CheckedList.cs" />
+    <Compile Include="TextEditor\Src\Util\FileReader.cs" />
+    <Compile Include="TextEditor\Src\Util\LoggingService.cs" />
+    <Compile Include="TextEditor\Src\Util\LookupTable.cs" />
+    <Compile Include="TextEditor\Src\Util\MouseWheelHandler.cs" />
+    <Compile Include="TextEditor\Src\Util\RedBlackTreeIterator.cs" />
+    <Compile Include="TextEditor\Src\Util\RtfWriter.cs" />
+    <Compile Include="TextEditor\Src\Util\TextUtility.cs" />
+    <Compile Include="TextEditor\Src\Util\TipPainter.cs" />
+    <Compile Include="TextEditor\Src\Util\TipPainterTools.cs" />
+    <Compile Include="TextEditor\Src\Util\TipSection.cs" />
+    <Compile Include="TextEditor\Src\Util\TipSpacer.cs" />
+    <Compile Include="TextEditor\Src\Util\TipSplitter.cs" />
+    <Compile Include="TextEditor\Src\Util\TipText.cs" />
+    <Compile Include="TextEditor\Src\Util\WeakCollection.cs" />
+    <Compile Include="ui\ContentList.cs" />
+    <Compile Include="ui\ContentList.Designer.cs">
+      <DependentUpon>ContentList.cs</DependentUpon>
     </Compile>
     <Compile Include="ui\MainProTree.cs" />
     <Compile Include="ui\MainProTree.Designer.cs">
@@ -109,6 +249,8 @@
     <Compile Include="XMLpad\XmlFoldingStrategy.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="TextEditor" />
+    <Folder Include="TextEditor\Src" />
     <Folder Include="ui" />
     <Folder Include="common" />
     <Folder Include="XMLpad" />
@@ -120,6 +262,9 @@
     <EmbeddedResource Include="Resource.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resource.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ui\ContentList.resx">
+      <DependentUpon>ContentList.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="ui\MainProTree.resx">
       <DependentUpon>MainProTree.cs</DependentUpon>
@@ -145,6 +290,10 @@
       <DependentUpon>XmlEditor.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="DevelopNote.txt" />
+    <None Include="TextEditor\Src\Gui\ClassDiagram1.cd" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.Targets" />
 </Project>
