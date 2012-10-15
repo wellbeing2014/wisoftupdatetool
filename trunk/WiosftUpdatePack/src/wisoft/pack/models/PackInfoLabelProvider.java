@@ -11,9 +11,13 @@ public class PackInfoLabelProvider extends LabelProvider {
 		if(element instanceof PackInfo)
 			return ((Model)element).getName();
 		else if(element instanceof PackInfoOfOverview)
-			return "基本预览";
+			return "更新包概览";
 		else if(element instanceof PackInfoOfSelectFiles)
-			return "选择文件";
+			return "添加更新文件";
+		else if(element instanceof PackInfoOfEditConfs)
+			return "编辑配置文件";
+		else if(element instanceof PackInfoOfEditSql)
+			return "编辑数据脚本";
 		else
 			return null;
 			

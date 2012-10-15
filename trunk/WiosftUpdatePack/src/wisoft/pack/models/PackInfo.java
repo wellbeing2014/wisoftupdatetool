@@ -6,6 +6,21 @@ import java.util.List;
 public class PackInfo extends Model {
 	protected PackInfoOfOverview overview;
 	protected PackInfoOfSelectFiles selectFiles;
+	protected PackInfoOfEditConfs editConfs;
+	public PackInfoOfEditConfs getEditConfs() {
+		return editConfs;
+	}
+	public void setEditConfs(PackInfoOfEditConfs editConfs) {
+		this.editConfs = editConfs;
+	}
+	public PackInfoOfEditSql getEditSql() {
+		return editSql;
+	}
+	public void setEditSql(PackInfoOfEditSql editSql) {
+		this.editSql = editSql;
+	}
+
+	protected PackInfoOfEditSql editSql;
 	public PackInfoOfSelectFiles getSelectFiles() {
 		return selectFiles;
 	}
@@ -17,9 +32,6 @@ public class PackInfo extends Model {
 	}
 	public void setOverview(PackInfoOfOverview overview) {
 		this.overview = overview;
-		//
-		packs.add(overview);
-		
 	}
 
 	protected List<Model> packs = new ArrayList<Model>();
@@ -39,6 +51,8 @@ public class PackInfo extends Model {
 		{
 			this.packs.add(new PackInfoOfOverview(name, this));
 			this.packs.add(new PackInfoOfSelectFiles(name, this));
+			this.packs.add(new PackInfoOfEditConfs(name, this));
+			this.packs.add(new PackInfoOfEditSql(name, this));
 		}
 		this.name = name;
 		this.parent = parent;

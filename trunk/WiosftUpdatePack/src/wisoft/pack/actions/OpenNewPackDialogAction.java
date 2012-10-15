@@ -19,7 +19,7 @@ public class OpenNewPackDialogAction extends Action {
 	}
 	
 	public void run() {
-		NewPackDialog nd = new NewPackDialog(window.getShell(), SWT.CLOSE);
+		NewPackDialog nd = new NewPackDialog(window.getShell(), SWT.APPLICATION_MODAL|SWT.CLOSE);
 		nd.open();
 		
 	}
