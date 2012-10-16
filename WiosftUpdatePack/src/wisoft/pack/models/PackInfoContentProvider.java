@@ -16,7 +16,7 @@ public class PackInfoContentProvider implements ITreeContentProvider {
 	@Override
 	public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
 		// TODO Auto-generated method stub
-	
+		System.out.println("树内容改变了");
 	}
 	
 	@Override

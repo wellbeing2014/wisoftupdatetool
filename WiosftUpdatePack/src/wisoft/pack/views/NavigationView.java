@@ -1,8 +1,10 @@
 package wisoft.pack.views;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 
 import org.eclipse.jface.viewers.IStructuredContentProvider;
+import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.TreeViewer;
@@ -14,12 +16,15 @@ import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.ViewPart;
 
+import wisoft.pack.models.Model;
 import wisoft.pack.models.PackInfo;
 import wisoft.pack.models.PackInfoContentProvider;
 import wisoft.pack.models.PackInfoLabelProvider;
 import wisoft.pack.models.PackInfoOfOverview;
 
 public class NavigationView extends ViewPart {
+	public NavigationView() {
+	}
 	public static final String ID = "WiosftUpdatePack.navigationView";
 	private TreeViewer viewer;
 	 
@@ -55,4 +60,12 @@ public class NavigationView extends ViewPart {
 	public void setFocus() {
 		viewer.getControl().setFocus();
 	}
+	
+	public void add()
+	{
+		 //PackInfo a = new PackInfo("事项管理平台5.181.2",(PackInfo)this.viewer.getInput(),false); 
+		//this.viewer.add();
+	}
+	
+	
 }
