@@ -17,6 +17,7 @@ import org.eclipse.ui.actions.ActionFactory.IWorkbenchAction;
 import org.eclipse.ui.application.ActionBarAdvisor;
 import org.eclipse.ui.application.IActionBarConfigurer;
 
+import wisoft.pack.actions.DelPackAction;
 import wisoft.pack.actions.MessagePopupAction;
 import wisoft.pack.actions.OpenNewPackDialogAction;
 import wisoft.pack.actions.OpenViewAction;
@@ -35,9 +36,7 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor {
     private IWorkbenchAction exitAction;
     private IWorkbenchAction aboutAction;
     private IWorkbenchAction newWindowAction;
-    private OpenViewAction openViewAction;
-    private Action messagePopupAction;
-    
+    private DelPackAction delPackAction;
     private OpenNewPackDialogAction openNewPackDialogAction;
 
     public ApplicationActionBarAdvisor(IActionBarConfigurer configurer) {
@@ -60,14 +59,12 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor {
         newWindowAction = ActionFactory.OPEN_NEW_WINDOW.create(window);
         register(newWindowAction);
         
-        openViewAction = new OpenViewAction(window, "Open Another Message View", View.ID);
-        register(openViewAction);
         
-        messagePopupAction = new MessagePopupAction("Open Message", window);
-        register(messagePopupAction);
-        
-        openNewPackDialogAction = new OpenNewPackDialogAction(window,"新建更新包1");
+        openNewPackDialogAction = new OpenNewPackDialogAction(window,"新建");
         register(openNewPackDialogAction);
+        
+        delPackAction = new DelPackAction(window, "删除");
+        register(delPackAction);
     }
     
     protected void fillMenuBar(IMenuManager menuBar) {
@@ -82,9 +79,6 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor {
         // File
         fileMenu.add(newWindowAction);
         fileMenu.add(new Separator());
-        fileMenu.add(messagePopupAction);
-        fileMenu.add(openViewAction);
-        fileMenu.add(new Separator());
         fileMenu.add(exitAction);
         
         // Help
@@ -94,8 +88,7 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor {
     protected void fillCoolBar(ICoolBarManager coolBar) {
         IToolBarManager toolbar = new ToolBarManager(SWT.FLAT | SWT.RIGHT);
         coolBar.add(new ToolBarContributionItem(toolbar, "main"));   
-        toolbar.add(openViewAction);
-        toolbar.add(messagePopupAction);
         toolbar.add(openNewPackDialogAction);
+        toolbar.add(delPackAction);
     }
 }

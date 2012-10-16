@@ -29,7 +29,7 @@
             id="WiosftUpdatePack.view">
       </view>
       <view
-            name="Mailboxes"
+            name="更新包列表"
             allowMultiple="true"
             icon="icons/sample3.gif"
             class="wisoft.pack.views.NavigationView"
@@ -51,12 +51,17 @@
       <command
             id="WiosftUpdatePack.new"
             categoryId="WiosftUpdatePack.category"
-            name="新建更新包1">
+            name="新建更新包">
       </command>
       <command
             id="WiosftUpdatePack.open"
             categoryId="WiosftUpdatePack.category"
             name="open mail">
+      </command>
+      <command
+            categoryId="WiosftUpdatePack.category"
+            id="WiosftUpdatePack.delPack"
+            name="删除更新包">
       </command>
    </extension>
    <extension
@@ -70,6 +75,11 @@
             commandId="org.eclipse.ui.file.exit"
             schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
             sequence="CTRL+X">
+      </key>
+      <key
+            commandId="WiosftUpdatePack.delPack"
+            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+            sequence="CTRL+D">
       </key>
    </extension>
    <extension

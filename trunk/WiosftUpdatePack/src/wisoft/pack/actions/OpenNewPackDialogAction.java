@@ -1,13 +1,16 @@
 package wisoft.pack.actions;
 
 import org.eclipse.jface.action.Action;
+import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.swt.SWT;
 import org.eclipse.ui.IWorkbenchWindow;
 
 import wisoft.pack.dialogs.*;
+import wisoft.pack.views.NavigationView;
 
 public class OpenNewPackDialogAction extends Action {
 	private final IWorkbenchWindow window;
+	
 	public OpenNewPackDialogAction(IWorkbenchWindow window,String label) {
 		this.window =window;
         setText(label);
@@ -19,8 +22,13 @@ public class OpenNewPackDialogAction extends Action {
 	}
 	
 	public void run() {
-		NewPackDialog nd = new NewPackDialog(window.getShell(), SWT.APPLICATION_MODAL|SWT.CLOSE);
-		nd.open();
+		NewPackInitDlg nd = new NewPackInitDlg(window);
+		if(nd.open()==IDialogConstants.OK_ID)
+		{
+			//System.out.println("aa");
+			NavigationView nv = (NavigationView)window.getActivePage().findView(NavigationView.ID);
+			nv.add();
+		}
 		
 	}
 
