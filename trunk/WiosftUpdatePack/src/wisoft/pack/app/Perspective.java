@@ -6,6 +6,7 @@ import org.eclipse.ui.IPerspectiveFactory;
 
 import wisoft.pack.views.NavigationView;
 import wisoft.pack.views.View;
+import org.eclipse.ui.navigator.*;
 
 public class Perspective implements IPerspectiveFactory {
 
@@ -18,11 +19,11 @@ public class Perspective implements IPerspectiveFactory {
 		String editorArea = layout.getEditorArea();
 		layout.setEditorAreaVisible(false);
 		
-		layout.addStandaloneView(NavigationView.ID,  true, IPageLayout.LEFT, 0.25f, editorArea);
+		layout.addStandaloneView("WisoftUpdatePack.Navigator",  true, IPageLayout.LEFT, 0.25f, editorArea);
 		IFolderLayout folder = layout.createFolder("messages", IPageLayout.TOP, 0.5f, editorArea);
 		folder.addPlaceholder(View.ID + ":*");
 		folder.addView(View.ID);
 		
-		layout.getViewLayout(NavigationView.ID).setCloseable(false);
+		//layout.getViewLayout(NavigationView.ID).setCloseable(false);
 	}
 }
