@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+
+   <extension
+         id="application"
+         point="org.eclipse.core.runtime.applications">
+      <application>
+         <run
+               class="wisoft.pack.app.Application">
+         </run>
+      </application>
+   </extension>
+   <extension
+         point="org.eclipse.ui.perspectives">
+      <perspective
+            name="RCP Perspective"
+            class="wisoft.pack.app.Perspective"
+            id="WiosftUpdatePack.perspective">
+      </perspective>
+   </extension>
+   <extension
+         point="org.eclipse.ui.views">
+      <view
+            name="Message"
+            allowMultiple="true"
+            icon="icons/sample2.gif"
+            class="wisoft.pack.views.View"
+            id="WiosftUpdatePack.view">
+      </view>
+      <view
+            name="Mailboxes"
+            allowMultiple="true"
+            icon="icons/sample3.gif"
+            class="wisoft.pack.views.NavigationView"
+            id="WiosftUpdatePack.navigationView">
+      </view>
+   </extension>
+   <extension
+         point="org.eclipse.ui.commands">
+      <category
+            name="Mail"
+            id="WiosftUpdatePack.category">
+      </category>
+      <command
+            name="Open Message Dialog"
+            description="Open a message dialog"
+            categoryId="WiosftUpdatePack.category"
+            id="WiosftUpdatePack.openMessage">
+      </command>
+      <command
+            id="WiosftUpdatePack.new"
+            categoryId="WiosftUpdatePack.category"
+            name="新建更新包1">
+      </command>
+      <command
+            id="WiosftUpdatePack.open"
+            categoryId="WiosftUpdatePack.category"
+            name="open mail">
+      </command>
+   </extension>
+   <extension
+         point="org.eclipse.ui.bindings">
+      <key
+            commandId="WiosftUpdatePack.new"
+            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+            sequence="CTRL+3">
+      </key>
+      <key
+            commandId="org.eclipse.ui.file.exit"
+            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+            sequence="CTRL+X">
+      </key>
+   </extension>
+   <extension
+         id="product"
+         point="org.eclipse.core.runtime.products">
+      <product
+            application="WiosftUpdatePack.application"
+            name="中科更新包管理工具">
+         <property
+               name="aboutText"
+               value="RCP Mail template created by PDE">
+         </property>
+         <property
+               name="windowImages"
+               value="icons/sample2.gif">
+         </property>
+         <property
+               name="aboutImage"
+               value="product_lg.gif">
+         </property>
+      </product>
+   </extension>
+
+</plugin>
