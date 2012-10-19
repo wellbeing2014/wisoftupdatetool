@@ -88,7 +88,7 @@ public class NewPackDialog extends Dialog {
 		text_1.setBounds(110, 80, 217, 20);
 		
 		//È·¶¨°´Å¥
-		Button btnNewButton = new Button(shell, SWT.NONE);
+		Button btnNewButton = new Button(shell, SWT.OK);
 		btnNewButton.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {

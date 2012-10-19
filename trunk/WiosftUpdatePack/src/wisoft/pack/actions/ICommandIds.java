@@ -11,6 +11,7 @@ public interface ICommandIds {
 
     public static final String CMD_OPEN = "WiosftUpdatePack.open";
     public static final String CMD_OPEN_MESSAGE = "WiosftUpdatePack.openMessage";
-    public static final String OPEN_NEWPACK_DLG="WiosftUpdatePack.new";
+    public static final String PACKINFO_ADD="WiosftUpdatePack.add";
+    public static final String PACKINFO_REMOVE="WiosftUpdatePack.remove";
     
 }
