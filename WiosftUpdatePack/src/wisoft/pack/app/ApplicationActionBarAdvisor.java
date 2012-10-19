@@ -17,6 +17,7 @@ import org.eclipse.ui.actions.ActionFactory.IWorkbenchAction;
 import org.eclipse.ui.application.ActionBarAdvisor;
 import org.eclipse.ui.application.IActionBarConfigurer;
 
+import wisoft.pack.actions.DelPackInfoAction;
 import wisoft.pack.actions.MessagePopupAction;
 import wisoft.pack.actions.OpenNewPackDialogAction;
 import wisoft.pack.actions.OpenViewAction;
@@ -34,11 +35,12 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor {
     // when fillActionBars is called with FILL_PROXY.
     private IWorkbenchAction exitAction;
     private IWorkbenchAction aboutAction;
-    private IWorkbenchAction newWindowAction;
-    private OpenViewAction openViewAction;
-    private Action messagePopupAction;
+    //private IWorkbenchAction newWindowAction;
+   // private OpenViewAction openViewAction;
+    //private Action messagePopupAction;
     
     private OpenNewPackDialogAction openNewPackDialogAction;
+    private DelPackInfoAction removePackInfoAction;
 
     public ApplicationActionBarAdvisor(IActionBarConfigurer configurer) {
         super(configurer);
@@ -57,17 +59,19 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor {
         aboutAction = ActionFactory.ABOUT.create(window);
         register(aboutAction);
         
-        newWindowAction = ActionFactory.OPEN_NEW_WINDOW.create(window);
-        register(newWindowAction);
+//        newWindowAction = ActionFactory.OPEN_NEW_WINDOW.create(window);
+//        register(newWindowAction);
+//        
+//        openViewAction = new OpenViewAction(window, "Open Another Message View", View.ID);
+//        register(openViewAction);
+//        
+//        messagePopupAction = new MessagePopupAction("Open Message", window);
+//        register(messagePopupAction);
         
-        openViewAction = new OpenViewAction(window, "Open Another Message View", View.ID);
-        register(openViewAction);
-        
-        messagePopupAction = new MessagePopupAction("Open Message", window);
-        register(messagePopupAction);
-        
-        openNewPackDialogAction = new OpenNewPackDialogAction(window,"新建更新包1");
+        openNewPackDialogAction = new OpenNewPackDialogAction(window,"新建更新包");
         register(openNewPackDialogAction);
+        removePackInfoAction = new DelPackInfoAction(window, "删除更新包");
+        register(removePackInfoAction);
     }
     
     protected void fillMenuBar(IMenuManager menuBar) {
@@ -80,10 +84,10 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor {
         menuBar.add(helpMenu);
         
         // File
-        fileMenu.add(newWindowAction);
-        fileMenu.add(new Separator());
-        fileMenu.add(messagePopupAction);
-        fileMenu.add(openViewAction);
+//        fileMenu.add(newWindowAction);
+//        fileMenu.add(new Separator());
+//        fileMenu.add(messagePopupAction);
+//        fileMenu.add(openViewAction);
         fileMenu.add(new Separator());
         fileMenu.add(exitAction);
         
@@ -94,8 +98,9 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor {
     protected void fillCoolBar(ICoolBarManager coolBar) {
         IToolBarManager toolbar = new ToolBarManager(SWT.FLAT | SWT.RIGHT);
         coolBar.add(new ToolBarContributionItem(toolbar, "main"));   
-        toolbar.add(openViewAction);
-        toolbar.add(messagePopupAction);
+//        toolbar.add(openViewAction);
+//        toolbar.add(messagePopupAction);
         toolbar.add(openNewPackDialogAction);
+        toolbar.add(removePackInfoAction);
     }
 }

@@ -1,8 +1,10 @@
 package wisoft.pack.views;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.eclipse.jface.viewers.IStructuredContentProvider;
+import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.TreeViewer;
@@ -33,7 +35,7 @@ public class NavigationView extends ViewPart {
      */
     private Model createDummyModel() {
          root =new RootModel();
-         root.addPackInfo(new PackInfoModel("cefsifhias"));
+         //root.addPackInfo(new PackInfoModel("cefsifhias"));
         return root;
     }
 
@@ -53,5 +55,27 @@ public class NavigationView extends ViewPart {
 	 */
 	public void setFocus() {
 		viewer.getControl().setFocus();
+	}
+	
+	public void addPackInfo(PackInfoModel pack)
+	{
+		this.root.addPackInfo(pack);
+		this.viewer.refresh();
+	}
+	
+	public void removePackInfo(PackInfoModel[] packlist)
+	{
+		for(int i=0;i<packlist.length;i++)
+		{
+			this.root.removePackInfo(packlist[i]);
+		}
+		this.viewer.refresh();
+	}
+	
+	public PackInfoModel[] getSelectPackInfo()
+	{
+		 IStructuredSelection selection = (IStructuredSelection)this.viewer.getSelection();
+		 List<PackInfoModel> selPack =selection.toList();
+		 return selPack.toArray(new PackInfoModel[0]);
 	}
 }

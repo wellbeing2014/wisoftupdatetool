@@ -24,7 +24,7 @@
       <view
             name="Message"
             allowMultiple="true"
-            icon="icons/sample2.gif"
+            icon="icons/add.gif"
             class="wisoft.pack.views.View"
             id="WiosftUpdatePack.view">
       </view>
@@ -38,31 +38,21 @@
    </extension>
    <extension
          point="org.eclipse.ui.commands">
-      <category
-            name="Mail"
-            id="WiosftUpdatePack.category">
-      </category>
       <command
-            name="Open Message Dialog"
-            description="Open a message dialog"
+            id="WiosftUpdatePack.add"
             categoryId="WiosftUpdatePack.category"
-            id="WiosftUpdatePack.openMessage">
+            name="新建更新包">
       </command>
       <command
-            id="WiosftUpdatePack.new"
             categoryId="WiosftUpdatePack.category"
-            name="新建更新包1">
-      </command>
-      <command
-            id="WiosftUpdatePack.open"
-            categoryId="WiosftUpdatePack.category"
-            name="open mail">
+            id="WiosftUpdatePack.remove"
+            name="删除更新包">
       </command>
    </extension>
    <extension
          point="org.eclipse.ui.bindings">
       <key
-            commandId="WiosftUpdatePack.new"
+            commandId="WiosftUpdatePack.add"
             schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
             sequence="CTRL+3">
       </key>
@@ -70,6 +60,12 @@
             commandId="org.eclipse.ui.file.exit"
             schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
             sequence="CTRL+X">
+      </key>
+      <key
+            commandId="WiosftUpdatePack.remove"
+            contextId="org.eclipse.ui.contexts.window"
+            schemeId="WiosftUpdatePack.key1"
+            sequence="CTRL+D">
       </key>
    </extension>
    <extension
@@ -84,7 +80,7 @@
          </property>
          <property
                name="windowImages"
-               value="icons/sample2.gif">
+               value="icons/wi_updatetool.ico">
          </property>
          <property
                name="aboutImage"
