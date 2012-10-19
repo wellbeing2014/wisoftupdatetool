@@ -40,11 +40,9 @@
          point="org.eclipse.ui.commands">
       <command
             id="WiosftUpdatePack.add"
-            categoryId="WiosftUpdatePack.category"
             name="新建更新包">
       </command>
       <command
-            categoryId="WiosftUpdatePack.category"
             id="WiosftUpdatePack.remove"
             name="删除更新包">
       </command>
