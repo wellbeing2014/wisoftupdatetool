@@ -1,6 +1,7 @@
 package wisoft.pack.actions;
 
 import org.eclipse.jface.action.Action;
+import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.swt.SWT;
 import org.eclipse.ui.IWorkbenchWindow;
 
@@ -21,10 +22,13 @@ public class OpenNewPackDialogAction extends Action {
 	}
 	
 	public void run() {
-		NewPackDialog nd = new NewPackDialog(window.getShell(), SWT.APPLICATION_MODAL|SWT.CLOSE);
-		nd.open();
-		NavigationView nv = (NavigationView)window.getActivePage().findView(NavigationView.ID);
-		nv.addPackInfo(new PackInfoModel("我是增加的A"));
+		SetPackInfoTitle nd = new SetPackInfoTitle(window.getShell());
+		if(IDialogConstants.OK_ID==nd.open())
+		{
+			 NavigationView nv = (NavigationView)window.getActivePage().findView(NavigationView.ID);
+			 nv.addPackInfo(new PackInfoModel(nd.getPackname()));
+		}
+		
 	}
 
 }

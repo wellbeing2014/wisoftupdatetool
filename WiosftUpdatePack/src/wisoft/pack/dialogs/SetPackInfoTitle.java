@@ -5,8 +5,8 @@ import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Shell;
-import swing2swt.layout.BoxLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Label;
@@ -16,6 +16,11 @@ import org.eclipse.swt.widgets.Combo;
 public class SetPackInfoTitle extends Dialog {
 	private Text text;
 	private Text text_1;
+	private Combo combo;
+
+	public String getPackname() {
+		return combo.getText().trim()+"("+text.getText().trim()+")"+text_1.getText().trim();
+	}
 
 	/**
 	 * Create the dialog.
@@ -50,7 +55,7 @@ public class SetPackInfoTitle extends Dialog {
 		label_1.setAlignment(SWT.CENTER);
 		label_1.setBounds(37, 88, 100, 23);
 		
-		Combo combo = new Combo(container, SWT.NONE);
+		combo = new Combo(container, SWT.NONE);
 		combo.setBounds(143, 10, 162, 23);
 		
 		text = new Text(container, SWT.BORDER);
@@ -68,12 +73,27 @@ public class SetPackInfoTitle extends Dialog {
 	 */
 	@Override
 	protected void createButtonsForButtonBar(Composite parent) {
-		createButton(parent, IDialogConstants.OK_ID, IDialogConstants.OK_LABEL,
+		Button button = createButton(parent, IDialogConstants.OK_ID, IDialogConstants.OK_LABEL,
 				true);
+		
 		createButton(parent, IDialogConstants.CANCEL_ID,
 				IDialogConstants.CANCEL_LABEL, false);
 	}
-
+	
+	
+	
+	@Override
+	protected void okPressed() {
+		if(text.getText().trim().isEmpty()||text_1.getText().trim().isEmpty()||combo.getText().trim().isEmpty())
+		{
+			MessageBox mb = new MessageBox(this.getShell());
+			mb.setText("¥ÌŒÛ");
+			mb.setMessage("«Î ‰»ÎÕÍ’˚£°");
+			mb.open();
+		}
+		else
+			super.okPressed();
+	}
 	/**
 	 * Return the initial size of the dialog.
 	 */
