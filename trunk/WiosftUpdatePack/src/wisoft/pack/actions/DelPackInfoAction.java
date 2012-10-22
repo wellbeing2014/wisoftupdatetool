@@ -1,11 +1,8 @@
 package wisoft.pack.actions;
 
 import org.eclipse.jface.action.Action;
-import org.eclipse.swt.SWT;
 import org.eclipse.ui.IWorkbenchWindow;
 
-import wisoft.pack.dialogs.NewPackDialog;
-import wisoft.pack.models.PackInfoModel;
 import wisoft.pack.views.NavigationView;
 
 public class DelPackInfoAction extends Action {

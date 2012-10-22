@@ -17,9 +17,10 @@ public class SetPackInfoTitle extends Dialog {
 	private Text text;
 	private Text text_1;
 	private Combo combo;
+	private String packname;
 
 	public String getPackname() {
-		return combo.getText().trim()+"("+text.getText().trim()+")"+text_1.getText().trim();
+		return packname;
 	}
 
 	/**
@@ -92,7 +93,10 @@ public class SetPackInfoTitle extends Dialog {
 			mb.open();
 		}
 		else
+		{
+			packname=combo.getText().trim()+"("+text.getText().trim()+")"+text_1.getText().trim();
 			super.okPressed();
+		}
 	}
 	/**
 	 * Return the initial size of the dialog.
@@ -101,4 +105,5 @@ public class SetPackInfoTitle extends Dialog {
 	protected Point getInitialSize() {
 		return new Point(378, 239);
 	}
+	
 }

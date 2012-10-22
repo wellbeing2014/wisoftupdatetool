@@ -46,6 +46,10 @@
             id="WiosftUpdatePack.remove"
             name="删除更新包">
       </command>
+      <command
+            id="WiosftUpdatePack.open"
+            name="打开更新包">
+      </command>
    </extension>
    <extension
          point="org.eclipse.ui.bindings">
@@ -85,6 +89,14 @@
                value="product_lg.gif">
          </property>
       </product>
+   </extension>
+   <extension
+         point="org.eclipse.ui.editors">
+      <editor
+            class="wisoft.pack.edits.PackEdit"
+            id="wisoft.pack.edits.PackEdit"
+            name="New PackEdit">
+      </editor>
    </extension>
 
 </plugin>

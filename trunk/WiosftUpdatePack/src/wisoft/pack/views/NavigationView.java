@@ -1,26 +1,16 @@
 package wisoft.pack.views;
 
-import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.jface.viewers.ITreeContentProvider;
-import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.TreeViewer;
-import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.ui.ISharedImages;
-import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.ViewPart;
-
 import wisoft.pack.models.Model;
-import wisoft.pack.models.PackInfoModel;
 import wisoft.pack.models.PackInfoContentProvider;
 import wisoft.pack.models.PackInfoLabelProvider;
-import wisoft.pack.models.PackInfoOfOverview;
+import wisoft.pack.models.PackInfoModel;
 import wisoft.pack.models.RootModel;
 
 public class NavigationView extends ViewPart {
