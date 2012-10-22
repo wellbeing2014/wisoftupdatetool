@@ -20,6 +20,7 @@ import org.eclipse.ui.application.IActionBarConfigurer;
 import wisoft.pack.actions.DelPackInfoAction;
 import wisoft.pack.actions.MessagePopupAction;
 import wisoft.pack.actions.OpenNewPackDialogAction;
+import wisoft.pack.actions.OpenPackEditAction;
 import wisoft.pack.actions.OpenViewAction;
 import wisoft.pack.views.View;
 
@@ -41,6 +42,7 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor {
     
     private OpenNewPackDialogAction openNewPackDialogAction;
     private DelPackInfoAction removePackInfoAction;
+    private OpenPackEditAction openPackAction;
 
     public ApplicationActionBarAdvisor(IActionBarConfigurer configurer) {
         super(configurer);
@@ -72,6 +74,9 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor {
         register(openNewPackDialogAction);
         removePackInfoAction = new DelPackInfoAction(window, "É¾³ý¸üÐÂ°ü");
         register(removePackInfoAction);
+        
+        openPackAction = new OpenPackEditAction(window);
+        register(openPackAction);
     }
     
     protected void fillMenuBar(IMenuManager menuBar) {
@@ -102,5 +107,6 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor {
 //        toolbar.add(messagePopupAction);
         toolbar.add(openNewPackDialogAction);
         toolbar.add(removePackInfoAction);
+        toolbar.add(openPackAction);
     }
 }

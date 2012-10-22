@@ -15,6 +15,8 @@ import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.part.ViewPart;
 
 public class View extends ViewPart {
+	public View() {
+	}
 
 	public static final String ID = "WiosftUpdatePack.view";
 	
