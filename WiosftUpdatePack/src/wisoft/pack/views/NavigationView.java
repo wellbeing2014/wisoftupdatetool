@@ -2,11 +2,15 @@ package wisoft.pack.views;
 
 import java.util.List;
 
+import org.eclipse.jface.viewers.DoubleClickEvent;
+import org.eclipse.jface.viewers.IDoubleClickListener;
+import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.part.ViewPart;
+
 import wisoft.pack.models.Model;
 import wisoft.pack.models.PackInfoContentProvider;
 import wisoft.pack.models.PackInfoLabelProvider;
@@ -62,10 +66,24 @@ public class NavigationView extends ViewPart {
 		this.viewer.refresh();
 	}
 	
-	public PackInfoModel[] getSelectPackInfo()
+	public Model[] getSelectPackInfo()
 	{
 		 IStructuredSelection selection = (IStructuredSelection)this.viewer.getSelection();
-		 List<PackInfoModel> selPack =selection.toList();
-		 return selPack.toArray(new PackInfoModel[0]);
+		 List<Model> selPack =selection.toList();
+		 return selPack.toArray(new Model[0]);
+	}
+	
+	private void hookDoubleClickAction()
+	{
+		this.viewer.addDoubleClickListener(new IDoubleClickListener() {
+			
+			@Override
+			public void doubleClick(DoubleClickEvent event) {
+				// TODO Auto-generated method stub
+				IStructuredSelection selection = (IStructuredSelection)viewer.getSelection();
+				//(PackInfoModel)selection.getFirstElement();
+				 
+			}
+		});
 	}
 }

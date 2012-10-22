@@ -1,8 +1,10 @@
 package wisoft.pack.actions;
 
+
 import org.eclipse.jface.action.Action;
 import org.eclipse.ui.IWorkbenchWindow;
 
+import wisoft.pack.models.Model;
 import wisoft.pack.views.NavigationView;
 
 public class DelPackInfoAction extends Action {
@@ -21,6 +23,11 @@ public class DelPackInfoAction extends Action {
 	public void run() {
 		// TODO Auto-generated method stub
 		NavigationView nv = (NavigationView)window.getActivePage().findView(NavigationView.ID);
-		nv.removePackInfo(nv.getSelectPackInfo());
+//		Model[] nm = nv.getSelectPackInfo();
+//		for (int i=0;i<nm.length;i++)
+//		{
+//			if()
+//		}
+		//nv.removePackInfo(nv.getSelectPackInfo());
 	}
 }
