@@ -14,16 +14,18 @@ import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.swt.widgets.ToolItem;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorSite;
+import org.eclipse.ui.ISaveablePart2;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.part.EditorPart;
 
 import wisoft.pack.actions.SavePackEditAction;
-import wisoft.pack.views.RootEdit;
 
 public class PackEdit extends EditorPart {
 
 	public static final String ID = "wisoft.pack.edits.PackEdit"; //$NON-NLS-1$
-	private RootEdit re;
+	private OverViewEditView overviewEv;
+	private EditConfsEditView editconfsEv;
+	private boolean dirty;
 
 	public PackEdit() {
 	}
@@ -40,30 +42,26 @@ public class PackEdit extends EditorPart {
 		TabFolder tabFolder = new TabFolder(container, SWT.BOTTOM);
 		
 		TabItem tabItem = new TabItem(tabFolder, SWT.NONE);
-		tabItem.setText("New Item");
-		Composite composite = new Composite(tabFolder, SWT.NONE);
-		tabItem.setControl(composite);
-		composite.setLayout(new FormLayout());
-		
-		ToolBar toolBar = new ToolBar(composite, SWT.FLAT | SWT.RIGHT);
-		FormData fd_toolBar = new FormData();
-		fd_toolBar.top = new FormAttachment(0);
-		fd_toolBar.left = new FormAttachment(0);
-		toolBar.setLayoutData(fd_toolBar);
-		ToolBarManager toolBarM = new ToolBarManager(toolBar);
-		toolBarM.add(new SavePackEditAction());
-		toolBarM.update(true);
+		tabItem.setText("基本信息");
+		overviewEv = new OverViewEditView(tabFolder, SWT.NONE);
+		tabItem.setControl(overviewEv);
 	
 		TabItem tabItem_1 = new TabItem(tabFolder, SWT.NONE);
-		tabItem_1.setText("New Item");
+		tabItem_1.setText("文件浏览");
+		editconfsEv = new EditConfsEditView(tabFolder, SWT.NONE);
+		tabItem_1.setControl(editconfsEv);
 		
-
-		re = new RootEdit(tabFolder, SWT.NONE);
-		tabItem_1.setControl(re);
+		TabItem tabItem_2 = new TabItem(tabFolder, SWT.NONE);
+		tabItem_2.setText("配置编辑");
+		
+		TabItem tabItem_3 = new TabItem(tabFolder, SWT.NONE);
+		tabItem_3.setText("SQL编辑");
 		//tabItem_1.setControl(text);
 		
-
-
+		TabItem tabItem_4 = new TabItem(tabFolder, SWT.NONE);
+		tabItem_4.setText("updateinfo.xml");
+		
+		
 	}
 
 	@Override
@@ -88,16 +86,17 @@ public class PackEdit extends EditorPart {
 		//System.out.println(input.toString());
         this.setInput(input);
         this.setSite(site);
+        this.setPartName(input.getName());
 	}
 
 	@Override
 	public boolean isDirty() {
-		return false;
+		return dirty;
 	}
 
 	@Override
 	public boolean isSaveAsAllowed() {
-		return false;
+		return true;
 	}
 
 }
