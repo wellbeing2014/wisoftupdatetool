@@ -22,14 +22,7 @@
    <extension
          point="org.eclipse.ui.views">
       <view
-            name="Message"
-            allowMultiple="true"
-            icon="icons/add.gif"
-            class="wisoft.pack.views.View"
-            id="WiosftUpdatePack.view">
-      </view>
-      <view
-            name="Mailboxes"
+            name="MyPackInfoTree"
             allowMultiple="true"
             icon="icons/sample3.gif"
             class="wisoft.pack.views.NavigationView"
@@ -87,6 +80,10 @@
          <property
                name="aboutImage"
                value="product_lg.gif">
+         </property>
+         <property
+               name="appName"
+               value="中科更新包管理工具">
          </property>
       </product>
    </extension>
