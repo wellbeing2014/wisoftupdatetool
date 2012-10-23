@@ -2,9 +2,11 @@ package wisoft.pack.actions;
 
 
 import org.eclipse.jface.action.Action;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.ui.IWorkbenchWindow;
 
-import wisoft.pack.models.Model;
+import wisoft.pack.models.PackInfoModel;
 import wisoft.pack.views.NavigationView;
 
 public class DelPackInfoAction extends Action {
@@ -23,7 +25,25 @@ public class DelPackInfoAction extends Action {
 	public void run() {
 		// TODO Auto-generated method stub
 		NavigationView nv = (NavigationView)window.getActivePage().findView(NavigationView.ID);
-//		Model[] nm = nv.getSelectPackInfo();
+		PackInfoModel[] nm = nv.getSelectPackInfo();
+		MessageBox mb;
+		if(nm.length>0)
+		{
+			mb =  new MessageBox(window.getShell(),SWT.OK|SWT.CANCEL);
+			mb.setMessage("确定要这些更新包工程删除吗？");
+			mb.setText("确定删除？");
+		}
+		else
+		{
+			mb= new MessageBox(window.getShell());
+			mb.setMessage("请选择一个更新包工程。");
+			mb.setText("提示");
+		}
+		if(SWT.OK==mb.open())
+		{
+			nv.removePackInfo(nm);
+		}
+			
 //		for (int i=0;i<nm.length;i++)
 //		{
 //			if()

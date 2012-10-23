@@ -1,16 +1,20 @@
 package wisoft.pack.views;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.jface.viewers.DoubleClickEvent;
 import org.eclipse.jface.viewers.IDoubleClickListener;
-import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.ui.IEditorPart;
+import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.part.ViewPart;
 
+import wisoft.pack.edits.PackEdit;
+import wisoft.pack.edits.PackInfoInput;
 import wisoft.pack.models.Model;
 import wisoft.pack.models.PackInfoContentProvider;
 import wisoft.pack.models.PackInfoLabelProvider;
@@ -42,6 +46,7 @@ public class NavigationView extends ViewPart {
 		viewer.setContentProvider(new PackInfoContentProvider());
 		viewer.setLabelProvider(new PackInfoLabelProvider());
 		viewer.setInput(createDummyModel());
+		hookDoubleClickAction();
 	}
 
 	/**
@@ -66,11 +71,19 @@ public class NavigationView extends ViewPart {
 		this.viewer.refresh();
 	}
 	
-	public Model[] getSelectPackInfo()
+	public PackInfoModel[] getSelectPackInfo()
 	{
 		 IStructuredSelection selection = (IStructuredSelection)this.viewer.getSelection();
-		 List<Model> selPack =selection.toList();
-		 return selPack.toArray(new Model[0]);
+		 List<PackInfoModel> selPack =new ArrayList<PackInfoModel>();
+		 List<?> selectionlist = selection.toList();
+		 for(int i=0;i<selectionlist.size();i++)
+		 {
+			 if(selectionlist.get(i) instanceof PackInfoModel)
+				 selPack.add((PackInfoModel)(selectionlist.get(i)));
+			 else
+				 selPack.add((PackInfoModel)((Model)(selectionlist.get(i))).getParent());
+		 }
+		 return selPack.toArray(new PackInfoModel[0]);
 	}
 	
 	private void hookDoubleClickAction()
@@ -82,7 +95,34 @@ public class NavigationView extends ViewPart {
 				// TODO Auto-generated method stub
 				IStructuredSelection selection = (IStructuredSelection)viewer.getSelection();
 				//(PackInfoModel)selection.getFirstElement();
-				 
+				IWorkbenchPage workbenchPage = getViewSite().getPage();
+				IEditorPart editorPart ;
+				PackInfoModel packinfo;
+				if(selection.getFirstElement() instanceof PackInfoModel)
+				{
+					packinfo =((PackInfoModel)selection.getFirstElement());
+				}	
+				else
+				{
+					Model md =((Model) selection.getFirstElement());
+					packinfo = (PackInfoModel)md.getParent();
+				}
+				if(packinfo.getEditInput()==null)
+				{
+					packinfo.setEditInput(new PackInfoInput(packinfo.getName()));
+				}
+				
+				editorPart = workbenchPage.findEditor(packinfo.getEditInput());
+				if(editorPart!=null)
+					 workbenchPage.bringToTop(editorPart);
+				else
+				{
+					 try {
+			            editorPart = workbenchPage.openEditor(packinfo.getEditInput(), PackEdit.ID);
+			          } catch (Exception e) {
+			            e.printStackTrace();
+			          }
+				}
 			}
 		});
 	}

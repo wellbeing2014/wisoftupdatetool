@@ -27,12 +27,12 @@ public class OpenPackEditAction extends Action {
 	public void run() {
 		//MyInput input=new MyInput(path);
 		//MessageDialog.openInformation(window.getShell(), "info", path);
-		IWorkbenchPage page=PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
-		try{
-			page.openEditor(new PackInfoInput()  ,PackEdit.ID  );
-		}catch(PartInitException e){
-			System.out.println(e.getMessage());
-		}
+//		IWorkbenchPage page=PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
+//		try{
+//			page.openEditor(new PackInfoInput()  ,PackEdit.ID  );
+//		}catch(PartInitException e){
+//			System.out.println(e.getMessage());
+//		}
 	}
 
 }

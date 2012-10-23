@@ -5,7 +5,11 @@ import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IPersistableElement;
 
 public class PackInfoInput implements IEditorInput {
-
+	private String name;
+	public PackInfoInput(String name)
+	{
+		this.name = name;
+	}
 	@Override
 	public Object getAdapter(Class adapter) {
 		// TODO Auto-generated method stub
@@ -27,7 +31,7 @@ public class PackInfoInput implements IEditorInput {
 	@Override
 	public String getName() {
 		// TODO Auto-generated method stub
-		return "ÎÒµÄÃû×Ö";
+		return name;
 	}
 
 	@Override
@@ -39,7 +43,7 @@ public class PackInfoInput implements IEditorInput {
 	@Override
 	public String getToolTipText() {
 		// TODO Auto-generated method stub
-		return "wo de tishi";
+		return getName();
 	}
 
 }

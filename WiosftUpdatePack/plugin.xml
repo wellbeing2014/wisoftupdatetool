@@ -95,7 +95,7 @@
       <editor
             class="wisoft.pack.edits.PackEdit"
             id="wisoft.pack.edits.PackEdit"
-            name="New PackEdit">
+            name="PackEdit">
       </editor>
    </extension>
 
