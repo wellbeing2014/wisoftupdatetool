@@ -19,6 +19,8 @@ import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.part.EditorPart;
 
 import wisoft.pack.actions.SavePackEditAction;
+import wisoft.pack.events.PackEditEvent;
+import wisoft.pack.events.PackEditEventListener;
 
 public class PackEdit extends EditorPart {
 
@@ -44,6 +46,14 @@ public class PackEdit extends EditorPart {
 		TabItem tabItem = new TabItem(tabFolder, SWT.NONE);
 		tabItem.setText("基本信息");
 		overviewEv = new OverViewEditView(tabFolder, SWT.NONE);
+		overviewEv.addPackEditListener(new PackEditEventListener(){
+			@Override
+			public void EventActivated(PackEditEvent event)
+			{
+				dirty = true;
+				firePropertyChange(ISaveablePart2.PROP_DIRTY);
+			}
+		});
 		tabItem.setControl(overviewEv);
 	
 		TabItem tabItem_1 = new TabItem(tabFolder, SWT.NONE);
@@ -61,7 +71,7 @@ public class PackEdit extends EditorPart {
 		TabItem tabItem_4 = new TabItem(tabFolder, SWT.NONE);
 		tabItem_4.setText("updateinfo.xml");
 		
-		
+		//dirty = true;
 	}
 
 	@Override

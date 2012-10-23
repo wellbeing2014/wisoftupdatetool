@@ -1,42 +1,55 @@
 package wisoft.pack.edits;
 
-import org.eclipse.jface.action.ToolBarManager;
-import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.custom.ViewForm;
+import java.util.Vector;
+
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.KeyEvent;
+import org.eclipse.swt.events.KeyListener;
+import org.eclipse.swt.events.ModifyEvent;
+import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.layout.FillLayout;
-import org.eclipse.swt.widgets.ToolBar;
-import org.eclipse.wb.swt.SWTResourceManager;
-import org.eclipse.swt.widgets.ToolItem;
-import org.eclipse.swt.events.SelectionAdapter;
-import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.Canvas;
-import org.eclipse.ui.IWorkbench;
-import org.eclipse.ui.PlatformUI;
-
-import wisoft.pack.actions.DelPackInfoAction;
-import wisoft.pack.actions.OpenNewPackDialogAction;
-import wisoft.pack.actions.SavePackEditAction;
-
-import org.eclipse.swt.widgets.Group;
-import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.widgets.Combo;
-import org.eclipse.swt.layout.GridData;
-import org.eclipse.swt.widgets.Text;
-import org.eclipse.swt.layout.FormLayout;
-import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.layout.FormAttachment;
-import org.eclipse.swt.widgets.Tree;
-import org.eclipse.swt.layout.RowLayout;
-import org.eclipse.swt.layout.RowData;
+import org.eclipse.swt.layout.FormData;
+import org.eclipse.swt.layout.FormLayout;
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Text;
+import org.eclipse.wb.swt.SWTResourceManager;
+
+import wisoft.pack.events.PackEditEvent;
+import wisoft.pack.events.PackEditEventListener;
 
 public class RootEdit extends Composite {
-	private Text text;
-	private Text text_1;
+//	private Text text;
+//	private Text text_1;
 	private Label label;
 	protected String titleName;
-
+	private Vector<PackEditEventListener> vectorListeners=new Vector<PackEditEventListener>();
+	public synchronized void addPackEditListener(PackEditEventListener ml)
+    {
+        vectorListeners.addElement(ml);
+    }
+    
+    public synchronized void removePackEditListener(PackEditEventListener ml)
+    {
+        vectorListeners.removeElement(ml);
+    }
+    
+    //@SuppressWarnings("unchecked")
+	protected void activatePackEditEvent()
+    {
+        Vector<PackEditEventListener> tempVector=null;
+        PackEditEvent e=new PackEditEvent(this);
+        synchronized(this)
+        {
+            tempVector=(Vector<PackEditEventListener>)vectorListeners.clone();
+            for(int i=0;i<tempVector.size();i++)
+            {
+            	PackEditEventListener ml=(PackEditEventListener)tempVector.elementAt(i);
+                ml.EventActivated(e);
+            }
+        }
+    }
 	public String getTitleName() {
 		return titleName;
 	}
@@ -74,7 +87,6 @@ public class RootEdit extends Composite {
 		fd_toolBar.left = new FormAttachment(80);
 		
 		
-
 	}
 
 	@Override

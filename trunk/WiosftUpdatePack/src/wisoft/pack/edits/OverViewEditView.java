@@ -2,6 +2,8 @@ package wisoft.pack.edits;
 
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.ModifyEvent;
+import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.layout.FormAttachment;
@@ -14,6 +16,8 @@ import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Tree;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
 
 public class OverViewEditView extends RootEdit {
 	private Text text;
@@ -79,6 +83,7 @@ public class OverViewEditView extends RootEdit {
 		text.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
 		
 		Button button = new Button(group, SWT.NONE);
+		
 		button.setText("\u6D4F\u89C8");
 		
 		Group group_1 = new Group(composite, SWT.NONE);
@@ -92,7 +97,22 @@ public class OverViewEditView extends RootEdit {
 		group_1.setLayoutData(fd_group_1);
 		
 		Tree tree = new Tree(group_1, SWT.BORDER);
-
+		
+		
+		this.text.addModifyListener(new ModifyListener() {
+			@Override
+			public void modifyText(ModifyEvent e) {
+				// TODO Auto-generated method stub
+				activatePackEditEvent();
+			}
+		});
+		this.text_1.addModifyListener(new ModifyListener() {
+			@Override
+			public void modifyText(ModifyEvent e) {
+				// TODO Auto-generated method stub
+				activatePackEditEvent();
+			}
+		});
 	}
 
 	@Override
