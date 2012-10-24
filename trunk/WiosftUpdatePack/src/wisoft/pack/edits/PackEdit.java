@@ -48,7 +48,7 @@ public class PackEdit extends EditorPart {
 		overviewEv = new OverViewEditView(tabFolder, SWT.NONE);
 		overviewEv.addPackEditListener(new PackEditEventListener(){
 			@Override
-			public void EventActivated(PackEditEvent event)
+			public void PackEditIsDirty(PackEditEvent event)
 			{
 				dirty = true;
 				firePropertyChange(ISaveablePart2.PROP_DIRTY);

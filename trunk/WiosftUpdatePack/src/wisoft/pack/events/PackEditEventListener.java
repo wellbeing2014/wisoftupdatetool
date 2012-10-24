@@ -4,9 +4,10 @@ import java.util.EventListener;
 
 public class PackEditEventListener implements EventListener {
 	  
-	public void EventActivated(PackEditEvent me)
+	public void PackEditIsDirty(PackEditEvent me)
 	{
-		System.out.println("事件已经被触发");
+		System.out.println("PackEdit have been dirty");
 	}
+	
 
 }

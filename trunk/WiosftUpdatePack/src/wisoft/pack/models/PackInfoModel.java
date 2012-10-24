@@ -7,6 +7,7 @@ public class PackInfoModel extends Model {
 	protected PackInfoOfSelectFiles selectFiles = new PackInfoOfSelectFiles(this);
 	protected PackInfoOfEditConfs editConfs =new PackInfoOfEditConfs(this);
 	protected PackInfoOfEditSql editSql = new PackInfoOfEditSql(this);
+	public boolean isdirty = false;
 	private  IEditorInput editInput;
 	public IEditorInput getEditInput() {
 		return editInput;

@@ -1,14 +1,11 @@
 package wisoft.pack.actions;
 
 import org.eclipse.jface.action.Action;
-import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.window.Window;
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.DisposeEvent;
-import org.eclipse.swt.events.DisposeListener;
+import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.ui.IWorkbenchWindow;
 
-import wisoft.pack.dialogs.*;
+import wisoft.pack.dialogs.NewPackWizard;
 import wisoft.pack.models.PackInfoModel;
 import wisoft.pack.views.NavigationView;
 
@@ -26,13 +23,14 @@ public class OpenNewPackDialogAction extends Action {
 	}
 
 	public void run() {
-		SetPackInfoTitle nd = new SetPackInfoTitle(window.getShell());
+		NavigationView nv = (NavigationView)window.getActivePage().findView(NavigationView.ID);
+		WizardDialog wd = new WizardDialog(window.getShell(),new NewPackWizard(nv));
 		
-		
-		if(nd.open()==Window.OK)
+		if(wd.open()==Window.OK)
 		{
-			NavigationView nv = (NavigationView)window.getActivePage().findView(NavigationView.ID);
-			nv.addPackInfo(new PackInfoModel(nd.getPackname()));
+			//wd.GE
+			
+			//nv.addPackInfo(new PackInfoModel(nd.getPackname()));
 		}
 	}
 

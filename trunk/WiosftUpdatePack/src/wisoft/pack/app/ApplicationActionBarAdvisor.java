@@ -1,6 +1,5 @@
 package wisoft.pack.app;
 
-import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.GroupMarker;
 import org.eclipse.jface.action.ICoolBarManager;
 import org.eclipse.jface.action.IMenuManager;
@@ -18,11 +17,8 @@ import org.eclipse.ui.application.ActionBarAdvisor;
 import org.eclipse.ui.application.IActionBarConfigurer;
 
 import wisoft.pack.actions.DelPackInfoAction;
-import wisoft.pack.actions.MessagePopupAction;
 import wisoft.pack.actions.OpenNewPackDialogAction;
 import wisoft.pack.actions.OpenPackEditAction;
-import wisoft.pack.actions.OpenViewAction;
-import wisoft.pack.views.View;
 
 /**
  * An action bar advisor is responsible for creating, adding, and disposing of the
@@ -36,6 +32,7 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor {
     // when fillActionBars is called with FILL_PROXY.
     private IWorkbenchAction exitAction;
     private IWorkbenchAction aboutAction;
+    private IWorkbenchAction savenAction;
     //private IWorkbenchAction newWindowAction;
    // private OpenViewAction openViewAction;
     //private Action messagePopupAction;
@@ -60,6 +57,8 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor {
         
         aboutAction = ActionFactory.ABOUT.create(window);
         register(aboutAction);
+        
+        savenAction = ActionFactory.SAVE.create(window);
         
 //        newWindowAction = ActionFactory.OPEN_NEW_WINDOW.create(window);
 //        register(newWindowAction);
@@ -108,5 +107,6 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor {
         toolbar.add(openNewPackDialogAction);
         toolbar.add(removePackInfoAction);
         toolbar.add(openPackAction);
+        toolbar.add(savenAction);
     }
 }
