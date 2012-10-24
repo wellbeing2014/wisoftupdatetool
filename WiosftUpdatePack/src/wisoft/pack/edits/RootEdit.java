@@ -46,7 +46,7 @@ public class RootEdit extends Composite {
             for(int i=0;i<tempVector.size();i++)
             {
             	PackEditEventListener ml=(PackEditEventListener)tempVector.elementAt(i);
-                ml.EventActivated(e);
+                ml.PackEditIsDirty(e);
             }
         }
     }

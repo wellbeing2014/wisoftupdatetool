@@ -10,6 +10,8 @@ import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.IEditorPart;
+import org.eclipse.ui.IPropertyListener;
+import org.eclipse.ui.ISaveablePart2;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.part.ViewPart;
 
@@ -21,7 +23,11 @@ import wisoft.pack.models.PackInfoLabelProvider;
 import wisoft.pack.models.PackInfoModel;
 import wisoft.pack.models.RootModel;
 
+
+
 public class NavigationView extends ViewPart {
+	public NavigationView() {
+	}
 	public static final String ID = "WiosftUpdatePack.navigationView";
 	private TreeViewer viewer;
 	public RootModel root;
@@ -97,7 +103,7 @@ public class NavigationView extends ViewPart {
 				//(PackInfoModel)selection.getFirstElement();
 				IWorkbenchPage workbenchPage = getViewSite().getPage();
 				IEditorPart editorPart ;
-				PackInfoModel packinfo;
+				final PackInfoModel packinfo;
 				if(selection.getFirstElement() instanceof PackInfoModel)
 				{
 					packinfo =((PackInfoModel)selection.getFirstElement());
@@ -123,7 +129,23 @@ public class NavigationView extends ViewPart {
 			            e.printStackTrace();
 			          }
 				}
+				editorPart.addPropertyListener(new IPropertyListener() {
+					
+					@Override
+					public void propertyChanged(Object source, int propId) {
+						// TODO Auto-generated method stub
+						if(propId==ISaveablePart2.PROP_DIRTY&&!packinfo.isdirty)
+						{
+							packinfo.isdirty = true;
+							packinfo.setName("*"+packinfo.getName());
+							viewer.refresh();
+						}
+					}
+				});
+				
 			}
 		});
 	}
+
+	
 }
