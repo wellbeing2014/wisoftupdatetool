@@ -1,10 +1,15 @@
 package wisoft.pack.dialogs;
 
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.swt.widgets.MessageBox;
 
 import wisoft.pack.models.PackInfoModel;
 import wisoft.pack.views.NavigationView;
+import wisoft.pack.views.Console;
 
 public class NewPackWizard extends Wizard {
 	private NewPackWizardPage page1;
@@ -30,7 +35,7 @@ public class NewPackWizard extends Wizard {
 		String packname =this.page1.combo.getText().trim()
 						+"("+this.page1.text.getText().trim()+")"
 						+this.page1.text_1.getText().trim();
-		PackInfoModel pack = new PackInfoModel(packname);
+		final PackInfoModel pack = new PackInfoModel(packname);
 		try
 		{
 			pack.setSavePath(this.page1.text_2.getText().trim());
@@ -47,7 +52,33 @@ public class NewPackWizard extends Wizard {
 			mb.setText(e.toString());
 			mb.open();
 		}
-		 
+		Job job = new Job("name") {
+			
+			@Override
+			protected IStatus run(IProgressMonitor monitor) {
+				// TODO Auto-generated method stub
+				monitor.beginTask("开始任务", IProgressMonitor.UNKNOWN);
+		        monitor.setTaskName("Step 1");
+		        Console.getInstance().print("aa", pack.getName(), Console.ConsoleType.INFO);
+//		        dothing1();
+//		        monitor.setTaskName("Step 2");
+//		        Console.getInstance().info("开始第二步");
+//		        dothing2();
+//		        monitor.setTaskName("Step 3");
+//		        Console.getInstance().info("开始第三步");
+//		        dothing3();
+//		        Console.getInstance().info("完毕");                                                                            
+//		        monitor.done();    
+//		        Display.getDefault().asyncExec(new Runnable() {                        
+//		            public void run() {                                                                                    
+//		                //UI任务
+//		            }
+//		        });
+		        return Status.OK_STATUS;
+			}
+		};
+		job.setUser(true);
+		job.schedule();  
 		
 		
 		System.out.println(this.page1.text.getText());
