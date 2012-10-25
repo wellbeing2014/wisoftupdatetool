@@ -5,7 +5,8 @@ Bundle-SymbolicName: WiosftUpdatePack; singleton:=true
 Bundle-Version: 1.0.0.qualifier
 Bundle-Activator: wisoft.pack.app.Activator
 Require-Bundle: org.eclipse.ui,
- org.eclipse.core.runtime
+ org.eclipse.core.runtime,
+ org.eclipse.ui.console
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-ClassPath: .,
