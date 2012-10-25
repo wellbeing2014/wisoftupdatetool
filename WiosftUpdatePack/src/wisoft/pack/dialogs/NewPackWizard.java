@@ -8,8 +8,8 @@ import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.swt.widgets.MessageBox;
 
 import wisoft.pack.models.PackInfoModel;
-import wisoft.pack.views.NavigationView;
 import wisoft.pack.views.Console;
+import wisoft.pack.views.NavigationView;
 
 public class NewPackWizard extends Wizard {
 	private NewPackWizardPage page1;
@@ -52,14 +52,25 @@ public class NewPackWizard extends Wizard {
 			mb.setText(e.toString());
 			mb.open();
 		}
-		Job job = new Job("name") {
+		Job job = new Job("name1") {
 			
 			@Override
 			protected IStatus run(IProgressMonitor monitor) {
 				// TODO Auto-generated method stub
 				monitor.beginTask("开始任务", IProgressMonitor.UNKNOWN);
 		        monitor.setTaskName("Step 1");
-		        Console.getInstance().print("aa", pack.getName(), Console.ConsoleType.INFO);
+		        
+		        
+		        for(int i=0;i<100;i++)
+		        {
+		        	try {
+						Thread.sleep(100);
+						Console.getInstance().print("aa000000000000"+i, pack.getName(), Console.ConsoleType.INFO);
+					} catch (InterruptedException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+		        }
 //		        dothing1();
 //		        monitor.setTaskName("Step 2");
 //		        Console.getInstance().info("开始第二步");
