@@ -3,16 +3,24 @@ package wisoft.pack.views;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.jface.action.ActionContributionItem;
+import org.eclipse.jface.action.IAction;
+import org.eclipse.jface.action.IContributionItem;
+import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.viewers.DoubleClickEvent;
 import org.eclipse.jface.viewers.IDoubleClickListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IPropertyListener;
 import org.eclipse.ui.ISaveablePart2;
+import org.eclipse.ui.IViewPart;
 import org.eclipse.ui.IWorkbenchPage;
+import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.console.IConsoleConstants;
 import org.eclipse.ui.part.ViewPart;
 
 import wisoft.pack.edits.PackEdit;
@@ -53,6 +61,22 @@ public class NavigationView extends ViewPart {
 		viewer.setLabelProvider(new PackInfoLabelProvider());
 		viewer.setInput(createDummyModel());
 		hookDoubleClickAction();
+		//去掉console 工具栏上的 多余按钮		
+		IWorkbenchPage page = PlatformUI.getWorkbench().getWorkbenchWindows()[0].getPages()[0];  
+		IViewPart viewpart = page.findView(IConsoleConstants.ID_CONSOLE_VIEW);  
+		IActionBars actionBar = viewpart.getViewSite().getActionBars();  
+		IToolBarManager toolbarMgr = actionBar.getToolBarManager();  
+		IContributionItem[] items = toolbarMgr.getItems();  
+		for  (IContributionItem item : items) {  
+		    if  (item instanceof ActionContributionItem) {  
+		        IAction action = ((ActionContributionItem) item).getAction();  
+		        String text = action.getText();  
+		        if  (text.equals( "Open Console" )) {  
+		            toolbarMgr.remove(item);  
+		        }  
+		    }  
+		}  
+		actionBar.updateActionBars();  
 	}
 
 	/**

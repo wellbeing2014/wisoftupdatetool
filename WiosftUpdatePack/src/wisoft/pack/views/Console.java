@@ -1,11 +1,11 @@
 package wisoft.pack.views;
 
 
-import java.io.IOException;
 import java.io.OutputStream;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.graphics.Color;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchWindow;
@@ -24,9 +24,10 @@ public final class Console {
  private static Console mInstance = null;
 
  public static enum ConsoleType { INFO,WARNING,ERROR };
- private static final int MSG_INFORMATION = SWT.COLOR_DARK_GREEN;  
- private static final int MSG_ERROR = SWT.COLOR_DARK_RED;  
- private static final int MSG_WARNING = SWT.COLOR_DARK_BLUE;
+ 
+ private static final Color error_color = new Color(null,176,23,31 ); 
+ private static final Color warning_color = new Color(null, 255,97,0); 
+ private static final Color info_color = new Color(null,30,144,255 ); 
  //private static MessageConsole myConsole = new MessageConsole(name.toString(), null);
 
  private Console () { }
@@ -50,50 +51,37 @@ public final class Console {
 
   for (final IConsole element : existing)
    if (name.toString().compareTo(element.getName()) == 0)
-    return (MessageConsole) element;
+   {   
+	   conMan.showConsoleView(element);
+	   return (MessageConsole) element;
+   
+   }
 
   // failed to find existing console, create one:
   final MessageConsole myConsole = new MessageConsole(name.toString(), null);
   conMan.addConsoles(new IConsole[] { myConsole });
+  conMan.showConsoleView(myConsole);
   return myConsole;
  }
 
- /**
-  * Used for quick writes to consoles, this is not in place of std err/out.
-  * If the given console does not exist it will be created.
-  * 
-  * @param name
-  * @param msg
-  */
- public static void Write (final String name, String msg) {
-    MessageConsole myConsole = findOrCreateConsole (name);
-    MessageConsoleStream out = myConsole.newMessageStream ();
-    out.println(msg);
- }
-
- public static void Write (MessageConsoleStream stream, String msg) {
-  try {
-   stream.write(msg);
-  } catch (IOException e) {
-   // TODO Auto-generated catch block
-   e.printStackTrace();
-  }
- }
-
- public static void print(String msg,String consolename,ConsoleType type)
+ public static synchronized void print(String msg,String consolename,ConsoleType type)
  {
+	 SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");//设置日期格式
+	 
 	 MessageConsole myConsole = findOrCreateConsole(consolename);
 	 MessageConsoleStream out = myConsole.newMessageStream ();
-	 int color = MSG_INFORMATION;
+	 Color color = null;
+	 String title = "info:";
 	 switch(type)
 	 {
-		 case INFO : color = MSG_INFORMATION; break;
-		 case WARNING : color = MSG_WARNING; break;
-		 case ERROR : color = MSG_ERROR; break;
-		 default:color = MSG_INFORMATION;
+		 case INFO : color = new Color(null,30,144,255 ); title ="info:"; break;
+		 case WARNING : color = new Color(null, 255,97,0); title ="warning:"; break;
+		 case ERROR : color = new Color(null,176,23,31 ); title ="error:"; break;
+		 default:color = info_color; title ="info";
 	 }
-	 out.setColor(Display.getCurrent().getSystemColor(color));  
-	 out.println(msg);
+	 out.setColor(color);  
+	 out.println(df.format(new Date())+":");
+	 out.println(title+msg);
  }
  /**
   * Return a new output stream for a given console. If the console does
@@ -108,20 +96,7 @@ public final class Console {
   return mcs;
  }
 
- /**
-  * Create consoles for STDERR and STDOUT, redirect all output
-  * to the in-application console. Should only be called once.
-  * 
-  *//*
- public static void init () {
-  MessageConsole outConsole = findOrCreateConsole (ConsoleType.STDOUT.toString());
-  IOConsoleOutputStream outStream = outConsole.newOutputStream();
-  System.setOut(new PrintStream (outStream));
-
-  MessageConsole errConsole = findOrCreateConsole (ConsoleType.STDERR.toString());
-  IOConsoleOutputStream errStream = errConsole.newOutputStream();
-  System.setErr(new PrintStream (errStream));
- }*/
+ 
 
  /**
   * Alternate way to bring up the console view. Don't know

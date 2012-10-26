@@ -97,10 +97,6 @@
    </extension>
    <extension
          point="org.eclipse.ui.console.consoleFactories">
-      <consoleFactory
-            class="wisoft.pack.views.PackConsoleView"
-            label="控制台">
-      </consoleFactory>
    </extension>
 
 </plugin>

@@ -5,10 +5,11 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.wizard.Wizard;
-import org.eclipse.swt.widgets.MessageBox;
+import org.eclipse.swt.widgets.Display;
 
 import wisoft.pack.models.PackInfoModel;
 import wisoft.pack.views.Console;
+import wisoft.pack.views.Console.ConsoleType;
 import wisoft.pack.views.NavigationView;
 
 public class NewPackWizard extends Wizard {
@@ -32,74 +33,71 @@ public class NewPackWizard extends Wizard {
 
 	@Override
 	public boolean performFinish() {
-		String packname =this.page1.combo.getText().trim()
-						+"("+this.page1.text.getText().trim()+")"
-						+this.page1.text_1.getText().trim();
-		final PackInfoModel pack = new PackInfoModel(packname);
-		try
-		{
-			pack.setSavePath(this.page1.text_2.getText().trim());
-			pack.setModuleCode(this.page1.text.getText().trim());
-			pack.setModuleName(this.page1.combo.getText().trim());
-			pack.setVersion(this.page1.text_3.getText());
-			pack.saveUpdateInfoXml();
-			nv.addPackInfo(pack);
-		}
-		catch(Exception e)
-		{
-			MessageBox mb = new MessageBox(this.getShell());
-			mb.setMessage("错误");
-			mb.setText(e.toString());
-			mb.open();
-		}
-		Job job = new Job("name1") {
+		final String savePath = this.page1.text_2.getText().trim();
+		final String ModuleName = this.page1.combo.getText().trim();
+		final String ModuleCode = this.page1.text.getText().trim();
+		final String version = this.page1.text_1.getText().trim();
+		final String createMan = this.page1.text_3.getText().trim();
+		
+		final String releasenot = this.page2.text.getText().trim();
+		final String keyword = this.page2.text.getText().trim();
+		final String packname = ModuleName+"("+ModuleCode+")"+version;
+		final PackInfoModel pack  = new PackInfoModel(packname);
+		Console.getInstance().print("创建更新包开始……", packname, Console.ConsoleType.INFO);	
+		
+		Job job = new Job("创建更新包") {
 			
+			private void printlnToConsole(final String msg,final String packname,final ConsoleType type)
+			{
+				Display.getDefault().asyncExec(new Runnable() {                        
+	    			public void run() {                                                                                    
+	    				Console.getInstance();
+	    				Console.print(msg, packname, type);
+	    				//nv.addPackInfo(pack);
+	    			}});
+			}
 			@Override
 			protected IStatus run(IProgressMonitor monitor) {
-				// TODO Auto-generated method stub
-				monitor.beginTask("开始任务", IProgressMonitor.UNKNOWN);
-		        monitor.setTaskName("Step 1");
-		        
-		        
-		        for(int i=0;i<100;i++)
-		        {
-		        	try {
-						Thread.sleep(100);
-						Console.getInstance().print("aa000000000000"+i, pack.getName(), Console.ConsoleType.INFO);
-					} catch (InterruptedException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-		        }
-//		        dothing1();
-//		        monitor.setTaskName("Step 2");
-//		        Console.getInstance().info("开始第二步");
-//		        dothing2();
-//		        monitor.setTaskName("Step 3");
-//		        Console.getInstance().info("开始第三步");
-//		        dothing3();
-//		        Console.getInstance().info("完毕");                                                                            
-//		        monitor.done();    
-//		        Display.getDefault().asyncExec(new Runnable() {                        
-//		            public void run() {                                                                                    
-//		                //UI任务
-//		            }
-//		        });
+				monitor.beginTask("创建更新包", 3);
+				try
+				{
+					// TODO Auto-generated method stub
+					Thread.sleep(5000);
+			        monitor.setTaskName("初始化检查……");
+			        if(createMan.isEmpty())
+			        	printlnToConsole("创建人未设置。",packname,Console.ConsoleType.WARNING);
+			        if(releasenot.isEmpty())
+			        	printlnToConsole("更新说明未填写。",packname,Console.ConsoleType.WARNING);
+			        if(keyword.isEmpty())
+			        	printlnToConsole("关键词为空。",packname,Console.ConsoleType.WARNING);
+			        monitor.worked(1);
+			        monitor.setTaskName("建立更新包……");
+			        Thread.sleep(500);
+					pack.setSavePath(savePath);
+					pack.setModuleCode(ModuleCode);
+					pack.setModuleName(ModuleName);
+					pack.setVersion(version);
+					pack.init();
+					monitor.worked(2);
+					monitor.setTaskName("建立更新包……");
+					Thread.sleep(500);
+					monitor.worked(3);
+				}
+				catch(Exception e)
+				{
+					printlnToConsole("创建更新包失败！",packname,Console.ConsoleType.ERROR);
+					printlnToConsole(e.toString(),packname,Console.ConsoleType.ERROR);
+				}
 		        return Status.OK_STATUS;
 			}
 		};
+		
 		job.setUser(true);
-		job.schedule();  
+		job.schedule(); 
 		
-		
-		System.out.println(this.page1.text.getText());
-		System.out.println(this.page1.text_1.getText());
-		System.out.println(this.page1.text_2.getText());
-		System.out.println(this.page1.text_3.getText());
-		System.out.println(this.page1.combo.getText());
-		System.out.println(this.page2.text.getText());
-		System.out.println(this.page2.text_1.getText());
+		nv.addPackInfo(pack);
 		return true;
 	}
+
 
 }

@@ -1,5 +1,8 @@
 package wisoft.pack.app;
 
+import org.eclipse.ui.IWorkbenchPreferenceConstants;
+import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.application.IWorkbenchConfigurer;
 import org.eclipse.ui.application.IWorkbenchWindowConfigurer;
 import org.eclipse.ui.application.WorkbenchAdvisor;
 import org.eclipse.ui.application.WorkbenchWindowAdvisor;
@@ -17,5 +20,15 @@ public class ApplicationWorkbenchAdvisor extends WorkbenchAdvisor {
 	public String getInitialWindowPerspectiveId() {
 		return Perspective.ID;
 	} 
+
+	@Override
+	public void initialize(IWorkbenchConfigurer configurer) {
+	    super.initialize(configurer);
+	 
+	    //设置标签页弧线型外观
+	    PlatformUI.getPreferenceStore().setValue(IWorkbenchPreferenceConstants.SHOW_TRADITIONAL_STYLE_TABS, false);
+	    
+	}
+	//@Override
 	
 }
