@@ -1,13 +1,10 @@
 package wisoft.pack.models;
 
-import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
 
 import org.eclipse.ui.IEditorInput;
+
+import wisoft.pack.utils.XmlOperator;
 
 public class PackInfoModel extends Model {
 	protected PackInfoOfOverview overview = new PackInfoOfOverview(this);
@@ -52,22 +49,12 @@ public class PackInfoModel extends Model {
 		//创建文件夹
 		File dir = new File(savePath);
 		dir.mkdirs();
-		StringBuffer xmlcontent =  new StringBuffer();
-		BufferedWriter bw = null;
-		try {
-			xmlcontent.delete(0, xmlcontent.length());
-			xmlcontent.append("<?xml version=\"1.0\" encoding=\"utf-8\"?>\n");
-			xmlcontent.append("<root>\n");
-			OutputStream os1= new FileOutputStream(new File(savePath+"/updateinfo.xml"));
-			OutputStreamWriter osw1 = new OutputStreamWriter(os1,"UTF-8");
-			bw = new BufferedWriter(osw1);//包装一下
-			xmlcontent.append("</root>\n");
-			bw.write(new String(xmlcontent.toString().getBytes("UTF-8"),"UTF-8"));//写出到文件
-			bw.flush(); //刷新输出流
-			bw.close();
-		} catch (IOException e) {
-			throw new Exception("创建 更新包工程失败！");
-		} 
+		XmlOperator xmlo;
+		xmlo = new XmlOperator(savePath+"/updateinfo.xml");
+		xmlo.addRootElement("root");
+		xmlo.addElement("root", "ModuleName", "123");
+		xmlo.modifyNode("/root/ModuleName", "123", "235");
+		xmlo.close();
 	}
 	
 	public void updateXml() throws Exception

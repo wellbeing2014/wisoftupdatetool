@@ -98,6 +98,4 @@ public class NewPackWizard extends Wizard {
 		nv.addPackInfo(pack);
 		return true;
 	}
-
-
 }
