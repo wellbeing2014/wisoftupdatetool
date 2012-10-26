@@ -47,12 +47,11 @@ public class PackInfoModel extends Model {
 	private String version ;
 	private String savePath;
 	
-	public void saveUpdateInfoXml() throws Exception
+	public void init()throws Exception
 	{
 		//创建文件夹
 		File dir = new File(savePath);
 		dir.mkdirs();
-		
 		StringBuffer xmlcontent =  new StringBuffer();
 		BufferedWriter bw = null;
 		try {
@@ -61,15 +60,21 @@ public class PackInfoModel extends Model {
 			xmlcontent.append("<root>\n");
 			OutputStream os1= new FileOutputStream(new File(savePath+"/updateinfo.xml"));
 			OutputStreamWriter osw1 = new OutputStreamWriter(os1,"UTF-8");
-			 bw = new BufferedWriter(osw1);//包装一下
-			 
-			 xmlcontent.append("</root>\n");
+			bw = new BufferedWriter(osw1);//包装一下
+			xmlcontent.append("</root>\n");
 			bw.write(new String(xmlcontent.toString().getBytes("UTF-8"),"UTF-8"));//写出到文件
 			bw.flush(); //刷新输出流
 			bw.close();
 		} catch (IOException e) {
 			throw new Exception("创建 更新包工程失败！");
 		} 
+	}
+	
+	public void updateXml() throws Exception
+	{
+		
+		
+		
 	}
 
 	public IEditorInput getEditInput() {
