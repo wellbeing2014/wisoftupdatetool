@@ -7,12 +7,15 @@ import org.eclipse.ui.IEditorInput;
 import wisoft.pack.utils.XmlOperator;
 
 public class PackInfoModel extends Model {
+	
 	protected PackInfoOfOverview overview = new PackInfoOfOverview(this);
 	protected PackInfoOfSelectFiles selectFiles = new PackInfoOfSelectFiles(this);
 	protected PackInfoOfEditConfs editConfs =new PackInfoOfEditConfs(this);
 	protected PackInfoOfEditSql editSql = new PackInfoOfEditSql(this);
+	
 	public boolean isdirty = false;
 	private  IEditorInput editInput;
+	private XmlOperator xmlo = new XmlOperator();
 	
 	private String moduleName;
 	public String getModuleName() {
@@ -49,18 +52,19 @@ public class PackInfoModel extends Model {
 		//创建文件夹
 		File dir = new File(savePath);
 		dir.mkdirs();
-		XmlOperator xmlo;
-		xmlo = new XmlOperator(savePath+"/updateinfo.xml");
+		xmlo.loadXml(savePath+"/updateinfo.xml");
 		xmlo.addRootElement("root");
-		xmlo.addElement("root", "ModuleName", "123");
-		xmlo.modifyNode("/root/ModuleName", "123", "235");
+		xmlo.AddOnlyNode("/root/ModuleName", moduleName);
+		xmlo.writeToFile();
 		xmlo.close();
 	}
 	
 	public void updateXml() throws Exception
 	{
 		
-		
+//		xmlo.modifyOrAddNode("/root/ModuleName", "123", "235");
+//		xmlo.modifyOrAddNode("/root/ModuleCode", "123", "235");
+//		xmlo.modifyOrAddNode("/root/Version", "123", "235");
 		
 	}
 
