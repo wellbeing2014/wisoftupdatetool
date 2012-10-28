@@ -10,6 +10,7 @@ import org.dom4j.Document;
 import org.dom4j.DocumentException;
 import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
+import org.dom4j.Node;
 import org.dom4j.io.OutputFormat;
 import org.dom4j.io.SAXReader;
 import org.dom4j.io.XMLWriter;
@@ -23,16 +24,29 @@ public class XmlOperator {
 	
 	private Document document=null;
 	private String xmlpath = "default.xml";
-	public XmlOperator(String xmlpath) throws Exception
+	
+	public XmlOperator(){}
+	
+	/**
+	 * 读取指定路径下的XML ，不存在则创建
+	 * @param xmlpath
+	 * @throws Exception
+	 */
+	public void loadXml(String xmlpath) throws Exception
 	{
 		this.xmlpath = xmlpath;
 		if(fileExist())
 			read();
 		else
-			createXMLFile();
+			createXMLFile(xmlpath);
 	}
-	 
-	public void read() throws Exception 
+	
+	
+	/**
+	 * 读取XML
+	 * @throws Exception
+	 */
+	private void read() throws Exception 
 	{
 		if (fileExist()) {
 			SAXReader reader = new SAXReader();
@@ -64,34 +78,43 @@ public class XmlOperator {
 	 
 	 
 	 /**
-	  * 创建一个XML
+	  * 创建一个空XML
 	 * @param XMLFileName
 	 * @param rootName
 	 * @throws Exception 
 	 */
-	public void createXMLFile() throws Exception  {
+	public void createXMLFile(String xmlpath) throws Exception  {
 		if (!fileExist()) 
 		{
 			this.document = DocumentHelper.createDocument();
-			//Element element = this.document.addElement(rootName);
-		   // 加入注释 element.addComment(String)
-		   // 加入节点 element.addElement(String);
-		   // 加入属性内容 element.addAttribute(NAME,VALUE);
-		   // 设置内容 element.setText(String);
-		   //System.out.println("File created!");
 			writeToFile();
 		} 
 		else {
-			throw new Exception("XML已经存在："+this.xmlpath);
+			throw new Exception("XML已经存在："+xmlpath);
 		}
 	 }
 	
-	 public void addRootElement(String root)throws Exception {   
+	 /**
+	  * 增加一个根节点
+	 * @param root
+	 * @throws Exception
+	 */
+	public void addRootElement(String root)throws Exception {   
 		 if(this.document==null)
 			 throw new Exception("XML获取异常。");
 		 if(root.trim().isEmpty())
 			 throw new Exception("根节点设置错误。");
-		 this.document.addElement(root);
+		 
+		 Element rootelement =this.document.getRootElement();
+		 if(rootelement!=null)
+		 {
+			 if(!rootelement.getName().equals(root))
+				 this.document.remove(rootelement);
+			 else
+				 this.document.addElement(root);
+		 }
+		 else 
+			 this.document.addElement(root);
 		 writeToFile();
 	 }
 	 
@@ -104,51 +127,62 @@ public class XmlOperator {
 	 }
 	 
 	 
-	 public void addElement(String fatherPath,String childName, String childValue)throws Exception {   
-		 if(this.document==null)
-			 throw new Exception("XML获取异常。");
-		 if(fatherPath.trim().isEmpty())
-			 throw new Exception("父节点设置错误。");
-		 List list = this.document.selectNodes(fatherPath);
-		 Iterator iter = list.iterator();
-		 if (iter.hasNext()) {
-			 Element element = (Element) iter.next();
-			 Element childelement = element.addElement(childName);
-			 childelement.setText(childValue);   
-		 } 
-		 else 
-			 throw new Exception("获取不到节点："+fatherPath);
-		 writeToFile();
-		 
-	 }
+	 /**
+	  * 根据实际存在farnode，创建 子 node
+	 * @param farnode
+	 * @param node
+	 * @throws Exception
+	 */
+	public void addElement(String farnode,String node)
+	{ 
+		List list =  this.document.selectNodes(farnode);
+		
+		((Element)(list.get(0))).addElement(node);
+	}
 	 
-	 public void modifyNode( String nodePath,
-			 					String nodeValue, String newValue) throws Exception
+	
+	private void addElement(String abstractPath)
+	{
+		String myHavePath ="/";
+		String reqPath = abstractPath.substring(1);
+		int i = 0;
+		while((i=reqPath.indexOf("/"))!=-1)
+		{
+			myHavePath +=reqPath.substring(0,i);
+			if(this.document.selectSingleNode(myHavePath)!=null)
+				reqPath = reqPath.substring(i+1, reqPath.length());
+			else
+				break;
+		}
+		String[] rest = reqPath.split("/");
+		for(int j = 0;j<rest.length;j++)
+		{
+			addElement(myHavePath,rest[j]);
+			myHavePath+="/"+rest[j];
+		}
+	}
+	
+	/**
+	 * 增加一个全局唯一节点并赋值
+	 * @param nodePath
+	 * @param nodeValue
+	 * @throws Exception
+	 */
+	public void AddOnlyNode( String nodePath,String nodeValue) throws Exception
 	 {
-		 if (this.document==null)
-			 throw new Exception("XML获取异常");
-		 List list = this.document.selectNodes(nodePath);
-		 Iterator iter = list.iterator();
-		 boolean nodeExist = false;
-		 while (iter.hasNext()) {
-			 Element element = (Element) iter.next();
-			 if (element.getText().equals(nodeValue)) 
-			 {
-				 element.setText(newValue);
-				 nodeExist = true;
-			 }   
-		 }
-		 if (!nodeExist) 
-			 throw new Exception("获取不到节点："+nodePath);
-		 writeToFile();
+		addElement(nodePath);
+		 
+		Node only = this.document.selectSingleNode(nodePath);
+		only.setText(nodeValue);
+		
+		 //writeToFile();
 	 }
 	 
 	
 	 
 	 
-	 public String getNodeValue(String nodePath) throws Exception{
-		 if (this.document==null)
-			 throw new Exception("XML存在错误。");
+	 public String getNodeValue(String nodePath){
+		
 		 List list = this.document.selectNodes(nodePath);
 		 Iterator iter = list.iterator();
 		 boolean nodeExist = false;
@@ -158,7 +192,10 @@ public class XmlOperator {
 			 nodeValue = element.getText();
 			 return nodeValue;
 		 } else 
-			 throw new Exception("获取不到节点："+nodePath);
+		 {
+			 System.out.println("获取不到节点："+nodePath);
+			 return null;
+		 }
 	 }
 	 
 	 public void close() 
