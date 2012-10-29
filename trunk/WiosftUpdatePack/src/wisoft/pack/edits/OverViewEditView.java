@@ -19,10 +19,13 @@ import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 
+import wisoft.pack.models.PackInfoModel;
+
 public class OverViewEditView extends RootEdit {
 	private Text text;
 	private Text text_1;
 	private Text text_2;
+	private Combo combo;
 
 	/**
 	 * Create the composite.
@@ -55,7 +58,7 @@ public class OverViewEditView extends RootEdit {
 		label.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
 		label.setText("\u6A21\u5757\u540D\u79F0\uFF1A");
 		
-		Combo combo = new Combo(group, SWT.NONE);
+		combo = new Combo(group, SWT.NONE);
 		combo.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
 		new Label(group, SWT.NONE);
 		
@@ -113,10 +116,18 @@ public class OverViewEditView extends RootEdit {
 				activatePackEditEvent();
 			}
 		});
+		//System.out.println("¿Ø¼þ¼ÓÔØÖÐ¡­¡­");
 	}
 
 	@Override
 	protected void checkSubclass() {
 		// Disable the check that prevents subclassing of SWT components
+	}
+	public void setPackInfo(PackInfoModel packinfo)
+	{
+		this.combo.setText(packinfo.getModuleName());
+		this.text_2.setText(packinfo.getModuleCode());
+		this.text_1.setText(packinfo.getVersion());
+		this.text.setText(packinfo.getSavePath());
 	}
 }
