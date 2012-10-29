@@ -68,6 +68,8 @@ public class PackEdit extends EditorPart {
 		tabItem_4.setText("updateinfo.xml");
 		
 		//dirty = true;
+		//System.out.println("空间加载完成");
+		refreshPackInfo();
 	}
 
 	@Override
@@ -94,11 +96,12 @@ public class PackEdit extends EditorPart {
         this.setSite(site);
         this.setPartName(input.getName());
         this.packinfo = ((PackInfoInput)input).getPackinfo();
+       // System.out.println("编辑器初始化完成！");
 	}
 	
 	public void refreshPackInfo()
 	{
-		
+		this.overviewEv.setPackInfo(this.packinfo);
 	}
 	
 	@Override
