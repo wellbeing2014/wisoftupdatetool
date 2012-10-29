@@ -139,27 +139,44 @@ public class XmlOperator {
 		
 		((Element)(list.get(0))).addElement(node);
 	}
-	 
-	
-	private void addElement(String abstractPath)
+
+	/**
+	 * 根据一个虚拟的不存在的路径，创建出实际的路径，只支持node
+	 * @param abstractPath虚拟的不存在的路径
+	 * @param isMulti
+	 */
+	private void addElement(String abstractPath,boolean isMulti)
 	{
 		String myHavePath ="/";
 		String reqPath = abstractPath.substring(1);
 		int i = 0;
-		while((i=reqPath.indexOf("/"))!=-1)
+		while((i=reqPath.indexOf("/"))!=-1)//是否包含其他节点
 		{
-			myHavePath +=reqPath.substring(0,i);
-			if(this.document.selectSingleNode(myHavePath)!=null)
-				reqPath = reqPath.substring(i+1, reqPath.length());
+			myHavePath +=reqPath.substring(0,i);//剪裁出最近一个节点 放到 myHavePath
+			if(this.document.selectSingleNode(myHavePath)!=null)//如果已存在这个节点。
+				reqPath = reqPath.substring(i+1, reqPath.length());//把剩下的reqPath 重新赋值。
 			else
 				break;
 		}
-		String[] rest = reqPath.split("/");
+		String[] rest = reqPath.split("/");//剩下的都是不存在的node,
+		if(rest.length==1)//是否是最后一个节点(如果是最后一个节点，还要再判断下是否存在)。
+		{
+			if(this.document.selectSingleNode(myHavePath+"/"+rest[0])==null||isMulti)//最后一个node rest[0]如果不存在则增加，如果存在 直接返回。
+				addElement(myHavePath,rest[0]);
+			return;
+		}
 		for(int j = 0;j<rest.length;j++)
 		{
 			addElement(myHavePath,rest[j]);
 			myHavePath+="/"+rest[j];
 		}
+	}
+	
+	public void setCdataValue(String nodepath,String value)
+	{
+		addElement(nodepath,false);
+		Element only = (Element)this.document.selectNodes(nodepath).get(0);
+		only.addCDATA(value);
 	}
 	
 	/**
@@ -168,21 +185,14 @@ public class XmlOperator {
 	 * @param nodeValue
 	 * @throws Exception
 	 */
-	public void AddOnlyNode( String nodePath,String nodeValue) throws Exception
+	public void AddOnlyNode( String nodePath,String nodeValue)
 	 {
-		addElement(nodePath);
-		 
+		addElement(nodePath,false);
 		Node only = this.document.selectSingleNode(nodePath);
 		only.setText(nodeValue);
-		
-		 //writeToFile();
 	 }
-	 
-	
-	 
-	 
+
 	 public String getNodeValue(String nodePath){
-		
 		 List list = this.document.selectNodes(nodePath);
 		 Iterator iter = list.iterator();
 		 boolean nodeExist = false;
@@ -197,12 +207,7 @@ public class XmlOperator {
 			 return null;
 		 }
 	 }
-	 
-	 public void close() 
-	 {
-		 this.document=null;
-	 }
-	 
+	
 	 public void writeToFile()
 	 {
 		 OutputFormat format=OutputFormat.createPrettyPrint();
@@ -216,6 +221,11 @@ public class XmlOperator {
 			 // TODO Auto-generated catch block
 			 e.printStackTrace();
 		 }  
+	 }
+	 
+	 public void close() 
+	 {
+		 this.document=null;
 	 }
 	 
 }

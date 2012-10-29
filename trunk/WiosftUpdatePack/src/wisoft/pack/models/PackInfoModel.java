@@ -18,6 +18,14 @@ public class PackInfoModel extends Model {
 	private XmlOperator xmlo = new XmlOperator();
 	
 	private String moduleName;
+	private String moduleCode;
+	private String version ;
+	private String savePath;
+	private String CreateMan;
+	private String releaseNote;
+	private String keyWord;
+	
+	
 	public String getModuleName() {
 		return moduleName;
 	}
@@ -42,10 +50,25 @@ public class PackInfoModel extends Model {
 	public void setSavePath(String savePath) {
 		this.savePath = savePath;
 	}
-
-	private String moduleCode;
-	private String version ;
-	private String savePath;
+	public String getCreateMan() {
+		return CreateMan;
+	}
+	public void setCreateMan(String createMan) {
+		CreateMan = createMan;
+	}
+	
+	public String getReleaseNote() {
+		return releaseNote;
+	}
+	public void setReleaseNote(String releaseNote) {
+		this.releaseNote = releaseNote;
+	}
+	public String getKeyWord() {
+		return keyWord;
+	}
+	public void setKeyWord(String keyWord) {
+		this.keyWord = keyWord;
+	}
 	
 	public void init()throws Exception
 	{
@@ -54,18 +77,19 @@ public class PackInfoModel extends Model {
 		dir.mkdirs();
 		xmlo.loadXml(savePath+"/updateinfo.xml");
 		xmlo.addRootElement("root");
-		xmlo.AddOnlyNode("/root/ModuleName", moduleName);
+		updateXml();
 		xmlo.writeToFile();
 		xmlo.close();
 	}
 	
-	public void updateXml() throws Exception
+	public void updateXml() 
 	{
-		
-//		xmlo.modifyOrAddNode("/root/ModuleName", "123", "235");
-//		xmlo.modifyOrAddNode("/root/ModuleCode", "123", "235");
-//		xmlo.modifyOrAddNode("/root/Version", "123", "235");
-		
+		xmlo.AddOnlyNode("/root/ModuleName", moduleName);
+		xmlo.AddOnlyNode("/root/ModuleCode", moduleCode);
+		xmlo.AddOnlyNode("/root/Version", version);
+		xmlo.AddOnlyNode("/root/CreateMan", CreateMan);
+		xmlo.setCdataValue("/root/ReleaseNote", releaseNote);
+		xmlo.AddOnlyNode("/root/KeyWord", keyWord);
 	}
 
 	public IEditorInput getEditInput() {

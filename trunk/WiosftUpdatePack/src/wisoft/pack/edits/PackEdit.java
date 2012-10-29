@@ -1,33 +1,29 @@
 package wisoft.pack.edits;
 
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.jface.action.ToolBarManager;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.FillLayout;
-import org.eclipse.swt.layout.FormAttachment;
-import org.eclipse.swt.layout.FormData;
-import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.TabFolder;
 import org.eclipse.swt.widgets.TabItem;
-import org.eclipse.swt.widgets.ToolBar;
-import org.eclipse.swt.widgets.ToolItem;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.ISaveablePart2;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.part.EditorPart;
 
-import wisoft.pack.actions.SavePackEditAction;
 import wisoft.pack.events.PackEditEvent;
 import wisoft.pack.events.PackEditEventListener;
+import wisoft.pack.models.PackInfoModel;
 
 public class PackEdit extends EditorPart {
 
 	public static final String ID = "wisoft.pack.edits.PackEdit"; //$NON-NLS-1$
-	private OverViewEditView overviewEv;
-	private EditConfsEditView editconfsEv;
+	public OverViewEditView overviewEv;
+	public EditConfsEditView editconfsEv;
 	private boolean dirty;
+	
+	private PackInfoModel packinfo;
 
 	public PackEdit() {
 	}
@@ -97,8 +93,14 @@ public class PackEdit extends EditorPart {
         this.setInput(input);
         this.setSite(site);
         this.setPartName(input.getName());
+        this.packinfo = ((PackInfoInput)input).getPackinfo();
 	}
-
+	
+	public void refreshPackInfo()
+	{
+		
+	}
+	
 	@Override
 	public boolean isDirty() {
 		return dirty;

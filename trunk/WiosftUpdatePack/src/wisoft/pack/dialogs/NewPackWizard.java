@@ -40,7 +40,7 @@ public class NewPackWizard extends Wizard {
 		final String createMan = this.page1.text_3.getText().trim();
 		
 		final String releasenot = this.page2.text.getText().trim();
-		final String keyword = this.page2.text.getText().trim();
+		final String keyword = this.page2.text_1.getText().trim();
 		final String packname = ModuleName+"("+ModuleCode+")"+version;
 		final PackInfoModel pack  = new PackInfoModel(packname);
 		Console.getInstance().print("创建更新包开始……", packname, Console.ConsoleType.INFO);	
@@ -58,12 +58,12 @@ public class NewPackWizard extends Wizard {
 			}
 			@Override
 			protected IStatus run(IProgressMonitor monitor) {
-				monitor.beginTask("创建更新包", 3);
+				monitor.beginTask("初始化检查……", 3);
 				try
 				{
 					// TODO Auto-generated method stub
-					Thread.sleep(5000);
-			        monitor.setTaskName("初始化检查……");
+					Thread.sleep(1000);
+					//monitor.setTaskName("……");
 			        if(createMan.isEmpty())
 			        	printlnToConsole("创建人未设置。",packname,Console.ConsoleType.WARNING);
 			        if(releasenot.isEmpty())
@@ -72,15 +72,18 @@ public class NewPackWizard extends Wizard {
 			        	printlnToConsole("关键词为空。",packname,Console.ConsoleType.WARNING);
 			        monitor.worked(1);
 			        monitor.setTaskName("建立更新包……");
-			        Thread.sleep(500);
+			        Thread.sleep(1000);
 					pack.setSavePath(savePath);
 					pack.setModuleCode(ModuleCode);
 					pack.setModuleName(ModuleName);
 					pack.setVersion(version);
+					pack.setCreateMan(createMan);
+					pack.setKeyWord(keyword);
+					pack.setReleaseNote(releasenot);
 					pack.init();
 					monitor.worked(2);
-					monitor.setTaskName("建立更新包……");
-					Thread.sleep(500);
+					monitor.setTaskName("更新包已创建");
+					Thread.sleep(1000);
 					monitor.worked(3);
 				}
 				catch(Exception e)
@@ -88,13 +91,13 @@ public class NewPackWizard extends Wizard {
 					printlnToConsole("创建更新包失败！",packname,Console.ConsoleType.ERROR);
 					printlnToConsole(e.toString(),packname,Console.ConsoleType.ERROR);
 				}
+				printlnToConsole("更新包创建成功", packname, Console.ConsoleType.INFO);	
 		        return Status.OK_STATUS;
 			}
 		};
-		
 		job.setUser(true);
 		job.schedule(); 
-		
+	
 		nv.addPackInfo(pack);
 		return true;
 	}

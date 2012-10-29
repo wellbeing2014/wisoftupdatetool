@@ -19,6 +19,8 @@ import org.eclipse.ui.application.IActionBarConfigurer;
 import wisoft.pack.actions.DelPackInfoAction;
 import wisoft.pack.actions.OpenNewPackDialogAction;
 import wisoft.pack.actions.OpenPackEditAction;
+import wisoft.pack.actions.RefreshPackAction;
+import wisoft.pack.actions.SavePackEditAction;
 
 /**
  * An action bar advisor is responsible for creating, adding, and disposing of the
@@ -32,7 +34,9 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor {
     // when fillActionBars is called with FILL_PROXY.
     private IWorkbenchAction exitAction;
     private IWorkbenchAction aboutAction;
-    private IWorkbenchAction savenAction;
+    
+    private SavePackEditAction savenAction;
+    private IWorkbenchAction refreshAction;
     //private IWorkbenchAction newWindowAction;
    // private OpenViewAction openViewAction;
     //private Action messagePopupAction;
@@ -40,6 +44,8 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor {
     private OpenNewPackDialogAction openNewPackDialogAction;
     private DelPackInfoAction removePackInfoAction;
     private OpenPackEditAction openPackAction;
+    private RefreshPackAction refreshPackAction;
+    
 
     public ApplicationActionBarAdvisor(IActionBarConfigurer configurer) {
         super(configurer);
@@ -58,7 +64,14 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor {
         aboutAction = ActionFactory.ABOUT.create(window);
         register(aboutAction);
         
-        savenAction = ActionFactory.SAVE.create(window);
+        savenAction =new  SavePackEditAction();
+        register(savenAction);
+        
+        refreshAction = ActionFactory.REFRESH.create(window);
+        register(refreshAction);
+        
+        refreshPackAction =new RefreshPackAction();
+        register(refreshPackAction);
         
 //        newWindowAction = ActionFactory.OPEN_NEW_WINDOW.create(window);
 //        register(newWindowAction);

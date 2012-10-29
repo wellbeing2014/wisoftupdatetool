@@ -4,6 +4,8 @@ import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
 
+import wisoft.pack.models.PackInfoModel;
+
 /**
  * The activator class controls the plug-in life cycle
  */
@@ -15,6 +17,15 @@ public class Activator extends AbstractUIPlugin {
 	// The shared instance
 	private static Activator plugin;
 	
+	private PackInfoModel current_pack;
+	public PackInfoModel getCurrent_pack() {
+		return current_pack;
+	}
+
+	public void setCurrent_pack(PackInfoModel current_pack) {
+		this.current_pack = current_pack;
+	}
+
 	/**
 	 * The constructor
 	 */

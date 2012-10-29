@@ -23,6 +23,7 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.console.IConsoleConstants;
 import org.eclipse.ui.part.ViewPart;
 
+import wisoft.pack.app.Activator;
 import wisoft.pack.edits.PackEdit;
 import wisoft.pack.edits.PackInfoInput;
 import wisoft.pack.models.Model;
@@ -139,7 +140,7 @@ public class NavigationView extends ViewPart {
 				}
 				if(packinfo.getEditInput()==null)
 				{
-					packinfo.setEditInput(new PackInfoInput(packinfo.getName()));
+					packinfo.setEditInput(new PackInfoInput(packinfo));
 				}
 				
 				editorPart = workbenchPage.findEditor(packinfo.getEditInput());
@@ -153,6 +154,7 @@ public class NavigationView extends ViewPart {
 			            e.printStackTrace();
 			          }
 				}
+					
 				editorPart.addPropertyListener(new IPropertyListener() {
 					
 					@Override
@@ -166,7 +168,7 @@ public class NavigationView extends ViewPart {
 						}
 					}
 				});
-				
+				Activator.getDefault().setCurrent_pack(packinfo);
 			}
 		});
 	}
