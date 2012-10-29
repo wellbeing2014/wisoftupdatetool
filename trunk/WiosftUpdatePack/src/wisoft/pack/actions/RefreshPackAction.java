@@ -27,7 +27,7 @@ public class RefreshPackAction extends Action {
 		if(pack!=null&&pack.getEditInput()!=null)		
 		{
 			PackEdit editorPart  =(PackEdit) workbenchPage.findEditor(pack.getEditInput());
-			editorPart.
+			editorPart.refreshPackInfo();
 		}
 	}
 
