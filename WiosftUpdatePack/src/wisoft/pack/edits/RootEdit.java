@@ -2,20 +2,18 @@ package wisoft.pack.edits;
 
 import java.util.Vector;
 
+import org.eclipse.jface.action.IToolBarManager;
+import org.eclipse.jface.action.ToolBarManager;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.KeyEvent;
-import org.eclipse.swt.events.KeyListener;
-import org.eclipse.swt.events.ModifyEvent;
-import org.eclipse.swt.events.ModifyListener;
-import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.Text;
+import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.wb.swt.SWTResourceManager;
 
+import wisoft.pack.actions.RefreshPackAction;
 import wisoft.pack.events.PackEditEvent;
 import wisoft.pack.events.PackEditEventListener;
 
@@ -69,7 +67,7 @@ public class RootEdit extends Composite {
 		setLayout(new FormLayout());
 		Composite comp = new Composite(this, SWT.NONE);
 		comp.setBackground(SWTResourceManager.getColor(SWT.COLOR_LIST_SELECTION));
-		comp.setLayout(new FillLayout(SWT.HORIZONTAL));
+		comp.setLayout(new FormLayout());
 		FormData fd_comp = new FormData();
 		fd_comp.top = new FormAttachment(0, 1);
 		fd_comp.bottom = new FormAttachment(0, 32);
@@ -78,15 +76,29 @@ public class RootEdit extends Composite {
 		comp.setLayoutData(fd_comp);
 		
 		label = new Label(comp, SWT.NONE);
+		FormData fd_label = new FormData();
+		fd_label.bottom = new FormAttachment(0, 31);
+		fd_label.top = new FormAttachment(0);
+		fd_label.left = new FormAttachment(0);
+		label.setLayoutData(fd_label);
 		label.setFont(SWTResourceManager.getFont("Î¢ÈíÑÅºÚ", 13, SWT.BOLD | SWT.ITALIC));
 		label.setForeground(SWTResourceManager.getColor(SWT.COLOR_WIDGET_HIGHLIGHT_SHADOW));
 		label.setBackground(SWTResourceManager.getColor(SWT.COLOR_LIST_SELECTION));
 		label.setText("\u57FA\u672C\u4FE1\u606F");
+		
+		ToolBar toolBar = new ToolBar(comp, SWT.FLAT | SWT.RIGHT);
+		toolBar.setBackground(SWTResourceManager.getColor(SWT.COLOR_LIST_SELECTION));
+		fd_label.right = new FormAttachment(toolBar);
 		FormData fd_toolBar = new FormData();
-		fd_toolBar.top = new FormAttachment(0, 3);
-		fd_toolBar.left = new FormAttachment(80);
-		
-		
+		fd_toolBar.left = new FormAttachment(100, -32);
+		fd_toolBar.bottom = new FormAttachment(0, 31);
+		fd_toolBar.right = new FormAttachment(100);
+		fd_toolBar.top = new FormAttachment(0);
+		toolBar.setLayoutData(fd_toolBar);
+		//toolBar.
+		IToolBarManager toolbarm = new ToolBarManager(toolBar);
+		toolbarm.add(new RefreshPackAction());
+		toolbarm.update(true);
 	}
 
 	@Override

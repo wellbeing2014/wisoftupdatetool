@@ -4,11 +4,16 @@ import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IPersistableElement;
 
+import wisoft.pack.models.PackInfoModel;
+
 public class PackInfoInput implements IEditorInput {
-	private String name;
-	public PackInfoInput(String name)
+	private PackInfoModel packinfo;
+	public PackInfoModel getPackinfo() {
+		return packinfo;
+	}
+	public PackInfoInput(PackInfoModel name)
 	{
-		this.name = name;
+		this.packinfo = name;
 	}
 	@Override
 	public Object getAdapter(Class adapter) {
@@ -31,7 +36,7 @@ public class PackInfoInput implements IEditorInput {
 	@Override
 	public String getName() {
 		// TODO Auto-generated method stub
-		return name;
+		return this.packinfo.getName();
 	}
 
 	@Override

@@ -43,25 +43,47 @@
             id="WiosftUpdatePack.open"
             name="打开更新包">
       </command>
+      <command
+            id="WiosftUpdatePack.refresh"
+            name="刷新更新包">
+      </command>
+      <command
+            id="WiosftUpdatePack.save"
+            name="保存更新包">
+      </command>
    </extension>
    <extension
          point="org.eclipse.ui.bindings">
       <key
             commandId="WiosftUpdatePack.add"
-            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+            schemeId="WiosftUpdatePack.myscheme"
             sequence="CTRL+3">
       </key>
       <key
             commandId="org.eclipse.ui.file.exit"
-            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+            schemeId="WiosftUpdatePack.myscheme"
             sequence="CTRL+X">
       </key>
       <key
             commandId="WiosftUpdatePack.remove"
-            contextId="org.eclipse.ui.contexts.window"
-            schemeId="WiosftUpdatePack.key1"
+            schemeId="WiosftUpdatePack.myscheme"
             sequence="CTRL+D">
       </key>
+      <key
+            commandId="WiosftUpdatePack.refresh"
+            schemeId="WiosftUpdatePack.myscheme"
+            sequence="F5">
+      </key>
+      <key
+            commandId="WiosftUpdatePack.save"
+            schemeId="WiosftUpdatePack.myscheme"
+            sequence="CTRL+5">
+      </key>
+      <scheme
+            id="WiosftUpdatePack.myscheme"
+            name="myscheme"
+            parentId="org.eclipse.ui.defaultAcceleratorConfiguration">
+      </scheme>
    </extension>
    <extension
          id="product"
@@ -85,6 +107,7 @@
                name="appName"
                value="中科更新包管理工具">
          </property>
+         
       </product>
    </extension>
    <extension

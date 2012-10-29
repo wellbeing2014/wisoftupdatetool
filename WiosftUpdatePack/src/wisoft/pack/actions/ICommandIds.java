@@ -9,10 +9,11 @@ package wisoft.pack.actions;
  */
 public interface ICommandIds {
 
-    public static final String CMD_OPEN = "WiosftUpdatePack.open";
-    public static final String CMD_OPEN_MESSAGE = "WiosftUpdatePack.openMessage";
     public static final String PACKINFO_ADD="WiosftUpdatePack.add";
     public static final String PACKINFO_REMOVE="WiosftUpdatePack.remove";
     public static final String PACKINFO_OPEN="WiosftUpdatePack.open";
+    public static final String PACKINFO_REFRESH="WiosftUpdatePack.refresh";
+    public static final String PACKINFO_SAVE="WiosftUpdatePack.save";
+    
     
 }
