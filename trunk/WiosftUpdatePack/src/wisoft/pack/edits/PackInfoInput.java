@@ -1,12 +1,17 @@
 package wisoft.pack.edits;
 
+import java.io.File;
+
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.ui.IEditorInput;
+import org.eclipse.ui.IPathEditorInput;
 import org.eclipse.ui.IPersistableElement;
 
 import wisoft.pack.models.PackInfoModel;
 
-public class PackInfoInput implements IEditorInput {
+public class PackInfoInput implements IPathEditorInput {
+	//private IPath fPath;
 	private PackInfoModel packinfo;
 	public PackInfoModel getPackinfo() {
 		return packinfo;
@@ -24,7 +29,7 @@ public class PackInfoInput implements IEditorInput {
 	@Override
 	public boolean exists() {
 		// TODO Auto-generated method stub
-		return false;
+		return new File(packinfo.getSavePath()+"/updateinfo.xml").exists();
 	}
 
 	@Override
@@ -49,6 +54,16 @@ public class PackInfoInput implements IEditorInput {
 	public String getToolTipText() {
 		// TODO Auto-generated method stub
 		return getName();
+	}
+	@Override
+	public IPath getPath() {
+		// TODO Auto-generated method stub
+		return new Path(this.packinfo.getSavePath()+"/updateinfo.xml");
+	}
+	
+	@Override
+    public int hashCode() {
+		return this.packinfo.getSavePath().hashCode();
 	}
 
 }

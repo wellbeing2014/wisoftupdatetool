@@ -24,7 +24,7 @@ import org.eclipse.ui.console.IConsoleConstants;
 import org.eclipse.ui.part.ViewPart;
 
 import wisoft.pack.app.Activator;
-import wisoft.pack.edits.PackEdit;
+import wisoft.pack.edits.PackInfoEditor;
 import wisoft.pack.edits.PackInfoInput;
 import wisoft.pack.models.Model;
 import wisoft.pack.models.PackInfoContentProvider;
@@ -149,7 +149,7 @@ public class NavigationView extends ViewPart {
 				else
 				{
 					 try {
-			            editorPart = workbenchPage.openEditor(packinfo.getEditInput(), PackEdit.ID);
+			            editorPart = workbenchPage.openEditor(packinfo.getEditInput(), PackInfoEditor.ID);
 			          } catch (Exception e) {
 			            e.printStackTrace();
 			          }
