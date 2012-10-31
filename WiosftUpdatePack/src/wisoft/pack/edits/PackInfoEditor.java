@@ -8,29 +8,39 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.PartInitException;
-import org.eclipse.ui.part.MultiPageEditorPart;
+import org.eclipse.ui.forms.editor.FormEditor;
+import org.eclipse.ui.forms.widgets.FormToolkit;
+
 import wisoft.pack.edits.xml.XMLEditor;
 
-public class PackInfoEditor extends MultiPageEditorPart {
+public class PackInfoEditor extends FormEditor {
 
 	public static final String ID = "wisoft.pack.edits.PackInfoEditor"; //$NON-NLS-1$
 	private XMLEditor editor;
 
 	public PackInfoEditor() {
 	}
+	
+	protected FormToolkit createToolkit(Display display) {
+		// Create a toolkit that shares colors between editors.
+		return new FormToolkit(display);
+	}
 
-	@Override
-	protected void createPages() {
+	protected void addPages() {
+		createPage1();
+		editor =new XMLEditor();
 		try {
-			editor =new XMLEditor();
-			int i =addPage(editor, getEditorInput());
+			addPage(new AFormPage(this,"id","∞Ê»®"),getEditorInput());
+			int i = addPage(editor, getEditorInput());
 			setPageText(i,"updatexml");
 		} catch (PartInitException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
-		createPage1();
 	}
 	
 	void createPage1() {
