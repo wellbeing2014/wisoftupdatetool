@@ -11,12 +11,13 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.PartInitException;
-import org.eclipse.ui.examples.rcp.texteditor.editors.xml.XMLEditor;
 import org.eclipse.ui.part.MultiPageEditorPart;
+import wisoft.pack.edits.xml.XMLEditor;
 
 public class PackInfoEditor extends MultiPageEditorPart {
 
 	public static final String ID = "wisoft.pack.edits.PackInfoEditor"; //$NON-NLS-1$
+	private XMLEditor editor;
 
 	public PackInfoEditor() {
 	}
@@ -24,7 +25,7 @@ public class PackInfoEditor extends MultiPageEditorPart {
 	@Override
 	protected void createPages() {
 		try {
-			XMLEditor editor =new XMLEditor();
+			editor =new XMLEditor();
 			int i =addPage(editor, getEditorInput());
 			setPageText(i,"updatexml");
 		} catch (PartInitException e) {
@@ -74,11 +75,21 @@ public class PackInfoEditor extends MultiPageEditorPart {
 	@Override
 	public void doSave(IProgressMonitor monitor) {
 		// TODO Auto-generated method stub
+		System.out.println("妈呀，我开始保存了。");
+		editor.doSave(monitor);
 	}
 
 	@Override
 	public void doSaveAs() {
 		// TODO Auto-generated method stub
+		editor.doSaveAs();
+	}
+	
+	@Override
+	public boolean isDirty()
+	{
+		return editor.isDirty();
+		
 	}
 
 }
