@@ -189,45 +189,51 @@ public class NavigationView extends ViewPart {
 			}
 		});
 	}
+	
+	private void createNavInfo()
+	{
+		OutputFormat format=OutputFormat.createPrettyPrint();
+		 format.setEncoding("UTF-8");
+		 XMLWriter w;
+		 try {
+			 w = new XMLWriter(new FileWriter(new File("NavInfo.xml")),format);
+			 Document doc = DocumentHelper.createDocument();
+			 doc.addElement("root");
+			 w.write(doc) ;  
+			 w.close();
+		 } catch (IOException e) {
+			 // TODO Auto-generated catch block
+			 e.printStackTrace();
+		 }  
+	}
 	private void readNavInfo()
 	{
-		//读取保存的更新包列表
-		File dir = new File("NavInfo.xml");
-		try {
-			if(!dir.exists())
-			{
-				OutputFormat format=OutputFormat.createPrettyPrint();
-				 format.setEncoding("UTF-8");
-				 XMLWriter w;
-				 try {
-					 w = new XMLWriter(new FileWriter(dir),format);
-					 w.write(DocumentHelper.createDocument()) ;  
-					 w.close();
-				 } catch (IOException e) {
-					 // TODO Auto-generated catch block
-					 e.printStackTrace();
-				 }  
-			}
-			else
-			{
-				InputStream is = new FileInputStream(dir);
-				SAXReader reader = new SAXReader();
-				Document document;
-				document = reader.read(is);
-				// 读取XML文件
-	            Element root = document.getRootElement();// 得到根节点
-	            for (Iterator i = root.elementIterator("packinfo"); i.hasNext();) {
-                    Element packinfo = (Element) i.next();
-                    String name = packinfo.attributeValue("name");
-                    String path = packinfo.attributeValue("path");
-                    PackInfoModel  pack = new PackInfoModel(name,path);
-                    addPackInfo(pack);
-                }
-			}
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		try 
+		{ //读取保存的更新包列表
+		File file = new File("NavInfo.xml");
+		if(!file.exists())
+		{
+			createNavInfo();
+			return;
 		}
+			
+		SAXReader reader = new SAXReader(); 
+		Document doc = reader.read("NavInfo.xml"); 
+		// 读取XML文件
+        Element root = doc.getRootElement();// 得到根节点
+        for (Iterator i = root.elementIterator("packinfo"); i.hasNext();) {
+            Element packinfo = (Element) i.next();
+            String name = packinfo.attributeValue("name");
+            String path = packinfo.attributeValue("path");
+            PackInfoModel  pack = new PackInfoModel(name,path);
+            addPackInfo(pack);
+        }
+		}
+		catch (Exception e) { 
+			e.printStackTrace();
+			return;
+		} 
+		
 	}
 	public void SaveNavInfo(PackInfoModel[] pack)
 	{
