@@ -15,6 +15,13 @@ import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.ui.forms.widgets.ColumnLayoutData;
+import org.eclipse.swt.widgets.List;
+import org.eclipse.swt.layout.FormLayout;
+import org.eclipse.swt.layout.FormData;
+import org.eclipse.swt.layout.FormAttachment;
+import org.eclipse.swt.layout.RowLayout;
+
+import wisoft.pack.models.PackInfoModel;
 
 public class BFormPage extends FormPage {
 	private Text text;
@@ -69,25 +76,70 @@ public class BFormPage extends FormPage {
 		form.getBody().setLayout(layout);
 		
 		CreateBaseInfoSection(managedForm);
-		Section section = managedForm.getToolkit().createSection(managedForm.getForm().getBody(), Section.TITLE_BAR);
-		ColumnLayoutData cld_section = new ColumnLayoutData();
-		cld_section.heightHint = 232;
-		cld_section.widthHint = 217;
-		section.setLayoutData(cld_section);
-		managedForm.getToolkit().paintBordersFor(section);
-		section.setText("\u66F4\u65B0\u8303\u56F4\u8BF4\u660E");
+		
 		//CreateBaseInfoSection(managedForm);
 		
 		//section.setClient(composite);
+		CreateScopeSection(managedForm);
 	}
-	
+	private void CreateScopeSection(IManagedForm managedForm)
+	{
+		Section section = managedForm.getToolkit().createSection(managedForm.getForm().getBody(), Section.TWISTIE | Section.TITLE_BAR);
+		ColumnLayoutData cld_section = new ColumnLayoutData();
+		//cld_section.heightHint = 237;
+		//cld_section.widthHint = 217;
+		cld_section.horizontalAlignment=ColumnLayoutData.FILL;
+		section.setLayoutData(cld_section);
+		managedForm.getToolkit().paintBordersFor(section);
+		section.setText("\u66F4\u65B0\u8303\u56F4\u8BF4\u660E");
+		section.setExpanded(true);
+		
+		Composite composite = new Composite(section, SWT.NONE);
+		managedForm.getToolkit().adapt(composite);
+		managedForm.getToolkit().paintBordersFor(composite);
+		section.setClient(composite);
+		composite.setLayout(new FormLayout());
+		
+		List list = new List(composite, SWT.BORDER | SWT.V_SCROLL);
+		FormData fd_list = new FormData();
+		fd_list.top = new FormAttachment(0);
+		fd_list.left = new FormAttachment(0);
+		fd_list.bottom = new FormAttachment(0, 215);
+		list.setLayoutData(fd_list);
+		managedForm.getToolkit().adapt(list, true, true);
+		
+		Composite composite_1 = new Composite(composite, SWT.NONE);
+		fd_list.right = new FormAttachment(composite_1);
+		composite_1.setLayout(new RowLayout(SWT.HORIZONTAL));
+		FormData fd_composite_1 = new FormData();
+		fd_composite_1.left = new FormAttachment(100, -50);
+		fd_composite_1.top = new FormAttachment(0);
+		fd_composite_1.right = new FormAttachment(100);
+		fd_composite_1.bottom = new FormAttachment(100);
+		composite_1.setLayoutData(fd_composite_1);
+		managedForm.getToolkit().adapt(composite_1);
+		managedForm.getToolkit().paintBordersFor(composite_1);
+		
+		Button button = new Button(composite_1, SWT.NONE);
+		button.setText("\u589E\u52A0");
+		managedForm.getToolkit().adapt(button, true, true);
+		
+		Button btnNewButton = new Button(composite_1, SWT.NONE);
+		managedForm.getToolkit().adapt(btnNewButton, true, true);
+		btnNewButton.setText("\u5220\u9664");
+	}
 	private void CreateBaseInfoSection(IManagedForm managedForm)
 	{
-		Section section = managedForm.getToolkit().createSection(managedForm.getForm().getBody(), Section.TITLE_BAR);
+		Section section = managedForm.getToolkit().createSection(managedForm.getForm().getBody(), Section.TWISTIE | Section.TITLE_BAR);
 		//section.setBounds(10, 10, 296, 237);
 		managedForm.getToolkit().paintBordersFor(section);
 		section.setText("\u57FA\u672C\u4FE1\u606F");
-		
+		section.setExpanded(true);
+		ColumnLayoutData cld_section = new ColumnLayoutData();
+		//cld_section.heightHint = 232;
+		//cld_section.widthHint = 217;
+		cld_section.horizontalAlignment=ColumnLayoutData.FILL;
+		section.setLayoutData(cld_section);
 		
 		Composite composite = managedForm.getToolkit().createComposite(section, SWT.NONE);
 		managedForm.getToolkit().paintBordersFor(composite);
@@ -156,5 +208,13 @@ public class BFormPage extends FormPage {
 		Button button_2 = new Button(composite, SWT.CHECK);
 		managedForm.getToolkit().adapt(button_2, true, true);
 		button_2.setText("\u6570\u636E\u5E93");
+		
+		PackInfoModel pack =((PackInfoInput)getEditorInput()).getPackinfo();
+		this.text.setText( pack.getModuleName());
+		this.text_1.setText( pack.getModuleCode());
+		this.text_2.setText( pack.getVersion());
+		this.text_3.setText( pack.getCreateMan());
+//		this.text.setText( pack.getModuleName());
+//		this.text.setText( pack.getModuleName());
 	}
 }

@@ -42,7 +42,7 @@ public class NewPackWizard extends Wizard {
 		final String releasenot = this.page2.text.getText().trim();
 		final String keyword = this.page2.text_1.getText().trim();
 		final String packname = ModuleName+"("+ModuleCode+")"+version;
-		final PackInfoModel pack  = new PackInfoModel(packname);
+		final PackInfoModel pack  = new PackInfoModel(packname,savePath);
 		Console.getInstance().print("创建更新包开始……", packname, Console.ConsoleType.INFO);	
 		
 		Job job = new Job("创建更新包") {
