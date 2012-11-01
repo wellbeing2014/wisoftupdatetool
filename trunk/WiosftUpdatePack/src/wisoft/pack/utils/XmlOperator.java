@@ -133,11 +133,18 @@ public class XmlOperator {
 	 * @param node
 	 * @throws Exception
 	 */
-	public void addElement(String farnode,String node)
+	public Element addElement(String farnode,String node)
 	{ 
 		List list =  this.document.selectNodes(farnode);
-		
-		((Element)(list.get(0))).addElement(node);
+		Element farElement = (Element)(list.get(0));
+		//().addElement(node);
+		farElement.addElement(node);
+		return (Element)farElement.selectNodes(node).get(0);
+	}
+	
+	public void addAttributeValue(Element farnode,String name,String value)
+	{
+		farnode.addAttribute(name, value);
 	}
 
 	/**
@@ -187,9 +194,12 @@ public class XmlOperator {
 	 */
 	public void AddOnlyNode( String nodePath,String nodeValue)
 	 {
-		addElement(nodePath,false);
-		Node only = this.document.selectSingleNode(nodePath);
-		only.setText(nodeValue);
+		if(!nodeValue.isEmpty())
+		{
+			addElement(nodePath,false);
+			Node only = this.document.selectSingleNode(nodePath);
+			only.setText(nodeValue);
+		}
 	 }
 
 	 public String getNodeValue(String nodePath){

@@ -31,10 +31,11 @@ public class PackInfoEditor extends FormEditor {
 	}
 
 	protected void addPages() {
-		createPage1();
+		//createPage1();
 		editor =new XMLEditor();
 		try {
-			addPage(new AFormPage(this,"id","版权"),getEditorInput());
+			addPage(new AFormPage(this,"AFormPage","版权"),getEditorInput());
+			addPage(new BFormPage(this,"BFormPage","基本信息"),getEditorInput());
 			int i = addPage(editor, getEditorInput());
 			setPageText(i,"updatexml");
 		} catch (PartInitException e) {
@@ -44,25 +45,6 @@ public class PackInfoEditor extends FormEditor {
 	}
 	
 	void createPage1() {
-
-		Composite composite = new Composite(getContainer(), SWT.NONE);
-		GridLayout layout = new GridLayout();
-		composite.setLayout(layout);
-		layout.numColumns = 2;
-		Button fontButton = new Button(composite, SWT.NONE);
-		GridData gd = new GridData(GridData.BEGINNING);
-		gd.horizontalSpan = 2;
-		fontButton.setLayoutData(gd);
-		fontButton.setText("Change Font...");
-		
-		fontButton.addSelectionListener(new SelectionAdapter() {
-			public void widgetSelected(SelectionEvent event) {
-				//setFont();
-			}
-		});
-
-		int index = addPage(composite);
-		setPageText(index, "Properties");
 	}
 	
 	@Override

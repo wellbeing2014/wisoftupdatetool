@@ -1,7 +1,12 @@
 package wisoft.pack.models;
 
 import java.io.File;
+import java.util.Iterator;
 
+import org.dom4j.Document;
+import org.dom4j.DocumentException;
+import org.dom4j.Element;
+import org.dom4j.io.SAXReader;
 import org.eclipse.ui.IEditorInput;
 
 import wisoft.pack.utils.XmlOperator;
@@ -25,6 +30,7 @@ public class PackInfoModel extends Model {
 	private String releaseNote;
 	private String keyWord;
 	
+	private File updateinfoxml;
 	
 	public String getModuleName() {
 		return moduleName;
@@ -70,7 +76,7 @@ public class PackInfoModel extends Model {
 		this.keyWord = keyWord;
 	}
 	
-	public void init()throws Exception
+	public File init()throws Exception
 	{
 		//创建文件夹
 		File dir = new File(savePath);
@@ -80,6 +86,8 @@ public class PackInfoModel extends Model {
 		updateXml();
 		xmlo.writeToFile();
 		xmlo.close();
+		//updateinfoxml = dir;
+		return dir;
 	}
 	
 	public void updateXml() 
@@ -117,12 +125,72 @@ public class PackInfoModel extends Model {
 		return overview;
 	}
 	
-	public PackInfoModel(String name)
+//	public PackInfoModel(String name)
+//	{
+//		this.name =name;
+//		this.addChild(overview);
+//		this.addChild(selectFiles);
+//		this.addChild(editConfs);
+//		this.addChild(editSql);
+//		try {
+//			updateinfoxml =init();
+//		} catch (Exception e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
+//	}
+	
+	public PackInfoModel(String name,String path)
 	{
+		//PackInfoModel(name);
 		this.name =name;
+		//this.setSavePath(path);
 		this.addChild(overview);
 		this.addChild(selectFiles);
 		this.addChild(editConfs);
 		this.addChild(editSql);
+		setSavePath(path);
+		readFromXML(path);
+	}
+	
+	public void readFromXML(String path)
+	{
+		File xmlfile = new File(path+"/updateinfo.xml");
+		if(xmlfile.exists())
+		{
+			this.updateinfoxml = xmlfile;
+			SAXReader reader = new SAXReader();
+			Document document;
+			try {
+				document = reader.read(xmlfile);
+				Element root = document.getRootElement();// 得到根节点
+				
+				String ModuleCode = root.element("ModuleCode").getText();
+				String ModuleName = root.element("ModuleName").getText();
+				String version = root.element("Version").getText();
+				String createMan = root.element("CreateMan").getText();
+				String keyword = root.element("KeyWord").getText();
+				String releasenot = root.element("Releasenote").getText();
+				
+				setModuleCode(ModuleCode);
+				setModuleName(ModuleName);
+				setVersion(version);
+				setCreateMan(createMan);
+				setKeyWord(keyword);
+				setReleaseNote(releasenot);
+			} catch (DocumentException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		else
+		{
+			try {
+				updateinfoxml =init();
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
 	}
 }

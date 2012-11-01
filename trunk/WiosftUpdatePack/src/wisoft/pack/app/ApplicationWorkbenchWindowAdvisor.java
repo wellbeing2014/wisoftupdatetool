@@ -1,10 +1,15 @@
 package wisoft.pack.app;
 
+import java.io.File;
+
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.ui.application.ActionBarAdvisor;
 import org.eclipse.ui.application.IActionBarConfigurer;
 import org.eclipse.ui.application.IWorkbenchWindowConfigurer;
 import org.eclipse.ui.application.WorkbenchWindowAdvisor;
+import org.eclipse.ui.internal.util.PrefUtil;
+
+import wisoft.pack.utils.XmlOperator;
 
 public class ApplicationWorkbenchWindowAdvisor extends WorkbenchWindowAdvisor {
 
@@ -22,5 +27,9 @@ public class ApplicationWorkbenchWindowAdvisor extends WorkbenchWindowAdvisor {
         configurer.setShowCoolBar(true);
         configurer.setShowStatusLine(false);
     }
-    
+    @SuppressWarnings("restriction")
+    @Override
+    public void postWindowClose() {
+    	
+    } 
 }

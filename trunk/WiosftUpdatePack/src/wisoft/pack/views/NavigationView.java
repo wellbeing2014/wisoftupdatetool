@@ -1,8 +1,22 @@
 package wisoft.pack.views;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
+import org.dom4j.Document;
+import org.dom4j.DocumentException;
+import org.dom4j.DocumentHelper;
+import org.dom4j.Element;
+import org.dom4j.io.OutputFormat;
+import org.dom4j.io.SAXReader;
+import org.dom4j.io.XMLWriter;
 import org.eclipse.jface.action.ActionContributionItem;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.IContributionItem;
@@ -31,6 +45,7 @@ import wisoft.pack.models.PackInfoContentProvider;
 import wisoft.pack.models.PackInfoLabelProvider;
 import wisoft.pack.models.PackInfoModel;
 import wisoft.pack.models.RootModel;
+import wisoft.pack.utils.XmlOperator;
 
 
 
@@ -61,6 +76,8 @@ public class NavigationView extends ViewPart {
 		viewer.setContentProvider(new PackInfoContentProvider());
 		viewer.setLabelProvider(new PackInfoLabelProvider());
 		viewer.setInput(createDummyModel());
+		readNavInfo();
+		//System.out.println(dir.getAbsolutePath());
 		hookDoubleClickAction();
 		//去掉console 工具栏上的 多余按钮		
 		IWorkbenchPage page = PlatformUI.getWorkbench().getWorkbenchWindows()[0].getPages()[0];  
@@ -172,6 +189,70 @@ public class NavigationView extends ViewPart {
 			}
 		});
 	}
-
+	private void readNavInfo()
+	{
+		//读取保存的更新包列表
+		File dir = new File("NavInfo.xml");
+		try {
+			if(!dir.exists())
+			{
+				OutputFormat format=OutputFormat.createPrettyPrint();
+				 format.setEncoding("UTF-8");
+				 XMLWriter w;
+				 try {
+					 w = new XMLWriter(new FileWriter(dir),format);
+					 w.write(DocumentHelper.createDocument()) ;  
+					 w.close();
+				 } catch (IOException e) {
+					 // TODO Auto-generated catch block
+					 e.printStackTrace();
+				 }  
+			}
+			else
+			{
+				InputStream is = new FileInputStream(dir);
+				SAXReader reader = new SAXReader();
+				Document document;
+				document = reader.read(is);
+				// 读取XML文件
+	            Element root = document.getRootElement();// 得到根节点
+	            for (Iterator i = root.elementIterator("packinfo"); i.hasNext();) {
+                    Element packinfo = (Element) i.next();
+                    String name = packinfo.attributeValue("name");
+                    String path = packinfo.attributeValue("path");
+                    PackInfoModel  pack = new PackInfoModel(name,path);
+                    addPackInfo(pack);
+                }
+			}
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	public void SaveNavInfo(PackInfoModel[] pack)
+	{
+		//创建文件夹
+		File dir = new File("NavInfo.xml");
+		//dir.mkdirs();
+		XmlOperator xmlo = new XmlOperator();
+		try
+		{
+			xmlo.loadXml(dir.getAbsolutePath());
+			for(int i = 0;i<pack.length; i++)
+			{
+				xmlo.addRootElement("root");
+				Element packElement =xmlo.addElement("root", "packinfo");
+				packElement.addAttribute("name", pack[i].getName());
+				packElement.addAttribute("path",pack[i].getSavePath());
+			}
+		}
+		catch(Exception e)
+		{
+			e.printStackTrace();
+		}
+		//updateXml();
+		xmlo.writeToFile();
+		xmlo.close();
+	}
 	
 }
