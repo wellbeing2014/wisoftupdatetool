@@ -194,7 +194,7 @@ public class XmlOperator {
 	 */
 	public void AddOnlyNode( String nodePath,String nodeValue)
 	 {
-		if(!nodeValue.isEmpty())
+		if(!(nodeValue==null))
 		{
 			addElement(nodePath,false);
 			Node only = this.document.selectSingleNode(nodePath);
