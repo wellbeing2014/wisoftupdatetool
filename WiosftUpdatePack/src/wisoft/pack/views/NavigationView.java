@@ -27,6 +27,7 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.TreeItem;
 import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IPropertyListener;
@@ -134,6 +135,21 @@ public class NavigationView extends ViewPart {
 		 return selPack.toArray(new PackInfoModel[0]);
 	}
 	
+	
+	public PackInfoModel[] getAllPackInfo()
+	{
+		// IStructuredSelection selection = (IStructuredSelection)this.viewer.getTree().gegetSelection();
+		 List<PackInfoModel> selPack =new ArrayList<PackInfoModel>();
+		 TreeItem[] treeItems =this.viewer.getTree().getItems();
+		 for(int i=0;i<treeItems.length;i++)
+		 {
+			 if(treeItems[i].getData() instanceof PackInfoModel)
+				 selPack.add((PackInfoModel)treeItems[i].getData());
+		 }
+		 
+		 return selPack.toArray(new PackInfoModel[0]);
+	}
+	
 	private void hookDoubleClickAction()
 	{
 		this.viewer.addDoubleClickListener(new IDoubleClickListener() {
@@ -235,30 +251,21 @@ public class NavigationView extends ViewPart {
 		} 
 		
 	}
-	public void SaveNavInfo(PackInfoModel[] pack)
+	public void SaveNavInfo()
 	{
-		//创建文件夹
-		File dir = new File("NavInfo.xml");
-		//dir.mkdirs();
-		XmlOperator xmlo = new XmlOperator();
-		try
+		PackInfoModel[] pack = getAllPackInfo();
+		XmlOperator xmlo = new XmlOperator("navinfo.xml");
+		xmlo.initXml("root");
+		Element root =xmlo.getRootElement();
+		for(int i=1;i<pack.length;i++)
 		{
-			xmlo.loadXml(dir.getAbsolutePath());
-			for(int i = 0;i<pack.length; i++)
-			{
-				xmlo.addRootElement("root");
-				Element packElement =xmlo.addElement("root", "packinfo");
-				packElement.addAttribute("name", pack[i].getName());
-				packElement.addAttribute("path",pack[i].getSavePath());
-			}
+			Element packxml =root.addElement("packinfo");
+			packxml.addAttribute("name", pack[i].getName());
+			packxml.addAttribute("path", pack[i].getSavePath());
 		}
-		catch(Exception e)
-		{
-			e.printStackTrace();
-		}
-		//updateXml();
-		xmlo.writeToFile();
+		xmlo.save();
 		xmlo.close();
+	
 	}
 	
 }

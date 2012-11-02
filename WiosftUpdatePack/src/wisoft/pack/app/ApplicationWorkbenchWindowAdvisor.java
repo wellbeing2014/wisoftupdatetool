@@ -1,15 +1,13 @@
 package wisoft.pack.app;
 
-import java.io.File;
-
 import org.eclipse.swt.graphics.Point;
+import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.application.ActionBarAdvisor;
 import org.eclipse.ui.application.IActionBarConfigurer;
 import org.eclipse.ui.application.IWorkbenchWindowConfigurer;
 import org.eclipse.ui.application.WorkbenchWindowAdvisor;
-import org.eclipse.ui.internal.util.PrefUtil;
 
-import wisoft.pack.utils.XmlOperator;
+import wisoft.pack.views.NavigationView;
 
 public class ApplicationWorkbenchWindowAdvisor extends WorkbenchWindowAdvisor {
 
@@ -27,9 +25,18 @@ public class ApplicationWorkbenchWindowAdvisor extends WorkbenchWindowAdvisor {
         configurer.setShowCoolBar(true);
         configurer.setShowStatusLine(false);
     }
-    @SuppressWarnings("restriction")
+//    @SuppressWarnings("restriction")
+//    @Override
+//    public void postWindowClose() {
+//    	NavigationView nv =(NavigationView) PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().findView(NavigationView.ID);
+//    	nv.SaveNavInfo();
+//    } 
+    
     @Override
-    public void postWindowClose() {
-    	
-    } 
+    public boolean preWindowShellClose() {
+    	// TODO Auto-generated method stub
+    	NavigationView nv =(NavigationView) PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().findView(NavigationView.ID);
+    	nv.SaveNavInfo();
+    	return super.preWindowShellClose();
+    }
 }
