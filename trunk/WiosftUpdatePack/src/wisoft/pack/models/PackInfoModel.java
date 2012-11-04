@@ -22,13 +22,13 @@ public class PackInfoModel extends Model {
 	private  IEditorInput editInput;
 	private XmlOperator xmlo = new XmlOperator();
 	
-	private String moduleName;
-	private String moduleCode;
-	private String version ;
-	private String savePath;
-	private String CreateMan;
-	private String releaseNote;
-	private String keyWord;
+	private String moduleName="";
+	private String moduleCode="";
+	private String version ="";
+	private String savePath="";
+	private String CreateMan="";
+	private String releaseNote="";
+	private String keyWord="";
 	
 	//private File updateinfoxml;
 	
@@ -129,43 +129,68 @@ public class PackInfoModel extends Model {
 //		readFromXML();
 	}
 	
+	public void saveIntoXML()
+	{
+		//创建文件夹
+		File dir = new File(savePath);
+		dir.mkdirs();
+		xmlo.setXmlfile(new File(savePath+"/updateinfo.xml"));
+		xmlo.initXml("root");
+		Element root  = xmlo.getRootElement();
+		if(moduleName!=null)
+			root.addElement("ModuleName").setText(moduleName);
+		if(moduleCode!=null)
+			root.addElement("ModuleCode").setText(moduleCode);
+		if(version!=null)
+			root.addElement("Version").setText(version);
+		if(CreateMan!=null)
+			root.addElement("CreateMan").setText(CreateMan);
+		if(keyWord!=null)
+			root.addElement("KeyWord").setText(keyWord);
+		if(releaseNote!=null)
+			root.addElement("Releasenote").setText(releaseNote);
+		xmlo.save();
+		xmlo.close();
+		
+	}
+	
 	public void readFromXML()
 	{
 		//创建文件夹
 		File dir = new File(savePath);
 		dir.mkdirs();
 		xmlo.setXmlfile(new File(savePath+"/updateinfo.xml"));
-		
+		xmlo.initXml("root");
 		try {
 			Document document =xmlo.getDocument();
 			//document = reader.read(xmlfile);
 			Element root = document.getRootElement();// 得到根节点
 			
-			String ModuleCode =null ;
+			//String ModuleCode =null ;
 			if(root.element("ModuleCode")!=null)
-				ModuleCode= root.element("ModuleCode").getText();
-			String ModuleName = null;
+				moduleCode= root.element("ModuleCode").getText();
+			//String ModuleName = null;
 			if(root.element("ModuleName")!=null)
-				ModuleName=root.element("ModuleName").getText();
-			String version = null;
+				moduleName=root.element("ModuleName").getText();
+			//String version = null;
 			if(root.element("Version")!=null)
 				version =root.element("Version").getText();
-			String createMan = null;
+			//String createMan = null;
 			if(root.element("CreateMan")!=null)
-				createMan =root.element("CreateMan").getText();
-			String keyword = null;
+				CreateMan =root.element("CreateMan").getText();
+			//String keyword = null;
 			if(root.element("KeyWord")!=null)
-				keyword =root.element("KeyWord").getText();
-			String releasenot = null;
+				keyWord =root.element("KeyWord").getText();
+			//String releasenot = null;
 			if(root.element("Releasenote")!=null)
-				releasenot =root.element("Releasenote").getText();
+				releaseNote =root.element("Releasenote").getText();
 			
-			setModuleCode(ModuleCode);
-			setModuleName(ModuleName);
+			setModuleCode(moduleCode);
+			setModuleName(moduleName);
 			setVersion(version);
-			setCreateMan(createMan);
-			setKeyWord(keyword);
-			setReleaseNote(releasenot);
+			setCreateMan(CreateMan);
+			setKeyWord(keyWord);
+			setReleaseNote(releaseNote);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

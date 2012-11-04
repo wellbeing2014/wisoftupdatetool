@@ -175,7 +175,7 @@ public class NavigationView extends ViewPart {
 				{
 					packinfo.setEditInput(new PackInfoInput(packinfo));
 				}
-				
+				packinfo.saveIntoXML();
 				editorPart = workbenchPage.findEditor(packinfo.getEditInput());
 				if(editorPart!=null)
 					 workbenchPage.bringToTop(editorPart);
@@ -257,7 +257,7 @@ public class NavigationView extends ViewPart {
 		XmlOperator xmlo = new XmlOperator("navinfo.xml");
 		xmlo.initXml("root");
 		Element root =xmlo.getRootElement();
-		for(int i=1;i<pack.length;i++)
+		for(int i=0;i<pack.length;i++)
 		{
 			Element packxml =root.addElement("packinfo");
 			packxml.addAttribute("name", pack[i].getName());
@@ -265,7 +265,6 @@ public class NavigationView extends ViewPart {
 		}
 		xmlo.save();
 		xmlo.close();
-	
 	}
 	
 }

@@ -5,7 +5,6 @@ import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PlatformUI;
 
 import wisoft.pack.app.Activator;
-import wisoft.pack.edits.PackEdit;
 import wisoft.pack.models.PackInfoModel;
 
 public class RefreshPackAction extends Action {
@@ -26,8 +25,8 @@ public class RefreshPackAction extends Action {
 		PackInfoModel pack = Activator.getDefault().getCurrent_pack();
 		if(pack!=null&&pack.getEditInput()!=null)		
 		{
-			PackEdit editorPart  =(PackEdit) workbenchPage.findEditor(pack.getEditInput());
-			editorPart.refreshPackInfo();
+//			PackEdit editorPart  =(PackEdit) workbenchPage.findEditor(pack.getEditInput());
+//			editorPart.refreshPackInfo();
 		}
 	}
 
