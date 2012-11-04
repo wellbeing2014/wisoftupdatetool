@@ -22,6 +22,7 @@ import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.layout.RowLayout;
 
 import wisoft.pack.models.PackInfoModel;
+import org.eclipse.ui.forms.widgets.FormText;
 
 public class BFormPage extends FormPage {
 	private Text text;
@@ -71,24 +72,26 @@ public class BFormPage extends FormPage {
 		layout.rightMargin = 10;
 		layout.horizontalSpacing = 10;
 		layout.verticalSpacing = 10;
-		layout.maxNumColumns = 4;
+		layout.maxNumColumns = 2;
 		layout.minNumColumns = 1;
 		form.getBody().setLayout(layout);
 		
+		CreateScopeSection(managedForm);
 		CreateBaseInfoSection(managedForm);
 		
 		//CreateBaseInfoSection(managedForm);
 		
 		//section.setClient(composite);
-		CreateScopeSection(managedForm);
 	}
 	private void CreateScopeSection(IManagedForm managedForm)
 	{
 		Section section = managedForm.getToolkit().createSection(managedForm.getForm().getBody(), Section.TWISTIE | Section.TITLE_BAR);
 		ColumnLayoutData cld_section = new ColumnLayoutData();
+		cld_section.heightHint = 180;
 		//cld_section.heightHint = 237;
 		//cld_section.widthHint = 217;
 		cld_section.horizontalAlignment=ColumnLayoutData.FILL;
+		cld_section.heightHint=ColumnLayoutData.FILL;
 		section.setLayoutData(cld_section);
 		managedForm.getToolkit().paintBordersFor(section);
 		section.setText("\u66F4\u65B0\u8303\u56F4\u8BF4\u660E");
@@ -100,16 +103,7 @@ public class BFormPage extends FormPage {
 		section.setClient(composite);
 		composite.setLayout(new FormLayout());
 		
-		List list = new List(composite, SWT.BORDER | SWT.V_SCROLL);
-		FormData fd_list = new FormData();
-		fd_list.top = new FormAttachment(0);
-		fd_list.left = new FormAttachment(0);
-		fd_list.bottom = new FormAttachment(0, 215);
-		list.setLayoutData(fd_list);
-		managedForm.getToolkit().adapt(list, true, true);
-		
 		Composite composite_1 = new Composite(composite, SWT.NONE);
-		fd_list.right = new FormAttachment(composite_1);
 		composite_1.setLayout(new RowLayout(SWT.HORIZONTAL));
 		FormData fd_composite_1 = new FormData();
 		fd_composite_1.left = new FormAttachment(100, -50);
@@ -127,17 +121,30 @@ public class BFormPage extends FormPage {
 		Button btnNewButton = new Button(composite_1, SWT.NONE);
 		managedForm.getToolkit().adapt(btnNewButton, true, true);
 		btnNewButton.setText("\u5220\u9664");
+		
+		FormText formText = managedForm.getToolkit().createFormText(composite, false);
+		FormData fd_formText = new FormData();
+		fd_formText.bottom = new FormAttachment(100);
+		fd_formText.right = new FormAttachment(composite_1);
+		fd_formText.top = new FormAttachment(composite_1, 0, SWT.TOP);
+		fd_formText.left = new FormAttachment(0);
+		formText.setLayoutData(fd_formText);
+		managedForm.getToolkit().paintBordersFor(formText);
+		formText.setText("New FormText", false, false);
 	}
 	private void CreateBaseInfoSection(IManagedForm managedForm)
 	{
+		
 		Section section = managedForm.getToolkit().createSection(managedForm.getForm().getBody(), Section.TWISTIE | Section.TITLE_BAR);
 		//section.setBounds(10, 10, 296, 237);
 		managedForm.getToolkit().paintBordersFor(section);
 		section.setText("\u57FA\u672C\u4FE1\u606F");
 		section.setExpanded(true);
 		ColumnLayoutData cld_section = new ColumnLayoutData();
+		cld_section.heightHint = 245;
 		//cld_section.heightHint = 232;
 		//cld_section.widthHint = 217;
+		cld_section.widthHint = ColumnLayoutData.FILL;
 		cld_section.horizontalAlignment=ColumnLayoutData.FILL;
 		section.setLayoutData(cld_section);
 		
@@ -217,4 +224,5 @@ public class BFormPage extends FormPage {
 //		this.text.setText( pack.getModuleName());
 //		this.text.setText( pack.getModuleName());
 	}
+	
 }

@@ -80,7 +80,7 @@ public class NewPackWizard extends Wizard {
 					pack.setCreateMan(createMan);
 					pack.setKeyWord(keyword);
 					pack.setReleaseNote(releasenot);
-					pack.readFromXML();
+					//pack.readFromXML();
 					monitor.worked(2);
 					monitor.setTaskName("更新包已创建");
 					Thread.sleep(1000);

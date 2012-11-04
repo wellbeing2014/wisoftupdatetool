@@ -29,6 +29,8 @@ public class XmlOperator {
 	private String defaultxmlpath = "default.xml";
 	
 	public Document getDocument() {
+		if(document==null)
+			read();
 		return document;
 	}
 	public void setDocument(Document document) {

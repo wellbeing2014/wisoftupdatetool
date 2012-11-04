@@ -1,13 +1,7 @@
 package wisoft.pack.actions;
 
 import org.eclipse.jface.action.Action;
-import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchWindow;
-import org.eclipse.ui.PartInitException;
-import org.eclipse.ui.PlatformUI;
-
-import wisoft.pack.edits.PackEdit;
-import wisoft.pack.edits.PackInfoInput;
 
 
 public class OpenPackEditAction extends Action {
