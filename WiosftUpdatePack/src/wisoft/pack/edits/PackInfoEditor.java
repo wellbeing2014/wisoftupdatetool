@@ -36,6 +36,7 @@ public class PackInfoEditor extends FormEditor {
 		try {
 			addPage(new AFormPage(this,"AFormPage","版权"),getEditorInput());
 			addPage(new BFormPage(this,"BFormPage","基本信息"),getEditorInput());
+			addPage(new CFormPage(this,"CFormPage","文件列表"));
 			int i = addPage(editor, getEditorInput());
 			setPageText(i,"updatexml");
 		} catch (PartInitException e) {
