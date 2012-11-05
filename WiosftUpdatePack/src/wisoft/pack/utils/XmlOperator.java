@@ -95,10 +95,14 @@ public class XmlOperator {
 		RootElement =this.document.getRootElement();
 		if(RootElement!=null)
 		{
-			if(RootElement.getName().equals(root))
-				 this.document.remove(RootElement);
+			if(!RootElement.getName().equals(root))
+			{
+				this.document.remove(RootElement);
+				RootElement =this.document.addElement(root);
+			}
 		}
-		RootElement =this.document.addElement(root);
+		else
+			RootElement =this.document.addElement(root);
 	}
 	
 	//public void 
