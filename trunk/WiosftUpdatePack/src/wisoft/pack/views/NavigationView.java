@@ -195,9 +195,9 @@ public class NavigationView extends ViewPart {
 						// TODO Auto-generated method stub
 						if(propId==ISaveablePart2.PROP_DIRTY&&!packinfo.isdirty)
 						{
-							packinfo.isdirty = true;
-							packinfo.setName("*"+packinfo.getName());
-							viewer.refresh();
+//							packinfo.isdirty = true;
+//							packinfo.setName("*"+packinfo.getName());
+//							viewer.refresh();
 						}
 					}
 				});
