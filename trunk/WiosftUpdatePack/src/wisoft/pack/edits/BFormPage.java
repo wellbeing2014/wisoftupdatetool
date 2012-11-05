@@ -167,6 +167,12 @@ public class BFormPage extends FormPage {
 		viewer.setContentProvider(new PackRelyContentProvider());
 		viewer.setLabelProvider(new PackRelyLabelProvider());
 		viewer.setInput(getEditor().getEditorInput());
+		section.addExpansionListener(new ExpansionAdapter() {
+			public void expansionStateChanged(ExpansionEvent e) {
+				managedForm.getForm().reflow(false);
+				//System.out.println("adfasdfasdfasdfas dian kai ");
+			}
+		});
 		return section;
 	}
 	
@@ -205,7 +211,7 @@ public class BFormPage extends FormPage {
 		btnNewButton.setLayoutData(fd_btnNewButton);
 		section.addExpansionListener(new ExpansionAdapter() {
 			public void expansionStateChanged(ExpansionEvent e) {
-				form.reflow(true);
+				form.reflow(false);
 			}
 		});
 		
