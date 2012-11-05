@@ -1,9 +1,14 @@
 package wisoft.pack.edits;
 
 import org.eclipse.jface.viewers.ISelectionChangedListener;
+import org.eclipse.jface.viewers.IStructuredContentProvider;
+import org.eclipse.jface.viewers.ITableLabelProvider;
+import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.TableViewer;
+import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.layout.FormLayout;
@@ -20,12 +25,13 @@ import org.eclipse.ui.forms.editor.FormEditor;
 import org.eclipse.ui.forms.editor.FormPage;
 import org.eclipse.ui.forms.events.ExpansionAdapter;
 import org.eclipse.ui.forms.events.ExpansionEvent;
-import org.eclipse.ui.forms.widgets.ColumnLayout;
-import org.eclipse.ui.forms.widgets.ColumnLayoutData;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.ScrolledForm;
 import org.eclipse.ui.forms.widgets.Section;
+import org.eclipse.ui.forms.widgets.TableWrapData;
+import org.eclipse.ui.forms.widgets.TableWrapLayout;
 
+import wisoft.pack.app.Activator;
 import wisoft.pack.models.PackInfoModel;
 
 public class BFormPage extends FormPage {
@@ -70,35 +76,49 @@ public class BFormPage extends FormPage {
 		Composite body = form.getBody();
 		toolkit.decorateFormHeading(form.getForm());
 		toolkit.paintBordersFor(body);
-		ColumnLayout layout = new ColumnLayout();
-		layout.topMargin = 0;
-		layout.bottomMargin = 5;
-		layout.leftMargin = 10;
-		layout.rightMargin = 10;
-		layout.horizontalSpacing = 10;
-		layout.verticalSpacing = 10;
-		layout.maxNumColumns = 2;
-		layout.minNumColumns = 1;
+		TableWrapLayout layout = new TableWrapLayout();
+		TableWrapData td = new TableWrapData();
+//		ColumnLayout layout = new ColumnLayout();
+//		layout.topMargin = 0;
+//		layout.bottomMargin = 5;
+//		layout.leftMargin = 10;
+//		layout.rightMargin = 10;
+//		layout.horizontalSpacing = 10;
+//		layout.verticalSpacing = 10;
+//		layout.maxNumColumns = 2;
+//		layout.minNumColumns = 1;
+		layout.numColumns = 2;
 		form.getBody().setLayout(layout);
-		CreateBaseInfoSection(managedForm);
-		CreateScopeSection(managedForm);
-		CreateRelySection(managedForm);
+		Section section_1 =CreateBaseInfoSection(managedForm);
+		td = new TableWrapData(TableWrapData.FILL_GRAB);
+		td.heightHint=250;
+		section_1.setLayoutData(td);
+		Section section_2 =CreateScopeSection(managedForm);
+		td = new TableWrapData(TableWrapData.FILL_GRAB);
+		td.rowspan = 2;
+		td.heightHint=400;
+		section_2.setLayoutData(td);
+		
+		Section section_3 =CreateRelySection(managedForm);
+		td = new TableWrapData(TableWrapData.FILL_GRAB);
+		td.heightHint=150;
+		section_3.setLayoutData(td);
 		
 		//CreateBaseInfoSection(managedForm);
 		
 		//section.setClient(composite);
 	}
 	
-	private void CreateRelySection(final IManagedForm managedForm)
+	private Section CreateRelySection(final IManagedForm managedForm)
 	{
 		Section section = managedForm.getToolkit().createSection(managedForm.getForm().getBody(), Section.TWISTIE | Section.TITLE_BAR);
-		ColumnLayoutData cld_section = new ColumnLayoutData();
-		cld_section.heightHint = 150;
-		//cld_section.heightHint = 237;
-		//cld_section.widthHint = 217;
-		cld_section.widthHint = ColumnLayoutData.FILL;
-		cld_section.horizontalAlignment=ColumnLayoutData.FILL;
-		section.setLayoutData(cld_section);
+//		ColumnLayoutData cld_section = new ColumnLayoutData();
+//		cld_section.heightHint = 150;
+//		//cld_section.heightHint = 237;
+//		//cld_section.widthHint = 217;
+//		cld_section.widthHint = ColumnLayoutData.FILL;
+//		cld_section.horizontalAlignment=ColumnLayoutData.FILL;
+//		section.setLayoutData(cld_section);
 		managedForm.getToolkit().paintBordersFor(section);
 		section.setText("\u66F4\u65B0\u4F9D\u8D56");
 		section.setExpanded(true);
@@ -136,7 +156,6 @@ public class BFormPage extends FormPage {
 		t.setLayoutData(fd_t);
 		
 		
-		//viewer.setInput(page.getEditor().getEditorInput());
 		final SectionPart spart = new SectionPart(section);
 		managedForm.addPart(spart);
 		TableViewer viewer = new TableViewer(t);
@@ -145,25 +164,25 @@ public class BFormPage extends FormPage {
 				managedForm.fireSelectionChanged(spart, event.getSelection());
 			}
 		});
-		viewer.setContentProvider(new MasterContentProvider());
-		viewer.setLabelProvider(new MasterLabelProvider());
+		viewer.setContentProvider(new PackRelyContentProvider());
+		viewer.setLabelProvider(new PackRelyLabelProvider());
 		viewer.setInput(getEditor().getEditorInput());
+		return section;
 	}
 	
-	private void CreateScopeSection( IManagedForm managedForm)
+	private Section CreateScopeSection( IManagedForm managedForm)
 	{
 		final ScrolledForm form = managedForm.getForm();
-		Section section = managedForm.getToolkit().createSection(form.getBody(), Section.TWISTIE | Section.TITLE_BAR);
-		ColumnLayoutData cld_section = new ColumnLayoutData();
-		cld_section.heightHint = 276;
-		//cld_section.heightHint = 237;
-		//cld_section.widthHint = 217;
-		cld_section.widthHint = ColumnLayoutData.FILL;
-		cld_section.horizontalAlignment=ColumnLayoutData.FILL;
-		section.setLayoutData(cld_section);
+		Section section = managedForm.getToolkit().createSection(form.getBody(), Section.EXPANDED|Section.TWISTIE | Section.TITLE_BAR);
+//		ColumnLayoutData cld_section = new ColumnLayoutData();
+//		cld_section.heightHint = 276;
+//		//cld_section.heightHint = 237;
+//		//cld_section.widthHint = 217;
+//		cld_section.widthHint = ColumnLayoutData.FILL;
+//		cld_section.horizontalAlignment=ColumnLayoutData.FILL;
+//		section.setLayoutData(cld_section);
 		managedForm.getToolkit().paintBordersFor(section);
 		section.setText("\u66F4\u65B0\u8303\u56F4\u8BF4\u660E");
-		section.setExpanded(true);
 		
 		Composite composite = new Composite(section, SWT.NONE);
 		managedForm.getToolkit().adapt(composite);
@@ -186,11 +205,13 @@ public class BFormPage extends FormPage {
 		btnNewButton.setLayoutData(fd_btnNewButton);
 		section.addExpansionListener(new ExpansionAdapter() {
 			public void expansionStateChanged(ExpansionEvent e) {
-				form.reflow(false);
+				form.reflow(true);
 			}
 		});
+		
+		return section;
 	}
-	private void CreateBaseInfoSection(final IManagedForm managedForm)
+	private Section CreateBaseInfoSection(final IManagedForm managedForm)
 	{
 		final ScrolledForm form = managedForm.getForm();
 		FormToolkit toolkit = managedForm.getToolkit();
@@ -199,13 +220,13 @@ public class BFormPage extends FormPage {
 		toolkit.paintBordersFor(section);
 		section.setText("\u57FA\u672C\u4FE1\u606F");
 		//section.setExpanded(true);
-		ColumnLayoutData cld_section = new ColumnLayoutData();
-		cld_section.heightHint = 245;
-		//cld_section.heightHint = 232;
-		//cld_section.widthHint = 217;
-		cld_section.widthHint = ColumnLayoutData.FILL;
-		cld_section.horizontalAlignment=ColumnLayoutData.FILL;
-		section.setLayoutData(cld_section);
+//		ColumnLayoutData cld_section = new ColumnLayoutData();
+//		cld_section.heightHint = 245;
+//		//cld_section.heightHint = 232;
+//		//cld_section.widthHint = 217;
+//		cld_section.widthHint = ColumnLayoutData.FILL;
+//		cld_section.horizontalAlignment=ColumnLayoutData.FILL;
+//		section.setLayoutData(cld_section);
 		
 		Composite composite = managedForm.getToolkit().createComposite(section, SWT.NONE);
 		toolkit.paintBordersFor(composite);
@@ -288,5 +309,29 @@ public class BFormPage extends FormPage {
 		});
 //		this.text.setText( pack.getModuleName());
 //		this.text.setText( pack.getModuleName());
+		return section;
+	}
+	class PackRelyContentProvider implements IStructuredContentProvider {
+		public Object[] getElements(Object inputElement) {
+			if (inputElement instanceof PackInfoInput) {
+				PackInfoInput input = (PackInfoInput)getEditor().getEditorInput();
+				return input.getPackRelyData();
+			}
+			return new Object[0];
+		}
+		public void dispose() {
+		}
+		public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
+		}
+	}
+	class PackRelyLabelProvider extends LabelProvider
+			implements
+				ITableLabelProvider {
+		public String getColumnText(Object obj, int index) {
+			return obj.toString();
+		}
+		public Image getColumnImage(Object obj, int index) {
+			return new Image(null, Activator.getImageDescriptor("icons/wi_updatetool.ico").getImageData());
+		}
 	}
 }
