@@ -175,6 +175,7 @@ public class NavigationView extends ViewPart {
 				{
 					packinfo.setEditInput(new PackInfoInput(packinfo));
 				}
+				packinfo.readFromXML();
 				packinfo.saveIntoXML();
 				editorPart = workbenchPage.findEditor(packinfo.getEditInput());
 				if(editorPart!=null)
@@ -206,22 +207,7 @@ public class NavigationView extends ViewPart {
 		});
 	}
 	
-	private void createNavInfo()
-	{
-		OutputFormat format=OutputFormat.createPrettyPrint();
-		 format.setEncoding("UTF-8");
-		 XMLWriter w;
-		 try {
-			 w = new XMLWriter(new FileWriter(new File("NavInfo.xml")),format);
-			 Document doc = DocumentHelper.createDocument();
-			 doc.addElement("root");
-			 w.write(doc) ;  
-			 w.close();
-		 } catch (IOException e) {
-			 // TODO Auto-generated catch block
-			 e.printStackTrace();
-		 }  
-	}
+	
 	private void readNavInfo()
 	{
 		try 
@@ -229,11 +215,12 @@ public class NavigationView extends ViewPart {
 		File file = new File("NavInfo.xml");
 		if(!file.exists())
 		{
-			createNavInfo();
+			SaveNavInfo();
 			return;
 		}
 			
 		SAXReader reader = new SAXReader(); 
+		reader.setEncoding("UTF-8");
 		Document doc = reader.read("NavInfo.xml"); 
 		// 读取XML文件
         Element root = doc.getRootElement();// 得到根节点

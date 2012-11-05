@@ -1,6 +1,7 @@
 package wisoft.pack.utils;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 
@@ -68,7 +69,12 @@ public class XmlOperator {
 	{
 		if(exists())
 			try {
-				document = new SAXReader().read(xmlfile.getAbsolutePath());
+				SAXReader saxReader =new SAXReader();
+				saxReader.setEncoding("UTF-8");  
+				document = saxReader.read(xmlfile);
+				Element root= document.getRootElement();
+				if(root!=null)
+					RootElement = root;
 			} catch (DocumentException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -100,9 +106,10 @@ public class XmlOperator {
 	public void save()
 	{
 		try {
-			OutputFormat format = OutputFormat.createPrettyPrint(); 
+			OutputFormat format = OutputFormat.createPrettyPrint();
+			format.setEncoding("UTF-8"); 
 			XMLWriter writer;
-			writer = new XMLWriter(new FileWriter(xmlfile), format );
+			writer = new XMLWriter( new FileOutputStream(xmlfile), format );
 			writer.write(this.document);
 			writer.close();
 		} catch (IOException e) {

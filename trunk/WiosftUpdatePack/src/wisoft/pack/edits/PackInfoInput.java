@@ -1,7 +1,10 @@
 package wisoft.pack.edits;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
+import org.dom4j.Element;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.resource.ImageDescriptor;
@@ -9,6 +12,8 @@ import org.eclipse.ui.IPathEditorInput;
 import org.eclipse.ui.IPersistableElement;
 
 import wisoft.pack.models.PackInfoModel;
+import wisoft.pack.models.PackRelyModel;
+import wisoft.pack.utils.XmlOperator;
 
 public class PackInfoInput implements IPathEditorInput {
 	//private IPath fPath;
@@ -66,4 +71,26 @@ public class PackInfoInput implements IPathEditorInput {
 		return this.packinfo.getSavePath().hashCode();
 	}
 
+	public PackRelyModel[] getPackRelyData()
+	{
+		XmlOperator xmlo = new XmlOperator(getPath().toString());
+		//Element root =xmlo.getDocument().selectNodes("/root/PackRely");
+		ArrayList<PackRelyModel> relyr = new ArrayList<PackRelyModel>();
+		List el = xmlo.getDocument().selectNodes("/root/PackRely");
+		Element el1 = null;
+		if(el!=null&&el.size()>0)
+		{
+			el1 = (Element)(el.get(0));
+			List<Element> relys = el1.elements();
+			for(int i = 0;i<relys.size();i++)
+			{
+				PackRelyModel rm = new PackRelyModel();
+				rm.setName(relys.get(i).attributeValue("modelname"));
+				rm.setCode(relys.get(i).attributeValue("code"));
+				rm.setVersion(relys.get(i).attributeValue("version"));
+				
+			}
+		}
+		return relyr.toArray(new PackRelyModel[0]);
+	}
 }
