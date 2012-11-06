@@ -9,6 +9,7 @@ import org.dom4j.Element;
 import org.dom4j.io.SAXReader;
 import org.eclipse.ui.IEditorInput;
 
+import wisoft.pack.utils.UpdateInfo;
 import wisoft.pack.utils.XmlOperator;
 
 public class PackInfoModel extends Model {
@@ -18,17 +19,19 @@ public class PackInfoModel extends Model {
 	protected PackInfoOfEditConfs editConfs =new PackInfoOfEditConfs(this);
 	protected PackInfoOfEditSql editSql = new PackInfoOfEditSql(this);
 	
-	public boolean isdirty = false;
+	//public boolean isdirty = false;
 	private  IEditorInput editInput;
 	private XmlOperator xmlo = new XmlOperator();
 	
+	public XmlOperator getXmlo() {
+		return xmlo;
+	}
+
 	private String moduleName="";
 	private String moduleCode="";
 	private String version ="";
 	private String savePath="";
-	private String CreateMan="";
-	private String releaseNote="";
-	private String keyWord="";
+
 	
 	//private File updateinfoxml;
 	
@@ -56,30 +59,13 @@ public class PackInfoModel extends Model {
 	public void setSavePath(String savePath) {
 		this.savePath = savePath;
 	}
-	public String getCreateMan() {
-		return CreateMan;
-	}
-	public void setCreateMan(String createMan) {
-		CreateMan = createMan;
-	}
-	public String getReleaseNote() {
-		return releaseNote;
-	}
-	public void setReleaseNote(String releaseNote) {
-		this.releaseNote = releaseNote;
-	}
-	public String getKeyWord() {
-		return keyWord;
-	}
-	public void setKeyWord(String keyWord) {
-		this.keyWord = keyWord;
-	}
 	
 	
-	public void updateXml() 
+	
+	public void refresh() 
 	{
-		Element modelname_el = xmlo.getRootElement().addElement("ModuleName");
-		modelname_el.setText(moduleName);
+//		Element modelname_el = xmlo.getRootElement().addElement("ModuleName");
+//		modelname_el.setText(moduleName);
 		
 	}
 
@@ -134,24 +120,23 @@ public class PackInfoModel extends Model {
 		//创建文件夹
 		File dir = new File(savePath);
 		dir.mkdirs();
-		xmlo.setXmlfile(new File(savePath+"/updateinfo.xml"));
+		xmlo.setXmlfile(new File(savePath+"/"+UpdateInfo.FileName));
 		xmlo.initXml("root");
-		Element root  = xmlo.getRootElement();
+		//Element root  = xmlo.getRootElement();
 		if(moduleName!=null)
-			root.addElement("ModuleName").setText(moduleName);
+			xmlo.OnlyElementInRoot(UpdateInfo.ModuleName).setText(moduleName);
 		if(moduleCode!=null)
-			root.addElement("ModuleCode").setText(moduleCode);
+			xmlo.OnlyElementInRoot(UpdateInfo.ModuleCode).setText(moduleCode);
 		if(version!=null)
-			root.addElement("Version").setText(version);
-		if(CreateMan!=null)
-			root.addElement("CreateMan").setText(CreateMan);
-		if(keyWord!=null)
-			root.addElement("KeyWord").setText(keyWord);
-		if(releaseNote!=null)
-			root.addElement("Releasenote").setText(releaseNote);
-		xmlo.save();
-		xmlo.close();
+			xmlo.OnlyElementInRoot(UpdateInfo.Version).setText(version);
 		
+		Element scope =xmlo.OnlyElementInRoot(UpdateInfo.Scope);
+		xmlo.OnlyElementInElemnt(scope, UpdateInfo.Scope_Back).setText("false");
+		xmlo.OnlyElementInElemnt(scope, UpdateInfo.Scope_DB).setText("false");
+		xmlo.OnlyElementInElemnt(scope, UpdateInfo.Scope_Front).setText("false");
+		xmlo.OnlyElementInRoot(UpdateInfo.ReleaseNote);
+		
+		xmlo.save();
 	}
 	
 	public void readFromXML()
@@ -159,38 +144,24 @@ public class PackInfoModel extends Model {
 		//创建文件夹
 		File dir = new File(savePath);
 		dir.mkdirs();
-		xmlo.setXmlfile(new File(savePath+"/updateinfo.xml"));
+		xmlo.setXmlfile(new File(savePath+"/"+UpdateInfo.FileName));
 		xmlo.initXml("root");
 		try {
 			Document document =xmlo.getDocument();
 			//document = reader.read(xmlfile);
 			Element root = document.getRootElement();// 得到根节点
-			
 			//String ModuleCode =null ;
 			if(root.element("ModuleCode")!=null)
-				moduleCode= root.element("ModuleCode").getText();
+				moduleCode= root.element(UpdateInfo.ModuleCode).getText();
 			//String ModuleName = null;
 			if(root.element("ModuleName")!=null)
-				moduleName=root.element("ModuleName").getText();
+				moduleName=root.element(UpdateInfo.ModuleName).getText();
 			//String version = null;
 			if(root.element("Version")!=null)
-				version =root.element("Version").getText();
-			//String createMan = null;
-			if(root.element("CreateMan")!=null)
-				CreateMan =root.element("CreateMan").getText();
-			//String keyword = null;
-			if(root.element("KeyWord")!=null)
-				keyWord =root.element("KeyWord").getText();
-			//String releasenot = null;
-			if(root.element("Releasenote")!=null)
-				releaseNote =root.element("Releasenote").getText();
-			
+				version =root.element(UpdateInfo.Version).getText();
 			setModuleCode(moduleCode);
 			setModuleName(moduleName);
 			setVersion(version);
-			setCreateMan(CreateMan);
-			setKeyWord(keyWord);
-			setReleaseNote(releaseNote);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

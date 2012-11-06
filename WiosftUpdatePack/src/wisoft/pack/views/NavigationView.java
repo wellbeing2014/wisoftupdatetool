@@ -46,6 +46,7 @@ import wisoft.pack.models.PackInfoContentProvider;
 import wisoft.pack.models.PackInfoLabelProvider;
 import wisoft.pack.models.PackInfoModel;
 import wisoft.pack.models.RootModel;
+import wisoft.pack.utils.Navinfo;
 import wisoft.pack.utils.XmlOperator;
 
 
@@ -176,7 +177,7 @@ public class NavigationView extends ViewPart {
 					packinfo.setEditInput(new PackInfoInput(packinfo));
 				}
 				packinfo.readFromXML();
-				packinfo.saveIntoXML();
+//				packinfo.saveIntoXML();
 				editorPart = workbenchPage.findEditor(packinfo.getEditInput());
 				if(editorPart!=null)
 					 workbenchPage.bringToTop(editorPart);
@@ -194,7 +195,7 @@ public class NavigationView extends ViewPart {
 					@Override
 					public void propertyChanged(Object source, int propId) {
 						// TODO Auto-generated method stub
-						if(propId==ISaveablePart2.PROP_DIRTY&&!packinfo.isdirty)
+						if(propId==ISaveablePart2.PROP_DIRTY)
 						{
 //							packinfo.isdirty = true;
 //							packinfo.setName("*"+packinfo.getName());
@@ -212,7 +213,7 @@ public class NavigationView extends ViewPart {
 	{
 		try 
 		{ //读取保存的更新包列表
-		File file = new File("NavInfo.xml");
+		File file = new File(Navinfo.getFileName());
 		if(!file.exists())
 		{
 			SaveNavInfo();
@@ -221,13 +222,13 @@ public class NavigationView extends ViewPart {
 			
 		SAXReader reader = new SAXReader(); 
 		reader.setEncoding("UTF-8");
-		Document doc = reader.read("NavInfo.xml"); 
+		Document doc = reader.read(file); 
 		// 读取XML文件
         Element root = doc.getRootElement();// 得到根节点
-        for (Iterator i = root.elementIterator("packinfo"); i.hasNext();) {
+        for (Iterator i = root.elementIterator(Navinfo.getPackName()); i.hasNext();) {
             Element packinfo = (Element) i.next();
-            String name = packinfo.attributeValue("name");
-            String path = packinfo.attributeValue("path");
+            String name = packinfo.attributeValue(Navinfo.getAttriPackName());
+            String path = packinfo.attributeValue(Navinfo.getAttriPackPath());
             PackInfoModel  pack = new PackInfoModel(name,path);
             addPackInfo(pack);
         }
@@ -241,14 +242,20 @@ public class NavigationView extends ViewPart {
 	public void SaveNavInfo()
 	{
 		PackInfoModel[] pack = getAllPackInfo();
-		XmlOperator xmlo = new XmlOperator("navinfo.xml");
-		xmlo.initXml("root");
+		XmlOperator xmlo = new XmlOperator(Navinfo.getFileName());
+		xmlo.initXml(Navinfo.getRootName());
 		Element root =xmlo.getRootElement();
+		List<Element> haveele = root.elements();
+		for(int j=0;j<haveele.size();j++)
+		{			
+			xmlo.getRootElement().remove(haveele.get(j));
+		}
 		for(int i=0;i<pack.length;i++)
 		{
-			Element packxml =root.addElement("packinfo");
-			packxml.addAttribute("name", pack[i].getName());
-			packxml.addAttribute("path", pack[i].getSavePath());
+			Element packxml =xmlo.addElementInRoot(Navinfo.getPackName(), Navinfo.getAttriPackName(), pack[i].getName());
+			if(!xmlo.isEqualByAttribute(packxml, Navinfo.getAttriPackPath(), pack[i].getSavePath()))
+			packxml.addAttribute(Navinfo.getAttriPackPath(), pack[i].getSavePath());
+			//packxml.addAttribute("name", pack[i].getName());
 		}
 		xmlo.save();
 		xmlo.close();

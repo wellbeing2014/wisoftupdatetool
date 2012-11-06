@@ -1,5 +1,6 @@
 package wisoft.pack.edits;
 
+import org.dom4j.Element;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.ITableLabelProvider;
@@ -33,15 +34,27 @@ import org.eclipse.ui.forms.widgets.TableWrapLayout;
 
 import wisoft.pack.app.Activator;
 import wisoft.pack.models.PackInfoModel;
+import wisoft.pack.utils.UpdateInfo;
+import wisoft.pack.utils.XmlOperator;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
 
 public class BFormPage extends FormPage {
+	
+	private XmlOperator xmlo;
+	
 	private Text text;
 	private Text text_1;
 	private Text text_2;
 	private Text text_3;
 	private Text text_4;
+	private Button button;
+	private Button button_1;
+	private Button button_2;
+	
+	
 	private Text txtNewText;
-
+	
 	/**
 	 * Create the form page.
 	 * @param id
@@ -62,6 +75,8 @@ public class BFormPage extends FormPage {
 	 */
 	public BFormPage(FormEditor editor, String id, String title) {
 		super(editor, id, title);
+		//PackInfoInput pack = (PackInfoInput)getEditorInput()).getPackinfo();
+		xmlo = ((PackInfoInput)editor.getEditorInput()).getPackinfo().getXmlo();
 	}
 
 	/**
@@ -107,6 +122,7 @@ public class BFormPage extends FormPage {
 		//CreateBaseInfoSection(managedForm);
 		
 		//section.setClient(composite);
+		loadXmlData();
 	}
 	
 	private Section CreateRelySection(final IManagedForm managedForm)
@@ -288,34 +304,79 @@ public class BFormPage extends FormPage {
 		toolkit.adapt(label_3, true, true);
 		label_3.setText("\u66F4\u65B0\u8303\u56F4\uFF1A");
 		
-		Button button = new Button(composite, SWT.CHECK);
+		button = new Button(composite, SWT.CHECK);
+		button.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				Element scope =xmlo.getRootElement().element(UpdateInfo.Scope);
+				if(button.getSelection())
+					xmlo.OnlyElementInElemnt(scope,UpdateInfo.Scope_Front).setText("true");
+				else
+					xmlo.OnlyElementInElemnt(scope,UpdateInfo.Scope_Front).setText("false");
+				save();
+			}
+		});
 		toolkit.adapt(button, true, true);
 		button.setText("\u524D\u53F0");
 		new Label(composite, SWT.NONE);
 		
-		Button button_1 = new Button(composite, SWT.CHECK);
+		button_1 = new Button(composite, SWT.CHECK);
+		button_1.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				Element scope =xmlo.getRootElement().element(UpdateInfo.Scope);
+				if(button_1.getSelection())
+					xmlo.OnlyElementInElemnt(scope,UpdateInfo.Scope_Back).setText("true");
+				else
+					xmlo.OnlyElementInElemnt(scope,UpdateInfo.Scope_Back).setText("false");
+				save();
+			}
+		});
 		toolkit.adapt(button_1, true, true);
 		button_1.setText("\u540E\u53F0");
 		new Label(composite, SWT.NONE);
 		
-		Button button_2 = new Button(composite, SWT.CHECK);
+		button_2 = new Button(composite, SWT.CHECK);
+		button_2.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				Element scope =xmlo.getRootElement().element(UpdateInfo.Scope);
+				if(button_2.getSelection())
+					xmlo.OnlyElementInElemnt(scope,UpdateInfo.Scope_DB).setText("true");
+				else
+					xmlo.OnlyElementInElemnt(scope,UpdateInfo.Scope_DB).setText("false");
+				save();
+			}
+		});
 		toolkit.adapt(button_2, true, true);
 		button_2.setText("\u6570\u636E\u5E93");
 		
-		PackInfoModel pack =((PackInfoInput)getEditorInput()).getPackinfo();
-		this.text.setText( pack.getModuleName());
-		this.text_1.setText( pack.getModuleCode());
-		this.text_2.setText( pack.getVersion());
-		this.text_3.setText( pack.getCreateMan());
+		
 		section.addExpansionListener(new ExpansionAdapter() {
 			public void expansionStateChanged(ExpansionEvent e) {
 				form.reflow(false);
-				//System.out.println("adfasdfasdfasdfas dian kai ");
 			}
 		});
-//		this.text.setText( pack.getModuleName());
-//		this.text.setText( pack.getModuleName());
 		return section;
+	}
+	
+	public synchronized void save()
+	{
+		xmlo.save();
+	}
+	
+	public void loadXmlData()
+	{
+		this.text.setText( xmlo.getRootElement().elementText(UpdateInfo.ModuleName));
+		this.text_1.setText( xmlo.getRootElement().elementText(UpdateInfo.ModuleCode));
+		this.text_2.setText( xmlo.getRootElement().elementText(UpdateInfo.Version));
+		this.text_3.setText( xmlo.getRootElement().elementText(UpdateInfo.CreateMan));
+		this.text_4.setText(xmlo.getRootElement().elementText(UpdateInfo.CreateTime));
+		Element scope = xmlo.getRootElement().element(UpdateInfo.Scope);
+		this.button.setSelection(Boolean.parseBoolean(scope.elementText(UpdateInfo.Scope_Front)));
+		this.button_1.setSelection(Boolean.parseBoolean(scope.elementText(UpdateInfo.Scope_Back)));
+		this.button_2.setSelection(Boolean.parseBoolean(scope.elementText(UpdateInfo.Scope_DB)));
+		this.txtNewText.setText(xmlo.getRootElement().elementText(UpdateInfo.ReleaseNote));
 	}
 	class PackRelyContentProvider implements IStructuredContentProvider {
 		public Object[] getElements(Object inputElement) {

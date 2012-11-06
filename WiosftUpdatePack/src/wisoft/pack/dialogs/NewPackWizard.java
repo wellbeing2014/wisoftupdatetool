@@ -1,5 +1,7 @@
 package wisoft.pack.dialogs;
 
+import java.util.Date;
+
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -8,6 +10,8 @@ import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.swt.widgets.Display;
 
 import wisoft.pack.models.PackInfoModel;
+import wisoft.pack.utils.UpdateInfo;
+import wisoft.pack.utils.XmlOperator;
 import wisoft.pack.views.Console;
 import wisoft.pack.views.Console.ConsoleType;
 import wisoft.pack.views.NavigationView;
@@ -77,10 +81,15 @@ public class NewPackWizard extends Wizard {
 					pack.setModuleCode(ModuleCode);
 					pack.setModuleName(ModuleName);
 					pack.setVersion(version);
-					pack.setCreateMan(createMan);
-					pack.setKeyWord(keyword);
-					pack.setReleaseNote(releasenot);
-					//pack.readFromXML();
+					pack.saveIntoXML();
+					XmlOperator xmlo =pack.getXmlo();
+					xmlo.OnlyElementInRoot(UpdateInfo.KeyWord).setText(keyword);
+					xmlo.OnlyElementInRoot(UpdateInfo.CreateMan).setText(createMan);
+					xmlo.OnlyElementInRoot(UpdateInfo.CreateTime).setText(new Date().toLocaleString());
+					xmlo.OnlyElementInRoot(UpdateInfo.ReleaseNote).addCDATA(releasenot);
+					xmlo.save();
+					//xmlo.close();
+					
 					monitor.worked(2);
 					monitor.setTaskName("更新包已创建");
 					Thread.sleep(1000);
