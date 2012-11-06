@@ -2,9 +2,10 @@ package wisoft.pack.utils;
 
 import java.io.File;
 import java.io.FileOutputStream;
-import java.io.FileWriter;
 import java.io.IOException;
+import java.util.List;
 
+import org.dom4j.Attribute;
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
 import org.dom4j.DocumentHelper;
@@ -120,6 +121,71 @@ public class XmlOperator {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+	}
+	
+	public  Element OnlyElementInRoot(String elementname)
+	{
+		Element et =RootElement.element(elementname);
+		if(et!=null)
+			return et;
+		else 
+			return RootElement.addElement(elementname);
+	}
+	
+	public  Element OnlyElementInElemnt(Element father,String elementname)
+	{
+		Element et =father.element(elementname);
+		if(et!=null)
+			return et;
+		else 
+			return father.addElement(elementname);
+	}
+
+	
+	/**
+	 * 在ROOT下添加element，并根据属性判断是否已存在，如果不存在添加，如果存在
+	 * 则返回存在的element
+	 * @param elementname
+	 * @param Attributename
+	 * @param AttributeValue
+	 * @return
+	 */
+	public Element addElementInRoot(String elementname,String Attributename,String AttributeValue)
+	{
+		List<Element> ets =RootElement.elements(elementname);
+		boolean ishave=false;
+		Element returnele = null;
+		for(int i=0;i<ets.size();i++)
+		{
+			if(isEqualByAttribute(ets.get(i),Attributename,AttributeValue))
+			{
+				ishave=true;
+				returnele = ets.get(i);
+				break;
+			}
+		}
+		if(!ishave&&returnele==null)
+		{
+			returnele =RootElement.addElement(elementname);
+			returnele.addAttribute(Attributename, AttributeValue);
+		}
+		return returnele;
+	}
+	
+	/**
+	 * 根据属性判段element是不是所要的
+	 * @param element
+	 * @param Attributename
+	 * @param AttributeValue
+	 * @return true 表示属性相同，false表示属性不同或不存在
+	 */
+	public boolean isEqualByAttribute(Element element,String Attributename,String AttributeValue)
+	{
+		Attribute myattri = element.attribute(Attributename);
+		if(myattri!=null)
+			return myattri.getValue().equals(AttributeValue);
+		else
+			return false;
 	}
 	
 	 public void close() 
