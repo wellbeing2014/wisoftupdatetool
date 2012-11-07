@@ -1,14 +1,22 @@
 package wisoft.pack.edits;
 
+import java.util.List;
+
 import org.dom4j.Element;
+import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
+import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.ModifyEvent;
+import org.eclipse.swt.events.ModifyListener;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.layout.FormData;
@@ -33,11 +41,10 @@ import org.eclipse.ui.forms.widgets.TableWrapData;
 import org.eclipse.ui.forms.widgets.TableWrapLayout;
 
 import wisoft.pack.app.Activator;
-import wisoft.pack.models.PackInfoModel;
+import wisoft.pack.dialogs.PackRelyDialog;
+import wisoft.pack.models.PackRelyModel;
 import wisoft.pack.utils.UpdateInfo;
 import wisoft.pack.utils.XmlOperator;
-import org.eclipse.swt.events.SelectionAdapter;
-import org.eclipse.swt.events.SelectionEvent;
 
 public class BFormPage extends FormPage {
 	
@@ -54,6 +61,9 @@ public class BFormPage extends FormPage {
 	
 	
 	private Text txtNewText;
+	private boolean isRNedit;
+	
+	private TableViewer viewer;
 	
 	/**
 	 * Create the form page.
@@ -161,10 +171,48 @@ public class BFormPage extends FormPage {
 		fd_t.right = new FormAttachment(composite);
 		
 		Button button = new Button(composite, SWT.NONE);
+		button.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				PackRelyDialog pd = new PackRelyDialog(getPartControl().getShell());
+				int i=pd.open();
+				Element relys =xmlo.OnlyElementInRoot(UpdateInfo.PackRelys);
+				if(i==IDialogConstants.OK_ID)
+				{
+					PackRelyModel prm = new PackRelyModel();
+					prm.setName(pd.name);
+					prm.setCode(pd.code);
+					prm.setVersion(pd.version);
+					Element rely =xmlo.addElementInElement(relys, UpdateInfo.PackRely,UpdateInfo.PackRely_attr_name,pd.name);
+					rely.addAttribute(UpdateInfo.PackRely_attr_code, pd.code);
+					rely.addAttribute(UpdateInfo.PackRely_attr_ver, pd.version);
+					xmlo.save();
+					viewer.refresh();
+				}
+			}
+		});
 		managedForm.getToolkit().adapt(button, true, true);
 		button.setText("\u65B0\u589E");
 		
 		Button button_1 = new Button(composite, SWT.NONE);
+		button_1.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				IStructuredSelection selection = (IStructuredSelection)viewer.getSelection();
+				 List<?> selectionlist = selection.toList();
+				 Element relys =xmlo.OnlyElementInRoot(UpdateInfo.PackRelys);
+				 for(int i=0;i<selectionlist.size();i++)
+				 {
+					 if(selectionlist.get(i) instanceof PackRelyModel)
+					 {
+						 PackRelyModel pm =(PackRelyModel) selectionlist.get(i);
+						 xmlo.RemoveElementInElement(relys, UpdateInfo.PackRely, UpdateInfo.PackRely_attr_name, pm.getName());
+					 }
+				 }
+				 xmlo.save();
+				 viewer.refresh();
+			}
+		});
 		managedForm.getToolkit().adapt(button_1, true, true);
 		button_1.setText("\u5220\u9664");
 		fd_t.top = new FormAttachment(0, 2);
@@ -174,10 +222,11 @@ public class BFormPage extends FormPage {
 		
 		final SectionPart spart = new SectionPart(section);
 		managedForm.addPart(spart);
-		TableViewer viewer = new TableViewer(t);
+		viewer = new TableViewer(t);
 		viewer.addSelectionChangedListener(new ISelectionChangedListener() {
 			public void selectionChanged(SelectionChangedEvent event) {
 				managedForm.fireSelectionChanged(spart, event.getSelection());
+				//viewer.refresh();
 			}
 		});
 		viewer.setContentProvider(new PackRelyContentProvider());
@@ -196,13 +245,7 @@ public class BFormPage extends FormPage {
 	{
 		final ScrolledForm form = managedForm.getForm();
 		Section section = managedForm.getToolkit().createSection(form.getBody(), Section.EXPANDED|Section.TWISTIE | Section.TITLE_BAR);
-//		ColumnLayoutData cld_section = new ColumnLayoutData();
-//		cld_section.heightHint = 276;
-//		//cld_section.heightHint = 237;
-//		//cld_section.widthHint = 217;
-//		cld_section.widthHint = ColumnLayoutData.FILL;
-//		cld_section.horizontalAlignment=ColumnLayoutData.FILL;
-//		section.setLayoutData(cld_section);
+
 		managedForm.getToolkit().paintBordersFor(section);
 		section.setText("\u66F4\u65B0\u8303\u56F4\u8BF4\u660E");
 		
@@ -213,6 +256,14 @@ public class BFormPage extends FormPage {
 		composite.setLayout(new FormLayout());
 		
 		txtNewText = managedForm.getToolkit().createText(composite, "New Text", SWT.H_SCROLL | SWT.V_SCROLL | SWT.CANCEL | SWT.MULTI);
+		txtNewText.addModifyListener(new ModifyListener() {
+			
+			@Override
+			public void modifyText(ModifyEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+		});
 		FormData fd_txtNewText = new FormData();
 		fd_txtNewText.right = new FormAttachment(100);
 		fd_txtNewText.top = new FormAttachment(0);
@@ -220,6 +271,15 @@ public class BFormPage extends FormPage {
 		txtNewText.setLayoutData(fd_txtNewText);
 		
 		Button btnNewButton = managedForm.getToolkit().createButton(composite, "\u5E94\u7528", SWT.NONE);
+		btnNewButton.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				 Element relys =xmlo.OnlyElementInRoot(UpdateInfo.ReleaseNote);
+				 relys.clearContent(); 
+				 relys.addCDATA(txtNewText.getText());
+				 xmlo.save();
+			}
+		});
 		fd_txtNewText.bottom = new FormAttachment(btnNewButton);
 		FormData fd_btnNewButton = new FormData();
 		fd_btnNewButton.bottom = new FormAttachment(100);
