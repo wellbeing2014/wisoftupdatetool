@@ -173,6 +173,53 @@ public class XmlOperator {
 	}
 	
 	/**
+	 * 在element下添加element，并根据属性判断是否已存在，如果不存在添加，如果存在
+	 * @param elementname
+	 * @param Attributename
+	 * @param AttributeValue
+	 * @return
+	 */
+	public Element addElementInElement(Element element ,String elementname,String Attributename,String AttributeValue)
+	{
+		List<Element> ets =element.elements(elementname);
+		boolean ishave=false;
+		Element returnele = null;
+		for(int i=0;i<ets.size();i++)
+		{
+			if(isEqualByAttribute(ets.get(i),Attributename,AttributeValue))
+			{
+				ishave=true;
+				returnele = ets.get(i);
+				break;
+			}
+		}
+		if(!ishave&&returnele==null)
+		{
+			returnele =element.addElement(elementname);
+			returnele.addAttribute(Attributename, AttributeValue);
+		}
+		return returnele;
+	}
+	
+	/**在element 中删除element 根据属性名和值
+	 * @param element
+	 * @param elementname
+	 * @param Attributename
+	 * @param AttributeValue
+	 * @return 返回删除后的element 
+	 */
+	public Element RemoveElementInElement(Element element ,String elementname,String Attributename,String AttributeValue)
+	{
+		List<Element> ets =element.elements(elementname);
+		for(int i=0;i<ets.size();i++)
+		{
+			if(isEqualByAttribute(ets.get(i),Attributename,AttributeValue))
+				element.remove( ets.get(i));
+		}
+		return element;
+	}
+	
+	/**
 	 * 根据属性判段element是不是所要的
 	 * @param element
 	 * @param Attributename

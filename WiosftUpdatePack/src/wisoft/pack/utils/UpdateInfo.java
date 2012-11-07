@@ -14,4 +14,10 @@ public class UpdateInfo {
 	public static String Scope_DB ="DB";
 	public static String Scope_Front ="Front";
 	public static String Scope_Back ="Back";
+	public static String PackRelys ="PackRelys";
+	public static String PackRely ="PackRely";
+	public static String PackRely_attr_name ="name";
+	public static String PackRely_attr_code ="code";
+	public static String PackRely_attr_ver ="version";
+	
 }

@@ -13,6 +13,7 @@ import org.eclipse.ui.IPersistableElement;
 
 import wisoft.pack.models.PackInfoModel;
 import wisoft.pack.models.PackRelyModel;
+import wisoft.pack.utils.UpdateInfo;
 import wisoft.pack.utils.XmlOperator;
 
 public class PackInfoInput implements IPathEditorInput {
@@ -76,7 +77,7 @@ public class PackInfoInput implements IPathEditorInput {
 		XmlOperator xmlo = new XmlOperator(getPath().toString());
 		//Element root =xmlo.getDocument().selectNodes("/root/PackRely");
 		ArrayList<PackRelyModel> relyr = new ArrayList<PackRelyModel>();
-		List el = xmlo.getDocument().selectNodes("/root/PackRely");
+		List el = xmlo.getRootElement().elements(UpdateInfo.PackRelys);
 		Element el1 = null;
 		if(el!=null&&el.size()>0)
 		{
@@ -85,10 +86,10 @@ public class PackInfoInput implements IPathEditorInput {
 			for(int i = 0;i<relys.size();i++)
 			{
 				PackRelyModel rm = new PackRelyModel();
-				rm.setName(relys.get(i).attributeValue("modelname"));
-				rm.setCode(relys.get(i).attributeValue("code"));
-				rm.setVersion(relys.get(i).attributeValue("version"));
-				
+				rm.setName(relys.get(i).attributeValue(UpdateInfo.PackRely_attr_name));
+				rm.setCode(relys.get(i).attributeValue(UpdateInfo.PackRely_attr_code));
+				rm.setVersion(relys.get(i).attributeValue(UpdateInfo.PackRely_attr_ver));
+				relyr.add(rm);
 			}
 		}
 		return relyr.toArray(new PackRelyModel[0]);
