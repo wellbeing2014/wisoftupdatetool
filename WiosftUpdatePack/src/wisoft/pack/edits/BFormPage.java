@@ -61,7 +61,7 @@ public class BFormPage extends FormPage {
 	
 	
 	private Text txtNewText;
-	private boolean isRNedit;
+	private Button btnNewButton;
 	
 	private TableViewer viewer;
 	
@@ -256,21 +256,15 @@ public class BFormPage extends FormPage {
 		composite.setLayout(new FormLayout());
 		
 		txtNewText = managedForm.getToolkit().createText(composite, "New Text", SWT.H_SCROLL | SWT.V_SCROLL | SWT.CANCEL | SWT.MULTI);
-		txtNewText.addModifyListener(new ModifyListener() {
-			
-			@Override
-			public void modifyText(ModifyEvent e) {
-				// TODO Auto-generated method stub
-				
-			}
-		});
+	
 		FormData fd_txtNewText = new FormData();
 		fd_txtNewText.right = new FormAttachment(100);
 		fd_txtNewText.top = new FormAttachment(0);
 		fd_txtNewText.left = new FormAttachment(0);
 		txtNewText.setLayoutData(fd_txtNewText);
 		
-		Button btnNewButton = managedForm.getToolkit().createButton(composite, "\u5E94\u7528", SWT.NONE);
+		btnNewButton = managedForm.getToolkit().createButton(composite, "\u5E94\u7528", SWT.NONE);
+		btnNewButton.setEnabled(false);
 		btnNewButton.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
@@ -278,6 +272,8 @@ public class BFormPage extends FormPage {
 				 relys.clearContent(); 
 				 relys.addCDATA(txtNewText.getText());
 				 xmlo.save();
+				 btnNewButton.setEnabled(false);
+				 //isRNedit = false;
 			}
 		});
 		fd_txtNewText.bottom = new FormAttachment(btnNewButton);
@@ -437,6 +433,13 @@ public class BFormPage extends FormPage {
 		this.button_1.setSelection(Boolean.parseBoolean(scope.elementText(UpdateInfo.Scope_Back)));
 		this.button_2.setSelection(Boolean.parseBoolean(scope.elementText(UpdateInfo.Scope_DB)));
 		this.txtNewText.setText(xmlo.getRootElement().elementText(UpdateInfo.ReleaseNote));
+		this.txtNewText.addModifyListener(new ModifyListener() {
+				
+				@Override
+				public void modifyText(ModifyEvent e) {
+					btnNewButton.setEnabled(true);
+				}
+			});
 	}
 	class PackRelyContentProvider implements IStructuredContentProvider {
 		public Object[] getElements(Object inputElement) {

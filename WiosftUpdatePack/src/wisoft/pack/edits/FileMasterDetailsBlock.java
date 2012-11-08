@@ -107,7 +107,8 @@ public class FileMasterDetailsBlock extends MasterDetailsBlock {
 		//设置树的标签
 		viewer.setLabelProvider(new MasterLabelProvider());
 		//设置初始化输入的类
-		viewer.setInput(new File("E:\\Data"));
+		PackInfoInput pi = (PackInfoInput)page.getEditorInput();
+		viewer.setInput(new File(pi.getPackinfo().getSavePath()));
 		viewer.expandToLevel(3);
 
 	}
