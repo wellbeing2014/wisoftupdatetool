@@ -2,6 +2,7 @@ package wisoft.pack.utils;
 
 public class UpdateInfo {
 	
+	public static String UpdateDirName = "UpdateFiles";
 	public static String FileName = "updateinfo.xml";
 	public static String ModuleName = "ModuleName";
 	public static String ModuleCode = "ModuleCode";

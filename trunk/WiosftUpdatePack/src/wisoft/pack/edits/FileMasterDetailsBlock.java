@@ -31,6 +31,7 @@ import org.eclipse.ui.forms.widgets.ScrolledForm;
 import org.eclipse.ui.forms.widgets.Section;
 
 import wisoft.pack.app.Activator;
+import wisoft.pack.utils.UpdateInfo;
 
 public class FileMasterDetailsBlock extends MasterDetailsBlock {
 
@@ -108,7 +109,7 @@ public class FileMasterDetailsBlock extends MasterDetailsBlock {
 		viewer.setLabelProvider(new MasterLabelProvider());
 		//设置初始化输入的类
 		PackInfoInput pi = (PackInfoInput)page.getEditorInput();
-		viewer.setInput(new File(pi.getPackinfo().getSavePath()));
+		viewer.setInput(new File(pi.getPackinfo().getSavePath()+"/"+UpdateInfo.UpdateDirName));
 		viewer.expandToLevel(3);
 
 	}

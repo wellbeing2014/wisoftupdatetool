@@ -1,5 +1,6 @@
 package wisoft.pack.dialogs;
 
+import java.io.File;
 import java.util.Date;
 
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -89,7 +90,8 @@ public class NewPackWizard extends Wizard {
 					xmlo.OnlyElementInRoot(UpdateInfo.ReleaseNote).addCDATA(releasenot);
 					xmlo.save();
 					//xmlo.close();
-					
+					File updatedir = new File(savePath+"/"+UpdateInfo.UpdateDirName);
+					updatedir.mkdirs();
 					monitor.worked(2);
 					monitor.setTaskName("更新包已创建");
 					Thread.sleep(1000);
