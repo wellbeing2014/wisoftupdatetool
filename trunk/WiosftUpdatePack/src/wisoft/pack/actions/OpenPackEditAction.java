@@ -27,6 +27,7 @@ public class OpenPackEditAction extends Action {
 //		}catch(PartInitException e){
 //			System.out.println(e.getMessage());
 //		}
+		System.out.print("aa");
 	}
 
 }
