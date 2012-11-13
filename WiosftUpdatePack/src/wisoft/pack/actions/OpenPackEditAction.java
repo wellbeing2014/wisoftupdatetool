@@ -1,7 +1,12 @@
 package wisoft.pack.actions;
 
 import org.eclipse.jface.action.Action;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.ui.IWorkbenchWindow;
+
+import wisoft.pack.models.PackInfoModel;
+import wisoft.pack.views.NavigationView;
 
 
 public class OpenPackEditAction extends Action {
@@ -19,15 +24,20 @@ public class OpenPackEditAction extends Action {
 	
 	@Override
 	public void run() {
-		//MyInput input=new MyInput(path);
-		//MessageDialog.openInformation(window.getShell(), "info", path);
-//		IWorkbenchPage page=PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
-//		try{
-//			page.openEditor(new PackInfoInput()  ,PackEdit.ID  );
-//		}catch(PartInitException e){
-//			System.out.println(e.getMessage());
-//		}
-		System.out.print("aa");
+		NavigationView nv = (NavigationView)window.getActivePage().findView(NavigationView.ID);
+		PackInfoModel[] nm = nv.getSelectPackInfo();
+		MessageBox mb;
+		if(nm.length==1)
+		{
+			
+		}
+		else
+		{
+			mb= new MessageBox(window.getShell());
+			mb.setMessage("请选择一个更新包工程。");
+			mb.setText("提示");
+		}
+		
 	}
 
 }
