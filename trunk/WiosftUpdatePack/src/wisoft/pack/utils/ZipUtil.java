@@ -150,14 +150,18 @@ public class ZipUtil {
          File[] files = srcFile.listFiles();   
         base = base.length() == 0 ? "" : base + "/";   
          if (base.length() > 0) {   
-             out.putNextEntry(new ZipEntry(base));   
+        	 ZipEntry zipEntry = new ZipEntry(base);     
+             //zipEntry.setComment(comment);  
+             out.putNextEntry(zipEntry);   
          }   
          for (int i = 0; i < files.length; i++) {   
              zip(out, files[i], base + files[i].getName());   
         }   
      } else {   
-         base = base.length() == 0 ? srcFile.getName() : base;   
-         out.putNextEntry(new ZipEntry(base));   
+         base = base.length() == 0 ? srcFile.getName() : base;
+         ZipEntry zipEntry = new ZipEntry(base);     
+         //zipEntry.setComment(comment); 
+         out.putNextEntry(zipEntry);   
          FileInputStream fis = new FileInputStream(srcFile);   
          int length = 0;   
          byte[] b = new byte[BUFFER];   
@@ -175,8 +179,8 @@ public class ZipUtil {
         filter.add("3RDPARTY");     
         filter.add("BANNER.GIF");     
         zu.setComment("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");     
-        zu.zip("D:\\wellbeing_work\\runtime-WiosftUpdatePack.product\\我的模块(maea)1.21.1", "D:\\wellbeing_work\\runtime-WiosftUpdatePack.product\\我的模块(maea)1.21.1.zip");     
-        System.out.println(ZipUtil.getZipComment("D:\\wellbeing_work\\runtime-WiosftUpdatePack.product\\我的模块(maea)1.21.1.zip"));     
+        zu.zip("D:\\wellbeing_work\\runtime-WiosftUpdatePack.product\\我的模块(maea)1.21.1", "D:\\wellbeing_work\\runtime-WiosftUpdatePack.product\\我的模块(maea)1.21.1.wi");     
+        System.out.println(ZipUtil.getZipComment("D:\\wellbeing_work\\runtime-WiosftUpdatePack.product\\我的模块(maea)1.21.1.wi"));     
         long end = System.currentTimeMillis();     
         System.out.println(end-begin);     
     }     
