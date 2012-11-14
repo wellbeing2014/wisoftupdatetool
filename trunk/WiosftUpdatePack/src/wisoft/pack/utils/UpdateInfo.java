@@ -20,5 +20,6 @@ public class UpdateInfo {
 	public static String PackRely_attr_name ="name";
 	public static String PackRely_attr_code ="code";
 	public static String PackRely_attr_ver ="version";
+	public static String PackExtension =".wi";
 	
 }
