@@ -1,24 +1,54 @@
 package wisoft.pack.utils;
-import java.io.File;     
-import java.io.FileInputStream;     
-import java.io.FileOutputStream;     
-import java.io.InputStream;     
-import java.util.ArrayList;     
-import java.util.Enumeration;     
-import java.util.List;     
-import org.apache.tools.zip.ZipEntry;     
-import org.apache.tools.zip.ZipFile;     
-import org.apache.tools.zip.ZipOutputStream;     
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.Enumeration;
+import java.util.Iterator;
+import java.util.List;
+
+import org.apache.tools.zip.ZipEntry;
+import org.apache.tools.zip.ZipFile;
+import org.apache.tools.zip.ZipOutputStream;
+
+import wisoft.pack.events.ZipHandleEvent;
+import wisoft.pack.events.ZipHandleEventListener;
 
 
 public class ZipUtil {     
-
+	
+	private ArrayList<ZipHandleEventListener> myZipEventList = new ArrayList<ZipHandleEventListener>();
 	private String comment = "";     
 	private static int BUFFER = 1024;
+	public String curHandleFileName="";
+	public int FilesNum = 0;
+	public int curHandleNum = 0;
+	
+	public void addZipEventListener(ZipHandleEventListener listen)
+	{
+		myZipEventList.add(listen);
+	}
+	public void removeZipEventListener(ZipHandleEventListener listen)
+	{
+		myZipEventList.remove(listen);
+	}
+	
+	
+	private void handleListener()
+	{
+		Iterator<ZipHandleEventListener> iterator = myZipEventList.listIterator();
+		if (iterator.hasNext())
+		{
+			ZipHandleEventListener zipeventor =iterator.next();
+			zipeventor.ZipHandle(new ZipHandleEvent(this));
+		}
+	}
+	
 	public void setComment(String comment) {     
          this.comment = comment;     
      }     
-
+	
     public void zip(String src, String dest, List filter) throws Exception {     
 
     	ZipOutputStream out = new ZipOutputStream(new FileOutputStream(dest));     
@@ -28,9 +58,12 @@ public class ZipUtil {
 
     }     
     public void zip(String src, String dest) throws Exception {     
-
     	ZipOutputStream out = new ZipOutputStream(new FileOutputStream(dest));     
+    	out.setEncoding("GBK");
         File srcFile = new File(src);     
+        FilesNum =(int)getlist(srcFile);
+        curHandleNum=0;
+        handleListener();
         zip(out,srcFile,"");     
         out.close();     
 
@@ -140,9 +173,21 @@ public class ZipUtil {
          return comment;     
     } 
      
+     public static long getlist(File f){//递归求取目录文件个数
+        long size = 0;
+        File flist[] = f.listFiles();
+        size=flist.length;
+        for (int i = 0; i < flist.length; i++) {
+            if (flist[i].isDirectory()) {
+                size = size + getlist(flist[i]);
+                size--;
+            }
+        }
+        return size;
+     }
+ public  void zip(ZipOutputStream out, File srcFile, String base) throws Exception {   
 
- public static void zip(ZipOutputStream out, File srcFile, String base) throws Exception {   
-
+	 
      if (!srcFile.exists()) {   
          throw new Exception("压缩目录不存在！");   
      }   
@@ -161,6 +206,9 @@ public class ZipUtil {
          base = base.length() == 0 ? srcFile.getName() : base;
          ZipEntry zipEntry = new ZipEntry(base);     
          //zipEntry.setComment(comment); 
+         curHandleNum++;
+         curHandleFileName=base;
+         handleListener();
          out.putNextEntry(zipEntry);   
          FileInputStream fis = new FileInputStream(srcFile);   
          int length = 0;   

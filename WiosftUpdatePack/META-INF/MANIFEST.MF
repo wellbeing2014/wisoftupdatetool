@@ -16,4 +16,5 @@ Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-ClassPath: .,
  swing2swt.jar,
  dom4j-2.0.0-ALPHA-2.jar,
- jaxen-1.1.1.jar
+ jaxen-1.1.1.jar,
+ ant.jar

@@ -25,13 +25,7 @@ public class OpenNewPackDialogAction extends Action {
 	public void run() {
 		NavigationView nv = (NavigationView)window.getActivePage().findView(NavigationView.ID);
 		WizardDialog wd = new WizardDialog(window.getShell(),new NewPackWizard(nv));
-		
-		if(wd.open()==Window.OK)
-		{
-			//wd.GE
-			
-			//nv.addPackInfo(new PackInfoModel(nd.getPackname()));
-		}
+		wd.open();
 	}
 
 }
