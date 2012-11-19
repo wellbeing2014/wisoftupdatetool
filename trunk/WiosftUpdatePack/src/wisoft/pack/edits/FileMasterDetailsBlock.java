@@ -1,8 +1,11 @@
 package wisoft.pack.edits;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.eclipse.jface.action.Action;
+import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
@@ -11,6 +14,8 @@ import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.layout.FormData;
@@ -19,6 +24,7 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Tree;
+import org.eclipse.swt.widgets.TreeItem;
 import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.forms.DetailsPart;
@@ -31,11 +37,13 @@ import org.eclipse.ui.forms.widgets.ScrolledForm;
 import org.eclipse.ui.forms.widgets.Section;
 
 import wisoft.pack.app.Activator;
+import wisoft.pack.dialogs.AddFileIntoPackDialog;
 import wisoft.pack.utils.UpdateInfo;
 
 public class FileMasterDetailsBlock extends MasterDetailsBlock {
 
 	private FormPage page;
+	private TreeViewer tv ;
 
 	public FileMasterDetailsBlock(FormPage page) {
 	    this.page = page;
@@ -76,7 +84,7 @@ public class FileMasterDetailsBlock extends MasterDetailsBlock {
 		//注册该对象到IManagedForm表单管理器中
 		managedForm.addPart(spart);
 		//将普通的树包装成MVC的树
-		TreeViewer viewer = new TreeViewer(tree);
+		tv = new TreeViewer(tree);
 		composite.setLayout(new GridLayout(1, false));
 		
 		FormData fd_composite = new FormData();
@@ -89,6 +97,22 @@ public class FileMasterDetailsBlock extends MasterDetailsBlock {
 		toolkit.paintBordersFor(composite);
 		
 		Button button = new Button(composite, SWT.NONE);
+		button.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				mylist.removeAll(mylist);
+				mylist.add("/");
+				TreeItem ti =null;
+				if(tv.getTree().getSelectionCount()>0)
+					ti=tv.getTree().getSelection()[0];
+				getPackPaths(tv.getTree().getItems(),"",ti);
+				AddFileIntoPackDialog ap = new AddFileIntoPackDialog(page.getPartControl().getShell(),mylist.toArray(new String[0]),defaultSel);
+				if(IDialogConstants.OK_ID==ap.open())
+				{
+					
+				}
+			}
+		});
 		toolkit.adapt(button, true, true);
 		button.setText("\u6DFB\u52A0");
 		
@@ -96,7 +120,7 @@ public class FileMasterDetailsBlock extends MasterDetailsBlock {
 		toolkit.adapt(button_1, true, true);
 		button_1.setText("\u5220\u9664");
 		//注册树的选择事件监听器
-		viewer.addSelectionChangedListener(new ISelectionChangedListener() {
+		tv.addSelectionChangedListener(new ISelectionChangedListener() {
 		    //当单击树中某一个节点时
 		    public void selectionChanged(SelectionChangedEvent event) {
 		     //通过IManagedForm来发布IFormPart所对应的事件
@@ -104,13 +128,13 @@ public class FileMasterDetailsBlock extends MasterDetailsBlock {
 		    }
 		});
 		//设置树的内容
-		viewer.setContentProvider(new MasterContentProvider());
+		tv.setContentProvider(new MasterContentProvider());
 		//设置树的标签
-		viewer.setLabelProvider(new MasterLabelProvider());
+		tv.setLabelProvider(new MasterLabelProvider());
 		//设置初始化输入的类
 		PackInfoInput pi = (PackInfoInput)page.getEditorInput();
-		viewer.setInput(new File(pi.getPackinfo().getSavePath()+"/"+UpdateInfo.UpdateDirName));
-		viewer.expandToLevel(3);
+		tv.setInput(new File(pi.getPackinfo().getSavePath()+"/"+UpdateInfo.UpdateDirName));
+		tv.expandToLevel(3);
 
 	}
 
@@ -148,64 +172,33 @@ public class FileMasterDetailsBlock extends MasterDetailsBlock {
 		form.getToolBarManager().add(hAction);
 		form.getToolBarManager().add(vAction);
 	}
+	
+	private List<String> mylist=new ArrayList<String>();
+	private String defaultSel ="";
+	
+	private List<String> getPackPaths(TreeItem[] ti,String parent,TreeItem selti)
+	{
+		for(int i=0;i<ti.length;i++)
+		{
+			File file =(File)ti[i].getData();
+			if(file.isDirectory())
+			{
+				if(ti[i]==selti)
+					defaultSel = parent+"/"+file.getName();
+				mylist.add(parent+"/"+file.getName());
+			}
+			else
+			{
+				if(ti[i]==selti)
+					defaultSel = parent;
+			}
+			if(ti[i].getItemCount()>0)
+			{
+				getPackPaths(ti[i].getItems(),parent+"/"+file.getName(),selti);
+			}
+		}
+		return mylist;
+	}
+	
 }
 
-
-class MasterContentProvider implements ITreeContentProvider {
-
-	 public Object[] getChildren(Object element) {
-	    return ((File) element).listFiles();
-	 }
-
-	 public Object[] getElements(Object element) {
-	    return ((File) element).listFiles();
-	 }
-
-	 public boolean hasChildren(Object element) {
-	    Object[] obj = getChildren(element);
-	    return obj == null ? false : obj.length > 0;
-	 }
-
-	 public Object getParent(Object element) {
-	    return ((File) element).getParentFile();
-	 }
-
-	 public void dispose() {
-	 }
-
-	 public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
-	 }
-}
-
-class MasterLabelProvider implements ILabelProvider {
-
-	public Image getImage(Object element) {
-		File file = (File) element;
-	    if (file.isDirectory())
-	     return PlatformUI.getWorkbench().getSharedImages().getImage(ISharedImages.IMG_OBJ_FOLDER);
-	    else
-	     return PlatformUI.getWorkbench().getSharedImages().getImage(ISharedImages.IMG_OBJ_FILE);
-	}
-
-	public String getText(Object element) {
-		String text = ((File) element).getName();
-	    if (text.length() == 0) {
-	     text = ((File) element).getPath();
-	    }
-	    return text;
-	}
-
-	public void addListener(ILabelProviderListener listener) {
-	}
-
-	public void dispose() {
-
-	}
-
-	public boolean isLabelProperty(Object element, String property) {
-	    return false;
-	}
-
-	public void removeListener(ILabelProviderListener listener) {
-	}
-}
