@@ -1,32 +1,33 @@
 package wisoft.pack.edits;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.dialogs.IDialogConstants;
-import org.eclipse.jface.viewers.ILabelProvider;
-import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
-import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.TreeViewer;
-import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeItem;
-import org.eclipse.ui.ISharedImages;
-import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.forms.DetailsPart;
 import org.eclipse.ui.forms.IManagedForm;
 import org.eclipse.ui.forms.MasterDetailsBlock;
@@ -39,6 +40,9 @@ import org.eclipse.ui.forms.widgets.Section;
 import wisoft.pack.app.Activator;
 import wisoft.pack.dialogs.AddFileIntoPackDialog;
 import wisoft.pack.utils.UpdateInfo;
+import wisoft.pack.views.Console;
+import wisoft.pack.views.Console.ConsoleType;
+import org.eclipse.swt.widgets.Label;
 
 public class FileMasterDetailsBlock extends MasterDetailsBlock {
 
@@ -91,7 +95,7 @@ public class FileMasterDetailsBlock extends MasterDetailsBlock {
 		fd_composite.bottom = new FormAttachment(100);
 		fd_composite.top = new FormAttachment(0);
 		fd_composite.right = new FormAttachment(100);
-		fd_composite.left = new FormAttachment(100, -50);
+		fd_composite.left = new FormAttachment(100, -70);
 		composite.setLayoutData(fd_composite);
 		toolkit.adapt(composite);
 		toolkit.paintBordersFor(composite);
@@ -109,14 +113,170 @@ public class FileMasterDetailsBlock extends MasterDetailsBlock {
 				AddFileIntoPackDialog ap = new AddFileIntoPackDialog(page.getPartControl().getShell(),mylist.toArray(new String[0]),defaultSel);
 				if(IDialogConstants.OK_ID==ap.open())
 				{
+					final PackInfoInput pi = (PackInfoInput)page.getEditorInput();
+					final String toPath = pi.getPackinfo().getSavePath()+"/"+UpdateInfo.UpdateDirName+ap.packPath;
+					final String fromPath = ap.filePath;
+					final File[] filelist = ap.filelist.toArray(new File[0]);
+					//Console.getInstance().print("从路径中复制文件开始：", pi.getName(), Console.ConsoleType.INFO);	
+					Job job = new Job("导出更新包") {
+						private void printlnToConsole(final String msg,final ConsoleType type)
+						{
+							Display.getDefault().asyncExec(new Runnable() {                        
+				    			public void run() {                                                                                    
+				    				Console.getInstance();
+				    				Console.print(msg, pi.getName(), type);
+				    				//nv.addPackInfo(pack);
+				    			}});
+						}
+						
+						private void copyFile(File f1,File f2) throws Exception{   
+							int length=2097152;   
+							FileInputStream in=new FileInputStream(f1);   
+							FileOutputStream out=new FileOutputStream(f2);   
+							byte[] buffer=new byte[length];   
+							while(true){   
+								int ins=in.read(buffer);   
+								if(ins==-1){   
+									in.close();   
+									out.flush();   
+									out.close();   
+									return;   
+								}
+								else  
+									out.write(buffer,0,ins);   
+						   }   
+						}  
+
 					
+						@Override
+						protected IStatus run(final IProgressMonitor monitor) {
+							// TODO Auto-generated method stub
+							
+							monitor.beginTask("需要复制"+filelist.length+"个文件",  IProgressMonitor.UNKNOWN);
+							printlnToConsole("原路径："+fromPath,ConsoleType.INFO);
+							printlnToConsole("复制到："+toPath,ConsoleType.INFO);
+							printlnToConsole("需要复制"+filelist.length+"个文件",ConsoleType.INFO);
+							for(int i=0;i<filelist.length; i++)
+							{
+								String tempfilename=filelist[i].getAbsolutePath().replace(fromPath, "");
+								File file2 =new File(toPath+tempfilename);
+								monitor.setTaskName(tempfilename);
+								if(filelist[i].isDirectory())
+								{
+									file2.mkdirs();
+									printlnToConsole("创建文件夹:"+tempfilename,ConsoleType.INFO);
+									monitor.worked(i);
+								}
+								else
+								{
+									try{
+										copyFile(filelist[i],file2);
+										printlnToConsole("复制文件完成:"+tempfilename,ConsoleType.INFO);
+										monitor.worked(i);
+									}
+									catch(Exception e)
+									{
+										printlnToConsole("复制文件出错:"+e.toString(),ConsoleType.ERROR);
+									}
+								}
+							}
+							
+							Display.getDefault().asyncExec(new Runnable() {                        
+				    			public void run() {                                                                                    
+				    				tv.refresh();
+				    			}});
+							return Status.OK_STATUS;
+						}
+						
+					};
+					job.setUser(true);
+					job.schedule();
 				}
 			}
 		});
 		toolkit.adapt(button, true, true);
-		button.setText("\u6DFB\u52A0");
+		button.setText("\u6DFB\u52A0\u6587\u4EF6");
+		
+		Button button_2 = new Button(composite, SWT.NONE);
+		button_2.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+			}
+		});
+		toolkit.adapt(button_2, true, true);
+		button_2.setText("\u6DFB\u52A0\u914D\u7F6E");
 		
 		Button button_1 = new Button(composite, SWT.NONE);
+		button_1.addSelectionListener(new SelectionAdapter() {
+			
+			 private  void delFolder(String folderPath) {
+				  try {
+				        delAllFile(folderPath); //删除完里面所有内容
+				        String filePath = folderPath;
+				        filePath = filePath.toString();
+				        java.io.File myFilePath = new java.io.File(filePath);
+				        myFilePath.delete(); //删除空文件夹
+				     } catch (Exception e) {
+				       e.printStackTrace(); 
+				     }
+			 }
+			 
+			 private  boolean  delAllFile(String path)
+			 {
+				   boolean flag = false;
+			       File file = new File(path);
+			       if (!file.exists()) {
+			         return flag;
+			       }
+			       if (!file.isDirectory()) {
+			         return flag;
+			       }
+			       String[] tempList = file.list();
+			       File temp = null;
+			       for (int i = 0; i < tempList.length; i++) {
+			          if (path.endsWith(File.separator)) {
+			             temp = new File(path + tempList[i]);
+			          } else {
+			              temp = new File(path + File.separator + tempList[i]);
+			          }
+			          if (temp.isFile()) {
+			             temp.delete();
+			          }
+			          if (temp.isDirectory()) {
+			             delAllFile(path + "/" + tempList[i]);//先删除文件夹里面的文件
+			             delFolder(path + "/" + tempList[i]);//再删除空文件夹
+			             flag = true;
+			          }
+			       }
+			       return flag;
+			 }
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				if(tv.getTree().getSelectionCount()>0)
+				{
+					TreeItem[] tis = tv.getTree().getSelection();
+					for(TreeItem ti:tis)
+					{
+						File file = (File)ti.getData();
+						if(file.exists())
+						{
+							if(file.isDirectory())
+								delFolder(file.getAbsolutePath());
+							else file.delete();
+						}
+					}
+					tv.refresh();
+				}
+				else
+				{
+					MessageBox mb = new MessageBox(page.getPartControl().getShell());
+					mb.setMessage("请至少选择一个要删除的项");
+					mb.setText("提示");
+					mb.open();
+				}
+				
+			}
+		});
 		toolkit.adapt(button_1, true, true);
 		button_1.setText("\u5220\u9664");
 		//注册树的选择事件监听器
@@ -130,7 +290,7 @@ public class FileMasterDetailsBlock extends MasterDetailsBlock {
 		//设置树的内容
 		tv.setContentProvider(new MasterContentProvider());
 		//设置树的标签
-		tv.setLabelProvider(new MasterLabelProvider());
+		tv.setLabelProvider(new MasterLabelProvider(false));
 		//设置初始化输入的类
 		PackInfoInput pi = (PackInfoInput)page.getEditorInput();
 		tv.setInput(new File(pi.getPackinfo().getSavePath()+"/"+UpdateInfo.UpdateDirName));
@@ -199,6 +359,5 @@ public class FileMasterDetailsBlock extends MasterDetailsBlock {
 		}
 		return mylist;
 	}
-	
 }
 

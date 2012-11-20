@@ -1,6 +1,8 @@
 package wisoft.pack.dialogs;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.IDialogConstants;
@@ -8,6 +10,7 @@ import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -20,6 +23,7 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.Tree;
+import org.eclipse.swt.widgets.TreeItem;
 
 import wisoft.pack.edits.MasterContentProvider;
 import wisoft.pack.edits.MasterLabelProvider;
@@ -30,10 +34,10 @@ public class AddFileIntoPackDialog extends Dialog {
 	private Combo combo;
 	private String defaultpath;
 	TreeViewer tv ;
-	public int filetype = 0;
-	public boolean isMutiFile = false;
+	Tree tree;
 	public String packPath="";
-	public String[] filePath = {""};
+	public String filePath = "";
+	public List<File> filelist = new ArrayList<File>();
 
 	/**
 	 * Create the dialog.
@@ -44,11 +48,25 @@ public class AddFileIntoPackDialog extends Dialog {
 		this.packPaths = dataprovider;
 		this.defaultpath = defaultpath;
 	}
-	
+	private void getCheckedFiles(TreeItem[] tis)
+	{
+		for(TreeItem ti: tis)
+		{
+			if(ti.getChecked())
+			{
+				filelist.add((File)ti.getData());
+			}
+			getCheckedFiles(ti.getItems());
+		}
+	}
 	@Override
 	protected void okPressed() 
 	{
-		
+		//final PackInfoInput pi = (PackInfoInput)page.getEditorInput();
+		packPath = this.combo.getText();
+		filePath = this.text.getText();
+		getCheckedFiles(tv.getTree().getItems());
+		super.okPressed();
 	}
 	@Override
 	protected void configureShell(Shell shell) {  
@@ -83,6 +101,7 @@ public class AddFileIntoPackDialog extends Dialog {
 		
 		text = new Text(container, SWT.BORDER);
 		text.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
+		//text.setEditable(false)
 		
 		Button button_4 = new Button(container, SWT.NONE);
 		button_4.addSelectionListener(new SelectionAdapter() {
@@ -103,13 +122,80 @@ public class AddFileIntoPackDialog extends Dialog {
 		Button button = new Button(container, SWT.NONE);
 		button.setText("\u8BBE\u4E3A\u9ED8\u8BA4");
 		
-		Tree tree = new Tree(container, SWT.BORDER | SWT.CHECK | SWT.MULTI);
+		tree = new Tree(container, SWT.BORDER | SWT.CHECK | SWT.MULTI);
 		tree.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 4, 1));
+		tree.addSelectionListener(new SelectionListener() {
+			
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				// TODO Auto-generated method stub
+				if(e.detail==SWT.CHECK)
+				{
+					TreeItem tt = (TreeItem)(e.item);
+					if(tt.getGrayed())
+						tt.setGrayed(false);
+					setParentItem(tt);
+					setChildItem(tt);
+					//tv.refresh();
+				}
+			}
+			
+			void setParentItem(TreeItem ti)
+			{
+				TreeItem pti = ti.getParentItem();
+				if(pti!=null)
+				{
+				boolean haveChecked = false;
+				boolean haveUnChecked = false;
+				boolean haveHalfChecked = false;
+				for(int i=0;i<pti.getItems().length;i++)
+				{
+					if(pti.getItems()[i].getGrayed())
+					{
+						haveHalfChecked = true;
+						break;
+					}
+					if(pti.getItems()[i].getChecked())
+						haveChecked = true;
+					else
+						haveUnChecked = true;
+				}
+				if((haveChecked&&haveUnChecked)||haveHalfChecked)
+				{	
+					pti.setGrayed(true);
+					pti.setChecked(true);
+				}
+				else if(haveChecked&&!haveUnChecked)
+				{	
+					pti.setGrayed(false);
+					pti.setChecked(true);
+				}
+
+				setParentItem(pti);
+				}
+			}
+			
+			void setChildItem(TreeItem ti)
+			{
+				//
+				for(int i=0;i<ti.getItems().length;i++)
+				{
+					ti.getItems()[i].setChecked(ti.getChecked());
+					setChildItem(ti.getItems()[i]);
+				}
+				//ti.set
+				ti.setExpanded(true);
+			}
+			@Override
+			public void widgetDefaultSelected(SelectionEvent e) {
+				// TODO Auto-generated method stub
+			}
+		});
 		
 		tv = new TreeViewer(tree);
 		tv.setContentProvider(new MasterContentProvider());
 		//ÉèÖÃÊ÷µÄ±êÇ©
-		tv.setLabelProvider(new MasterLabelProvider());
+		tv.setLabelProvider(new MasterLabelProvider(true));
 		//tv.setInput();
 		tv.expandToLevel(3);
 		
