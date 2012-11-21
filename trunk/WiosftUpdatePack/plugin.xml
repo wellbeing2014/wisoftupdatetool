@@ -90,7 +90,7 @@
          point="org.eclipse.core.runtime.products">
       <product
             application="WiosftUpdatePack.application"
-            name="中科更新包管理工具">
+            name="中科更新包管理工具(打包)">
          <property
                name="aboutText"
                value="RCP Mail template created by PDE">
