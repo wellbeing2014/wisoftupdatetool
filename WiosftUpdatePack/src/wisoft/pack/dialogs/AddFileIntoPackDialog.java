@@ -27,6 +27,7 @@ import org.eclipse.swt.widgets.TreeItem;
 
 import wisoft.pack.edits.MasterContentProvider;
 import wisoft.pack.edits.MasterLabelProvider;
+import wisoft.pack.models.FileModel;
 
 public class AddFileIntoPackDialog extends Dialog {
 	private Text text;
@@ -112,7 +113,7 @@ public class AddFileIntoPackDialog extends Dialog {
 				//dd.setFilterPath()
 				String path =dd.open();
 				text.setText(path);
-				tv.setInput(new File(path));
+				tv.setInput(new FileModel(new File(path)));
 				tv.refresh();
 			}
 		});
@@ -193,7 +194,7 @@ public class AddFileIntoPackDialog extends Dialog {
 		});
 		
 		tv = new TreeViewer(tree);
-		tv.setContentProvider(new MasterContentProvider());
+		tv.setContentProvider(new MasterContentProvider(false));
 		//…Ë÷√ ˜µƒ±Í«©
 		tv.setLabelProvider(new MasterLabelProvider(true));
 		//tv.setInput();

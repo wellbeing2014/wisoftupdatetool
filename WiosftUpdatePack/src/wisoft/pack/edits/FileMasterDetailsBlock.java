@@ -39,10 +39,10 @@ import org.eclipse.ui.forms.widgets.Section;
 
 import wisoft.pack.app.Activator;
 import wisoft.pack.dialogs.AddFileIntoPackDialog;
+import wisoft.pack.models.FileModel;
 import wisoft.pack.utils.UpdateInfo;
 import wisoft.pack.views.Console;
 import wisoft.pack.views.Console.ConsoleType;
-import org.eclipse.swt.widgets.Label;
 
 public class FileMasterDetailsBlock extends MasterDetailsBlock {
 
@@ -288,12 +288,12 @@ public class FileMasterDetailsBlock extends MasterDetailsBlock {
 		    }
 		});
 		//设置树的内容
-		tv.setContentProvider(new MasterContentProvider());
+		tv.setContentProvider(new MasterContentProvider(true));
 		//设置树的标签
 		tv.setLabelProvider(new MasterLabelProvider(false));
 		//设置初始化输入的类
 		PackInfoInput pi = (PackInfoInput)page.getEditorInput();
-		tv.setInput(new File(pi.getPackinfo().getSavePath()+"/"+UpdateInfo.UpdateDirName));
+		tv.setInput(new FileModel(new File(pi.getPackinfo().getSavePath()+"/"+UpdateInfo.UpdateDirName)));
 		tv.expandToLevel(3);
 
 	}

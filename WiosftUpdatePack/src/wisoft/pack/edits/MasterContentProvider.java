@@ -1,33 +1,105 @@
 package wisoft.pack.edits;
 
 import java.io.File;
+import java.util.Iterator;
 
+import org.dom4j.Element;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
 
+import wisoft.pack.app.Activator;
+import wisoft.pack.models.FileModel;
+import wisoft.pack.models.FileModel.EditType;
+import wisoft.pack.utils.UpdateInfo;
+import wisoft.pack.utils.XmlOperator;
+
 
 public class MasterContentProvider implements ITreeContentProvider {
+	private boolean isedit;
+	private XmlOperator xmlo;
+	private String packPath;
+	
+	public MasterContentProvider(boolean isedit)
+	{
+		this.isedit = isedit;
+		packPath = Activator.getDefault().getCurrent_pack().getSavePath();
+		xmlo = Activator.getDefault().getCurrent_pack().getXmlo();
+	}
 
-	 public Object[] getChildren(Object element) {
-	    return ((File) element).listFiles();
-	 }
+	public Object[] getChildren(Object element) {
+		
+		return ((FileModel) element).getChildren().toArray(new FileModel[0]);
+	}
+	
+	/**
+	 * 验证文件列表中是否有需要配置或删除的文件，（根据updateinfo.xml的配置）有则标记，没有则创建。
+	 * @param files
+	 * @return 最后返回FileModel[]
+	 */
+	private FileModel[] verifyConfXMl(FileModel file)
+	{
+		FileModel[] files = file.getChildren().toArray(new FileModel[0]);
+		//读取xml获取配置项数组
+		Iterator confiles = xmlo.OnlyElementInRoot("configFiles").elementIterator();
+		//循环数组去与file匹配
+		while(confiles.hasNext())
+		{
+			Element confile = (Element)confiles.next();
+			String fullpath = confile.attributeValue("fullpath");
+			String name = confile.attributeValue("name");
+			String edittype = confile.attributeValue("edittype");
+			//String myconfpath = packPath+"/"+UpdateInfo.UpdateDirName+fullpath.replace("/"+name, "");
+			//判断是否存在全路径，如果存在则标记
+			boolean ishave = false;
+			for(FileModel file1:files)
+			{
+				//判断是否标记过，标记过UPDATE或DELETE 则跳过
+				if(file1.getEdittype()!=EditType.NORMAL)
+					break;
+				if(file1.getFile().getAbsolutePath()==fullpath)
+				{
+					if(EditType.DELETE.toString().equals(edittype))
+						file1.setEdittype(EditType.DELETE);
+					else if(EditType.UPDATE.toString().equals(edittype))
+						file1.setEdittype(EditType.UPDATE);
+					ishave = true;
+					break;
+				}
+			}
+			if(!ishave)
+			{
+				String myconfpath = packPath+"/"+UpdateInfo.UpdateDirName+fullpath.replace("/"+name, "");
+				if(file.getFile().getAbsolutePath().equals(myconfpath));
+				{
+					FileModel newfile = new FileModel( new File(fullpath));
+					if(EditType.DELETE.toString().equals(edittype))
+						newfile.setEdittype(EditType.DELETE);
+					else if(EditType.UPDATE.toString().equals(edittype))
+						newfile.setEdittype(EditType.UPDATE);
+					file.addChild(newfile);
+				}
+			}
+		}
+		return file.getChildren().toArray(new FileModel[0]);
+	}
+	
+	public Object[] getElements(Object element) {
+		
+	   return this.isedit?verifyConfXMl((FileModel)element):((FileModel)element).getChildren().toArray(new FileModel[0]);
+	}
 
-	 public Object[] getElements(Object element) {
-	    return ((File) element).listFiles();
-	 }
+	public boolean hasChildren(Object element) {
+	   Object[] obj = getChildren(element);
+	   return obj == null ? false : obj.length > 0;
+	}
 
-	 public boolean hasChildren(Object element) {
-	    Object[] obj = getChildren(element);
-	    return obj == null ? false : obj.length > 0;
-	 }
+	public Object getParent(Object element) {
+	   return ((FileModel) element).getParent();
+	}
 
-	 public Object getParent(Object element) {
-	    return ((File) element).getParentFile();
-	 }
+	public void dispose() {
+	}
 
-	 public void dispose() {
-	 }
-
-	 public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
-	 }
+	public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
+	}
 }

@@ -9,6 +9,8 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.PlatformUI;
 
+import wisoft.pack.models.FileModel;
+
 public class MasterLabelProvider implements ILabelProvider {
 	private boolean needtime = false;
 	public MasterLabelProvider(boolean needtime)
@@ -16,7 +18,7 @@ public class MasterLabelProvider implements ILabelProvider {
 		this.needtime = needtime;
 	}
 	public Image getImage(Object element) {
-		File file = (File) element;
+		File file = ((FileModel) element).getFile();
 	    if (file.isDirectory())
 	     return PlatformUI.getWorkbench().getSharedImages().getImage(ISharedImages.IMG_OBJ_FOLDER);
 	    else
@@ -24,7 +26,7 @@ public class MasterLabelProvider implements ILabelProvider {
 	}
 
 	public String getText(Object element) {
-		File file =((File) element);
+		File file =((FileModel) element).getFile();
 		String text = file.getName();
 	    if (text.length() == 0) {
 	     text = file.getPath();
