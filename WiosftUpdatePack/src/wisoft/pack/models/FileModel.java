@@ -24,11 +24,6 @@ public class FileModel extends Model {
 	public FileModel(File file)
 	{
 		this.file = file;
-	}
-	
-	@Override
-	public List<Model> getChildren() {
-		// TODO Auto-generated method stub
 		File[] files =file.listFiles();
 		if(files!=null)
 		{
@@ -37,6 +32,12 @@ public class FileModel extends Model {
 				addChild(new FileModel(zfile));
 			}
 		}
+	}
+	
+	@Override
+	public List<Model> getChildren() {
+		// TODO Auto-generated method stub
+		
 		return super.getChildren();
 	}
 }

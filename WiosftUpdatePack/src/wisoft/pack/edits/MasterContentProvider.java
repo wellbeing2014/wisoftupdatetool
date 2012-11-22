@@ -69,7 +69,8 @@ public class MasterContentProvider implements ITreeContentProvider {
 			if(!ishave)
 			{
 				String myconfpath = packPath+"/"+UpdateInfo.UpdateDirName+fullpath.replace("/"+name, "");
-				if(file.getFile().getAbsolutePath().equals(myconfpath));
+				String filepath =file.getFile().getAbsolutePath().replace("\\", "/");
+				if(myconfpath.equals(filepath))
 				{
 					FileModel newfile = new FileModel( new File(fullpath));
 					if(EditType.DELETE.toString().equals(edittype))
@@ -84,8 +85,10 @@ public class MasterContentProvider implements ITreeContentProvider {
 	}
 	
 	public Object[] getElements(Object element) {
-		
-	   return this.isedit?verifyConfXMl((FileModel)element):((FileModel)element).getChildren().toArray(new FileModel[0]);
+		if(this.isedit)
+			return verifyConfXMl((FileModel)element);
+		else
+			return ((FileModel)element).getChildren().toArray(new FileModel[0]);
 	}
 
 	public boolean hasChildren(Object element) {
