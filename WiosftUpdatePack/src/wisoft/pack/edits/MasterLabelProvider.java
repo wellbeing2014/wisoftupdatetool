@@ -9,7 +9,9 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.PlatformUI;
 
+import wisoft.pack.app.Activator;
 import wisoft.pack.models.FileModel;
+import wisoft.pack.models.FileModel.EditType;
 
 public class MasterLabelProvider implements ILabelProvider {
 	private boolean needtime = false;
@@ -18,11 +20,26 @@ public class MasterLabelProvider implements ILabelProvider {
 		this.needtime = needtime;
 	}
 	public Image getImage(Object element) {
-		File file = ((FileModel) element).getFile();
-	    if (file.isDirectory())
-	     return PlatformUI.getWorkbench().getSharedImages().getImage(ISharedImages.IMG_OBJ_FOLDER);
-	    else
-	     return PlatformUI.getWorkbench().getSharedImages().getImage(ISharedImages.IMG_OBJ_FILE);
+		FileModel filemodel= (FileModel) element;
+		File file = filemodel.getFile();
+		switch(filemodel.getEdittype())
+		{
+			case DELETE:
+				return PlatformUI.getWorkbench().getSharedImages().getImage(ISharedImages.IMG_ETOOL_DELETE);
+			case UPDATE:
+				return PlatformUI.getWorkbench().getSharedImages().getImage(ISharedImages.IMG_TOOL_NEW_WIZARD);
+//			case NORMAL:
+//				if (file.isDirectory())
+//					return PlatformUI.getWorkbench().getSharedImages().getImage(ISharedImages.IMG_OBJ_FOLDER);
+//			    else
+//			    	return PlatformUI.getWorkbench().getSharedImages().getImage(ISharedImages.IMG_OBJ_FILE);
+			default:
+				if (file.isDirectory())
+					return PlatformUI.getWorkbench().getSharedImages().getImage(ISharedImages.IMG_OBJ_FOLDER);
+			    else
+			    	return PlatformUI.getWorkbench().getSharedImages().getImage(ISharedImages.IMG_OBJ_FILE);
+		}
+		 
 	}
 
 	public String getText(Object element) {

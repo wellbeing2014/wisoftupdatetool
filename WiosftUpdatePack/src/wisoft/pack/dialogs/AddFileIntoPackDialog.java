@@ -55,7 +55,7 @@ public class AddFileIntoPackDialog extends Dialog {
 		{
 			if(ti.getChecked())
 			{
-				filelist.add((File)ti.getData());
+				filelist.add(((FileModel)ti.getData()).getFile());
 			}
 			getCheckedFiles(ti.getItems());
 		}

@@ -53,9 +53,6 @@ public class MasterContentProvider implements ITreeContentProvider {
 			boolean ishave = false;
 			for(FileModel file1:files)
 			{
-				//判断是否标记过，标记过UPDATE或DELETE 则跳过
-				if(file1.getEdittype()!=EditType.NORMAL)
-					break;
 				if(file1.getFile().getAbsolutePath()==fullpath)
 				{
 					if(EditType.DELETE.toString().equals(edittype))
