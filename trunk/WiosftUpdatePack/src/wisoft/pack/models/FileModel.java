@@ -29,7 +29,11 @@ public class FileModel extends Model {
 		{
 			for(File zfile:files)
 			{
-				addChild(new FileModel(zfile));
+				FileModel zfilemodel = new FileModel(zfile);
+				if(!this.children.contains(zfilemodel))
+				{
+					addChild(new FileModel(zfile));
+				}
 			}
 		}
 	}

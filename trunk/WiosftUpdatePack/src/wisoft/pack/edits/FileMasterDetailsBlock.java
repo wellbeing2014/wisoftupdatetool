@@ -6,6 +6,7 @@ import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.tools.ant.taskdefs.Length.FileMode;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -40,6 +41,7 @@ import org.eclipse.ui.forms.widgets.Section;
 import wisoft.pack.app.Activator;
 import wisoft.pack.dialogs.AddFileIntoPackDialog;
 import wisoft.pack.models.FileModel;
+import wisoft.pack.models.FileModel.EditType;
 import wisoft.pack.utils.UpdateInfo;
 import wisoft.pack.views.Console;
 import wisoft.pack.views.Console.ConsoleType;
@@ -48,6 +50,7 @@ public class FileMasterDetailsBlock extends MasterDetailsBlock {
 
 	private FormPage page;
 	private TreeViewer tv ;
+	private PackInfoInput pi ;
 
 	public FileMasterDetailsBlock(FormPage page) {
 	    this.page = page;
@@ -182,7 +185,8 @@ public class FileMasterDetailsBlock extends MasterDetailsBlock {
 							}
 							
 							Display.getDefault().asyncExec(new Runnable() {                        
-				    			public void run() {                                                                                    
+				    			public void run() {      
+				    				tv.setInput(new FileModel(new File(pi.getPackinfo().getSavePath()+"/"+UpdateInfo.UpdateDirName)));
 				    				tv.refresh();
 				    			}});
 							return Status.OK_STATUS;
@@ -257,14 +261,15 @@ public class FileMasterDetailsBlock extends MasterDetailsBlock {
 					TreeItem[] tis = tv.getTree().getSelection();
 					for(TreeItem ti:tis)
 					{
-						File file = (File)ti.getData();
-						if(file.exists())
+						FileModel file = (FileModel)ti.getData();
+						if(file.getFile().exists())
 						{
-							if(file.isDirectory())
-								delFolder(file.getAbsolutePath());
-							else file.delete();
+							if(file.getFile().isDirectory())
+								delFolder(file.getFile().getAbsolutePath());
+							else file.getFile().delete();
 						}
 					}
+					tv.setInput(new FileModel(new File(pi.getPackinfo().getSavePath()+"/"+UpdateInfo.UpdateDirName)));
 					tv.refresh();
 				}
 				else
@@ -292,7 +297,7 @@ public class FileMasterDetailsBlock extends MasterDetailsBlock {
 		//设置树的标签
 		tv.setLabelProvider(new MasterLabelProvider(false));
 		//设置初始化输入的类
-		PackInfoInput pi = (PackInfoInput)page.getEditorInput();
+		pi = (PackInfoInput)page.getEditorInput();
 		tv.setInput(new FileModel(new File(pi.getPackinfo().getSavePath()+"/"+UpdateInfo.UpdateDirName)));
 		tv.expandToLevel(3);
 
@@ -339,8 +344,11 @@ public class FileMasterDetailsBlock extends MasterDetailsBlock {
 	private List<String> getPackPaths(TreeItem[] ti,String parent,TreeItem selti)
 	{
 		for(int i=0;i<ti.length;i++)
-		{
-			File file =(File)ti[i].getData();
+		{	
+			FileModel filemodel = (FileModel)ti[i].getData();
+			if(filemodel.getEdittype()!=EditType.NORMAL)
+				break;
+			File file =filemodel.getFile();
 			if(file.isDirectory())
 			{
 				if(ti[i]==selti)
