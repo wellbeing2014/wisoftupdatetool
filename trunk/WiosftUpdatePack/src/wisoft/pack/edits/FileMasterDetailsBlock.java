@@ -6,7 +6,7 @@ import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.tools.ant.taskdefs.Length.FileMode;
+import org.dom4j.Element;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -42,7 +42,9 @@ import wisoft.pack.app.Activator;
 import wisoft.pack.dialogs.AddFileIntoPackDialog;
 import wisoft.pack.models.FileModel;
 import wisoft.pack.models.FileModel.EditType;
+import wisoft.pack.models.PackInfoModel;
 import wisoft.pack.utils.UpdateInfo;
+import wisoft.pack.utils.XmlOperator;
 import wisoft.pack.views.Console;
 import wisoft.pack.views.Console.ConsoleType;
 
@@ -205,6 +207,7 @@ public class FileMasterDetailsBlock extends MasterDetailsBlock {
 		button_2.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
+				
 			}
 		});
 		toolkit.adapt(button_2, true, true);
@@ -262,7 +265,16 @@ public class FileMasterDetailsBlock extends MasterDetailsBlock {
 					for(TreeItem ti:tis)
 					{
 						FileModel file = (FileModel)ti.getData();
-						if(file.getFile().exists())
+						if(file.getEdittype()!=EditType.NORMAL)
+						{
+							PackInfoModel pack =((PackInfoInput)page.getEditorInput()).getPackinfo();
+							XmlOperator xmlo =pack.getXmlo();
+							Element confs = xmlo.getRootElement().element("configFiles");
+							String fullpath = file.getFile().getPath().replace("\\" ,"/");
+							xmlo.RemoveElementInElement(confs, "configFile", "fullpath",fullpath.replace(pack.getSavePath()+"/"+UpdateInfo.UpdateDirName, "") );
+							xmlo.save();
+						}
+						else if(file.getFile().exists())
 						{
 							if(file.getFile().isDirectory())
 								delFolder(file.getFile().getAbsolutePath());

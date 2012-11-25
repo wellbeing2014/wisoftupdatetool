@@ -48,12 +48,13 @@ public class MasterContentProvider implements ITreeContentProvider {
 			String fullpath = confile.attributeValue("fullpath");
 			String name = confile.attributeValue("name");
 			String edittype = confile.attributeValue("edittype");
-			//String myconfpath = packPath+"/"+UpdateInfo.UpdateDirName+fullpath.replace("/"+name, "");
+			String myconfpath = packPath+"/"+UpdateInfo.UpdateDirName+fullpath;
 			//判断是否存在全路径，如果存在则标记
 			boolean ishave = false;
 			for(FileModel file1:files)
 			{
-				if(file1.getFile().getAbsolutePath()==fullpath)
+				String havefilepath = file1.getFile().getPath().replace("\\", "/");
+ 				if(havefilepath.equals(myconfpath))
 				{
 					if(EditType.DELETE.toString().equals(edittype))
 						file1.setEdittype(EditType.DELETE);
@@ -65,11 +66,11 @@ public class MasterContentProvider implements ITreeContentProvider {
 			}
 			if(!ishave)
 			{
-				String myconfpath = packPath+"/"+UpdateInfo.UpdateDirName+fullpath.replace("/"+name, "");
+				String myconfpath1= packPath+"/"+UpdateInfo.UpdateDirName+fullpath.replace("/"+name, "");
 				String filepath =file.getFile().getAbsolutePath().replace("\\", "/");
-				if(myconfpath.equals(filepath))
+				if(myconfpath1.equals(filepath))
 				{
-					FileModel newfile = new FileModel( new File(fullpath));
+					FileModel newfile = new FileModel( new File(myconfpath));
 					if(EditType.DELETE.toString().equals(edittype))
 						newfile.setEdittype(EditType.DELETE);
 					else if(EditType.UPDATE.toString().equals(edittype))
