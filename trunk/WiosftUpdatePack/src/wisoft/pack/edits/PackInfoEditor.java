@@ -1,8 +1,8 @@
 package wisoft.pack.edits;
 
-import net.sourceforge.easysql.editors.SQLEditor;
 
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.datatools.sqltools.sqleditor.SQLEditor;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorSite;
