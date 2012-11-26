@@ -1,13 +1,8 @@
 package wisoft.pack.edits;
 
+import net.sourceforge.easysql.editors.SQLEditor;
+
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.SelectionAdapter;
-import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.layout.GridData;
-import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.widgets.Button;
-import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorSite;
@@ -15,12 +10,10 @@ import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.forms.editor.FormEditor;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 
-import wisoft.pack.edits.xml.XMLEditor;
-
 public class PackInfoEditor extends FormEditor {
 
 	public static final String ID = "wisoft.pack.edits.PackInfoEditor"; //$NON-NLS-1$
-	private XMLEditor editor;
+	private SQLEditor editor;
 
 	public PackInfoEditor() {
 	}
@@ -32,7 +25,7 @@ public class PackInfoEditor extends FormEditor {
 
 	protected void addPages() {
 		//createPage1();
-		editor =new XMLEditor();
+		editor =new SQLEditor();
 		try {
 			addPage(new BFormPage(this,"BFormPage","基本信息"),getEditorInput());
 			addPage(new CFormPage(this,"CFormPage","文件列表"));
