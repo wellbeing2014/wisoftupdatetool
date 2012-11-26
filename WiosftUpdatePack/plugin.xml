@@ -113,11 +113,6 @@
    <extension
          point="org.eclipse.ui.editors">
       <editor
-            class="wisoft.pack.edits.PackEdit"
-            id="wisoft.pack.edits.PackEdit"
-            name="PackEdit">
-      </editor>
-      <editor
             class="wisoft.pack.edits.PackInfoEditor"
             id="wisoft.pack.edits.PackInfoEditor"
             name="New PackInfoEditor">
