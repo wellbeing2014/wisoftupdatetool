@@ -2,13 +2,14 @@ package wisoft.pack.edits;
 
 
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.datatools.sqltools.sqleditor.SQLEditor;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.forms.editor.FormEditor;
 import org.eclipse.ui.forms.widgets.FormToolkit;
+
+import wisoft.pack.edits.sql.SQLEditor;
 
 public class PackInfoEditor extends FormEditor {
 
