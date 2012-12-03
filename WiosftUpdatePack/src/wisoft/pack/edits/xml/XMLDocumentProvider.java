@@ -3,11 +3,13 @@ package wisoft.pack.edits.xml;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.Reader;
+import java.io.UnsupportedEncodingException;
 import java.io.Writer;
 
 import org.eclipse.core.runtime.CoreException;
@@ -55,16 +57,21 @@ public class XMLDocumentProvider extends AbstractDocumentProvider {
 
 	private boolean setDocumentContent(IDocument document, IEditorInput input) throws CoreException {
 		// XXX handle encoding
-		Reader reader;
+		InputStreamReader reader;
 		try {
 			if (input instanceof IPathEditorInput)
-				reader= new FileReader(((IPathEditorInput)input).getPath().toFile());
+				reader= new InputStreamReader(new FileInputStream(((IPathEditorInput)input).getPath().toFile()),"UTF-8");
 			else
 				return false;
 		} catch (FileNotFoundException e) {
 			// return empty document and save later
 			return true;
 		}
+		catch (UnsupportedEncodingException e) {
+			// return empty document and save later
+			return true;
+		}
+
 		
 		try {
 			setDocumentContent(document, reader);

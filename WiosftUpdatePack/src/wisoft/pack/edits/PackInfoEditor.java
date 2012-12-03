@@ -10,11 +10,12 @@ import org.eclipse.ui.forms.editor.FormEditor;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 
 import wisoft.pack.edits.sql.SQLEditor;
+import wisoft.pack.edits.xml.XMLEditor;
 
 public class PackInfoEditor extends FormEditor {
 
 	public static final String ID = "wisoft.pack.edits.PackInfoEditor"; //$NON-NLS-1$
-	private SQLEditor editor;
+	private XMLEditor editor;
 
 	public PackInfoEditor() {
 	}
@@ -26,7 +27,7 @@ public class PackInfoEditor extends FormEditor {
 
 	protected void addPages() {
 		//createPage1();
-		editor =new SQLEditor();
+		editor =new XMLEditor();
 		try {
 			addPage(new BFormPage(this,"BFormPage","基本信息"),getEditorInput());
 			addPage(new CFormPage(this,"CFormPage","文件列表"));
