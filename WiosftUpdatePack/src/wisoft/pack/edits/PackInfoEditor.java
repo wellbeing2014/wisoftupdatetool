@@ -2,6 +2,9 @@ package wisoft.pack.edits;
 
 
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.swt.custom.CTabFolder;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorSite;
@@ -11,11 +14,13 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
 
 import wisoft.pack.edits.sql.SQLEditor;
 import wisoft.pack.edits.xml.XMLEditor;
+import wisoft.pack.models.PackInfoModel;
 
 public class PackInfoEditor extends FormEditor {
 
 	public static final String ID = "wisoft.pack.edits.PackInfoEditor"; //$NON-NLS-1$
-	private XMLEditor editor;
+	private SQLEditor sqleditor;
+	private XMLEditor xmleditor;
 
 	public PackInfoEditor() {
 	}
@@ -27,17 +32,42 @@ public class PackInfoEditor extends FormEditor {
 
 	protected void addPages() {
 		//createPage1();
-		editor =new XMLEditor();
+		sqleditor =new SQLEditor();
+		xmleditor =new XMLEditor();
+	
+		PackInfoModel pack = ((PackInfoInput)getEditorInput()).getPackinfo();
 		try {
 			addPage(new BFormPage(this,"BFormPage","基本信息"),getEditorInput());
 			addPage(new CFormPage(this,"CFormPage","文件列表"));
-			int i = addPage(editor, getEditorInput());
-			setPageText(i,"updatexml");
+			int i = addPage(sqleditor, new XmlSqlEditorInput(XmlSqlEditorInput.TYPE_SQL,pack));
+			setPageText(i,"SQL语句编写");
+			
+			int j = addPage(xmleditor, new XmlSqlEditorInput(XmlSqlEditorInput.TYPE_XML,pack));
+			setPageText(j,"updateinfo.xml");
 			addPage(new AFormPage(this,"AFormPage","版权"),getEditorInput());
-		} catch (PartInitException e) {
+		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		
+		CTabFolder tab =(CTabFolder)getContainer();
+		tab.addSelectionListener(new SelectionListener() {
+			
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				// TODO Auto-generated method stub
+				if(e.item.getData() instanceof XMLEditor)
+				{
+				}
+			}
+			
+			@Override
+			public void widgetDefaultSelected(SelectionEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+		});
+		
 	}
 	
 	void createPage1() {
@@ -64,20 +94,21 @@ public class PackInfoEditor extends FormEditor {
 	public void doSave(IProgressMonitor monitor) {
 		// TODO Auto-generated method stub
 		System.out.println("妈呀，我开始保存了。");
-		editor.doSave(monitor);
+		sqleditor.doSave(monitor);
 	}
 
 	@Override
 	public void doSaveAs() {
 		// TODO Auto-generated method stub
-		editor.doSaveAs();
+		sqleditor.doSaveAs();
 	}
 	
 	@Override
 	public boolean isDirty()
 	{
-		return editor.isDirty();
+		return sqleditor.isDirty();
 		
 	}
-
+	
+	
 }

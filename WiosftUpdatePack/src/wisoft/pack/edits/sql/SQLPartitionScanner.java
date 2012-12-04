@@ -18,11 +18,13 @@ public class SQLPartitionScanner extends RuleBasedPartitionScanner{
 	  public SQLPartitionScanner()
 	  {
 	    List<IPredicateRule> rules = new ArrayList<IPredicateRule>();
-	    IToken sqlComment = new Token("__sql_comment");
-	    rules.add(new EndOfLineRule("--", sqlComment));
+	    IToken sqlComment = new Token(SQLPartitionScanner.SQL_COMMENT);
+	    rules.add(new EndOfLineRule("--",sqlComment));
 	    rules.add(new MultiLineRule("/*","*/",sqlComment));
 	    IPredicateRule[] result = new IPredicateRule[rules.size()];
 	    rules.toArray(result);
 	    setPredicateRules(result);
+	    
+	
 	  }
 }
