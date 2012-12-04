@@ -1,7 +1,6 @@
 package wisoft.pack.edits.sql;
 
 import org.eclipse.datatools.sqltools.sqleditor.internal.sql.SQLCompletionProcessor;
-import org.eclipse.datatools.sqltools.sqleditor.internal.sql.SQLDoubleClickStrategy;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.ITextDoubleClickStrategy;
 import org.eclipse.jface.text.TextAttribute;

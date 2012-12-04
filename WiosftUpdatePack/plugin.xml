@@ -62,7 +62,7 @@
       <key
             commandId="org.eclipse.ui.file.exit"
             schemeId="WiosftUpdatePack.myscheme"
-            sequence="CTRL+X">
+            sequence="ALT+X">
       </key>
       <key
             commandId="WiosftUpdatePack.remove"
@@ -116,6 +116,12 @@
             class="wisoft.pack.edits.PackInfoEditor"
             id="wisoft.pack.edits.PackInfoEditor"
             name="New PackInfoEditor">
+      </editor>
+      <editor
+            class="wisoft.pack.edits.sql.SQLEditor"
+            default="false"
+            id="wisoft.pack.edits.sql.SQLEditor"
+            name="SQLEditor">
       </editor>
    </extension>
    <extension
