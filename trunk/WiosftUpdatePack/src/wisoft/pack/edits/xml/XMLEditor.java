@@ -12,7 +12,7 @@ public class XMLEditor extends AbstractTextEditor {
 	{
 		super();
 		// make sure we inherit all the text editing commands (delete line etc).
-		setKeyBindingScopes(new String[] { "org.eclipse.ui.textEditorScope" });  //$NON-NLS-1$
+		//setKeyBindingScopes(new String[] { "org.eclipse.ui.textEditorScope" });  //$NON-NLS-1$
 		internal_init();
 	}
 	///

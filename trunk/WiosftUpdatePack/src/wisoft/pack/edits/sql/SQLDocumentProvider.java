@@ -1,15 +1,19 @@
 package wisoft.pack.edits.sql;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.UnsupportedEncodingException;
+import java.io.Writer;
 
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -44,6 +48,21 @@ public class SQLDocumentProvider extends AbstractDocumentProvider {
 			if (setDocumentContent(document, (IEditorInput) element)) {
 				setupDocument(document);
 			}
+			if(document.get().length()==0)
+			{
+				try {
+					setDocumentContent(document,new InputStreamReader(SQLDocumentProvider.class.getResourceAsStream("sql_template.sql")));
+				} catch (UnsupportedEncodingException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (FileNotFoundException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
 			return document;
 		}
 		return null;
@@ -59,6 +78,7 @@ public class SQLDocumentProvider extends AbstractDocumentProvider {
 				return false;
 		} catch (FileNotFoundException e) {
 			// return empty document and save later
+			
 			return true;
 		}
 		catch (UnsupportedEncodingException e) {
@@ -98,6 +118,54 @@ public class SQLDocumentProvider extends AbstractDocumentProvider {
 		}
 		return null; // FIXME return dummy file
 	}
+	
+	
+	@Override
+	protected void doSaveDocument(IProgressMonitor monitor, Object element,
+			IDocument document, boolean overwrite) throws CoreException {
+		// TODO Auto-generated method stub
+		if (element instanceof IPathEditorInput) {
+			IPathEditorInput pei= (IPathEditorInput) element;
+			IPath path= pei.getPath();
+			File file= path.toFile();
+			
+			try {
+				file.createNewFile();
+
+				if (file.exists()) {
+					if (file.canWrite()) {
+						Writer writer= new FileWriter(file);
+						writeDocumentContent(document, writer, monitor);
+					} else {
+						// XXX prompt to SaveAs
+						throw new CoreException(new Status(IStatus.ERROR, "org.eclipse.ui.examples.rcp.texteditor", IStatus.OK, "file is read-only", null)); //$NON-NLS-1$ //$NON-NLS-2$
+					}
+				} else {
+					throw new CoreException(new Status(IStatus.ERROR, "org.eclipse.ui.examples.rcp.texteditor", IStatus.OK, "error creating file", null)); //$NON-NLS-1$ //$NON-NLS-2$
+				}
+			} catch (IOException e) {
+				throw new CoreException(new Status(IStatus.ERROR, "org.eclipse.ui.examples.rcp.texteditor", IStatus.OK, "error when saving file", e)); //$NON-NLS-1$ //$NON-NLS-2$
+			}
+
+		}
+		
+	}
+	private void writeDocumentContent(IDocument document, Writer writer, IProgressMonitor monitor) throws IOException {
+		Writer out= new BufferedWriter(writer);
+		try {
+			out.write(document.get());
+		} finally {
+			out.close();
+		}
+	}
+	
+	@Override
+    public long getModificationStamp(Object element) {
+		File file= getFile(element);
+		if (file == null)
+			return super.getModificationStamp(element);
+		return file.lastModified();
+	}
 	@Override
     public boolean isModifiable(Object element) {
 		return true;
@@ -109,12 +177,6 @@ public class SQLDocumentProvider extends AbstractDocumentProvider {
 		return null;
 	}
 
-	@Override
-	protected void doSaveDocument(IProgressMonitor monitor, Object element,
-			IDocument document, boolean overwrite) throws CoreException {
-		// TODO Auto-generated method stub
-		
-	}
 
 	@Override
 	protected IRunnableContext getOperationRunner(IProgressMonitor monitor) {
