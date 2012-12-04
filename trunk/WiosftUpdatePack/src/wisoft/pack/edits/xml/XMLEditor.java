@@ -28,4 +28,5 @@ public class XMLEditor extends AbstractTextEditor {
 		colorManager.dispose();
 		super.dispose();
 	}
+	
 }

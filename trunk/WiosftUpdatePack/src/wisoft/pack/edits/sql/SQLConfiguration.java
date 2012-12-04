@@ -2,6 +2,7 @@ package wisoft.pack.edits.sql;
 
 import org.eclipse.datatools.sqltools.sqleditor.internal.sql.SQLCompletionProcessor;
 import org.eclipse.datatools.sqltools.sqleditor.internal.sql.SQLDoubleClickStrategy;
+import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.ITextDoubleClickStrategy;
 import org.eclipse.jface.text.TextAttribute;
 import org.eclipse.jface.text.contentassist.ContentAssistant;
@@ -27,9 +28,9 @@ public class SQLConfiguration extends SourceViewerConfiguration {
 	 }
 	  public String[] getConfiguredContentTypes(ISourceViewer sourceViewer) {
 	    return new String[] { 
-	      "__dftl_partition_content_type", 
-	      "__sql_comment", 
-	      "__sql_keyword" };
+	      IDocument.DEFAULT_CONTENT_TYPE,
+	      SQLPartitionScanner.SQL_COMMENT, 
+	      SQLPartitionScanner.SQL_KEYWORD };
 	  }
 
 	  public ITextDoubleClickStrategy getDoubleClickStrategy(ISourceViewer sourceViewer, String contentType)
@@ -38,7 +39,7 @@ public class SQLConfiguration extends SourceViewerConfiguration {
 	      this.doubleClickStrategy = new SQLDoubleClickStrategy();
 	    return this.doubleClickStrategy;
 	  }
-
+	 
 	  public IContentAssistant getContentAssistant(ISourceViewer sourceViewer)
 	  {
 	    ContentAssistant assistant = new ContentAssistant();
@@ -62,18 +63,24 @@ public class SQLConfiguration extends SourceViewerConfiguration {
 	  }
 
 	  public IPresentationReconciler getPresentationReconciler(ISourceViewer sourceViewer) {
-	    PresentationReconciler reconciler = new PresentationReconciler();
+			PresentationReconciler reconciler = new PresentationReconciler();
 
-	    DefaultDamagerRepairer dr = new DefaultDamagerRepairer(getSQLScanner());
-	    reconciler.setDamager(dr, "__dftl_partition_content_type");
-	    reconciler.setRepairer(dr, "__dftl_partition_content_type");
+			DefaultDamagerRepairer dr = new DefaultDamagerRepairer(getSQLScanner());
+	        reconciler.setDamager(dr, IDocument.DEFAULT_CONTENT_TYPE);
+	        reconciler.setRepairer(dr, IDocument.DEFAULT_CONTENT_TYPE);
+	        
+//			reconciler.setDamager(dr, SQLPartitionScanner.SQL_KEYWORD);
+//			reconciler.setRepairer(dr, SQLPartitionScanner.SQL_KEYWORD);
 
-	    NonRuleBasedDamagerRepairer ndr = 
-	      new NonRuleBasedDamagerRepairer(
-	      new TextAttribute(this.colorManager.getColor(ColorManager.SINGLE_LINE_COMMENT)));
-	    reconciler.setDamager(ndr, "__sql_comment");
-	    reconciler.setRepairer(ndr, "__sql_comment");
+//			dr = new DefaultDamagerRepairer(getXMLScanner());
 
-	    return reconciler;
-	  }
+
+			NonRuleBasedDamagerRepairer ndr =
+				new NonRuleBasedDamagerRepairer(
+					new TextAttribute(colorManager.getColor(ColorManager.SINGLE_LINE_COMMENT)));
+			reconciler.setDamager(ndr, SQLPartitionScanner.SQL_COMMENT);
+			reconciler.setRepairer(ndr, SQLPartitionScanner.SQL_COMMENT);
+
+			return reconciler;
+		}
 }
