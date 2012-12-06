@@ -1,11 +1,8 @@
 package wisoft.pack.edits.sql;
 
-import org.eclipse.datatools.sqltools.sqleditor.internal.sql.SQLCompletionProcessor;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.ITextDoubleClickStrategy;
 import org.eclipse.jface.text.TextAttribute;
-import org.eclipse.jface.text.contentassist.ContentAssistant;
-import org.eclipse.jface.text.contentassist.IContentAssistant;
 import org.eclipse.jface.text.presentation.IPresentationReconciler;
 import org.eclipse.jface.text.presentation.PresentationReconciler;
 import org.eclipse.jface.text.rules.DefaultDamagerRepairer;
@@ -38,20 +35,6 @@ public class SQLConfiguration extends SourceViewerConfiguration {
 	      this.doubleClickStrategy = new SQLDoubleClickStrategy();
 	    return this.doubleClickStrategy;
 	  }
-	 
-	  public IContentAssistant getContentAssistant(ISourceViewer sourceViewer)
-	  {
-	    ContentAssistant assistant = new ContentAssistant();
-
-	    assistant.setContentAssistProcessor(new SQLCompletionProcessor(), "__dftl_partition_content_type");
-
-	    assistant.enableAutoActivation(true);
-	    assistant.setAutoActivationDelay(500);
-	    assistant.setProposalPopupOrientation(10);
-	    assistant.setContextInformationPopupOrientation(20);
-
-	    return assistant;
-	  }
 
 	  protected SQLScanner getSQLScanner() {
 	    if (this.tagScanner == null) {
@@ -67,13 +50,6 @@ public class SQLConfiguration extends SourceViewerConfiguration {
 			DefaultDamagerRepairer dr = new DefaultDamagerRepairer(getSQLScanner());
 	        reconciler.setDamager(dr, IDocument.DEFAULT_CONTENT_TYPE);
 	        reconciler.setRepairer(dr, IDocument.DEFAULT_CONTENT_TYPE);
-	        
-//			reconciler.setDamager(dr, SQLPartitionScanner.SQL_KEYWORD);
-//			reconciler.setRepairer(dr, SQLPartitionScanner.SQL_KEYWORD);
-
-//			dr = new DefaultDamagerRepairer(getXMLScanner());
-
-
 			NonRuleBasedDamagerRepairer ndr =
 				new NonRuleBasedDamagerRepairer(
 					new TextAttribute(colorManager.getColor(ColorManager.SINGLE_LINE_COMMENT)));

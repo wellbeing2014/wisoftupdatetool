@@ -1,8 +1,6 @@
 package wisoft.pack.edits;
 
 
-import net.sourceforge.easysql.editors.SQLEditor;
-
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.swt.custom.CTabFolder;
 import org.eclipse.swt.events.SelectionEvent;
@@ -14,6 +12,7 @@ import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.forms.editor.FormEditor;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 
+import wisoft.pack.edits.sql.SQLEditor;
 import wisoft.pack.edits.xml.XMLEditor;
 import wisoft.pack.models.PackInfoModel;
 

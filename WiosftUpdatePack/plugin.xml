@@ -117,12 +117,6 @@
             id="wisoft.pack.edits.PackInfoEditor"
             name="New PackInfoEditor">
       </editor>
-      <editor
-            class="wisoft.pack.edits.sql.SQLEditor"
-            default="false"
-            id="wisoft.pack.edits.sql.SQLEditor"
-            name="SQLEditor">
-      </editor>
    </extension>
    <extension
          point="org.eclipse.ui.console.consoleFactories">
