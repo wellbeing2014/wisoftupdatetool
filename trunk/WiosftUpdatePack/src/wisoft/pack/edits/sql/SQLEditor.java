@@ -1,5 +1,6 @@
 package wisoft.pack.edits.sql;
 
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.ui.texteditor.AbstractTextEditor;
 import org.eclipse.ui.texteditor.ITextEditorExtension3;
 
@@ -19,5 +20,18 @@ public class SQLEditor extends AbstractTextEditor {
 		colorManager = new ColorManager();
 		setSourceViewerConfiguration(new SQLConfiguration(colorManager));
 		setDocumentProvider(new SQLDocumentProvider());
+	}
+	@Override
+	public boolean isSaveAsAllowed() {
+		// TODO Auto-generated method stub
+		return true;
+	}
+	
+	@Override
+	protected void performSaveAs(IProgressMonitor progressMonitor) {
+		// TODO Auto-generated method stub
+		updateState(getEditorInput());
+		validateState(getEditorInput());
+		super.performSave(true,progressMonitor);
 	}
 }

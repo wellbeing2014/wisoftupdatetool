@@ -10,8 +10,8 @@ import org.eclipse.swt.widgets.Display;
 
 public final class ColorManager {
 	public static final RGB BACKGROUND = new RGB(255, 255, 255);
-	public static final RGB MULTI_LINE_COMMENT = new RGB(0, 128, 0);
-	public static final RGB SINGLE_LINE_COMMENT = new RGB(0, 128, 0);
+	public static final RGB MULTI_LINE_COMMENT = new RGB(255, 0, 0);
+	public static final RGB SINGLE_LINE_COMMENT = new RGB(128, 128 , 128);
 	public static final RGB KEYWORD = new RGB(0, 0, 128);
 	public static final RGB TYPE = new RGB(128, 0, 0);
 	public static final RGB STRING = new RGB(0, 96, 0);
