@@ -318,7 +318,7 @@ public class FileMasterDetailsBlock extends MasterDetailsBlock {
 	@Override
 	protected void registerPages(DetailsPart detailsPart) {
 		// TODO Auto-generated method stub
-		detailsPart.registerPage(File.class, new DirectoryDetailPage());
+		detailsPart.registerPage(FileModel.class, new DirectoryDetailPage());
 	}
 
 	@Override

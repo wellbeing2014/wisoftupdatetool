@@ -35,7 +35,7 @@ public class SQLDocumentProvider extends AbstractDocumentProvider {
 				IDocumentPartitioner partitioner =
 					new FastPartitioner(
 						new SQLPartitionScanner(),
-						new String[] { SQLPartitionScanner.SQL_KEYWORD, SQLPartitionScanner.SQL_COMMENT });
+						new String[] { SQLPartitionScanner.SQL_KEYWORD, SQLPartitionScanner.SQL_COMMENT1,SQLPartitionScanner.SQL_COMMENT_MULTI });
 				partitioner.connect(document);
 				document.setDocumentPartitioner(partitioner);
 			}
