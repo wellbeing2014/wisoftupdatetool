@@ -17,6 +17,7 @@ import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.layout.FormData;
@@ -45,6 +46,11 @@ import wisoft.pack.dialogs.PackRelyDialog;
 import wisoft.pack.models.PackRelyModel;
 import wisoft.pack.utils.UpdateInfo;
 import wisoft.pack.utils.XmlOperator;
+import org.eclipse.swt.layout.FillLayout;
+import org.eclipse.swt.widgets.ToolBar;
+import org.eclipse.swt.widgets.ToolItem;
+import org.eclipse.wb.swt.ResourceManager;
+import org.eclipse.swt.widgets.TableColumn;
 
 public class BFormPage extends FormPage {
 	
@@ -64,6 +70,7 @@ public class BFormPage extends FormPage {
 	private Button btnNewButton;
 	
 	private TableViewer viewer;
+	private Table table;
 	
 	/**
 	 * Create the form page.
@@ -116,19 +123,24 @@ public class BFormPage extends FormPage {
 		form.getBody().setLayout(layout);
 		Section section_1 =CreateBaseInfoSection(managedForm);
 		td = new TableWrapData(TableWrapData.FILL_GRAB);
-		td.heightHint=250;
+		td.heightHint=TableWrapData.FILL_GRAB;
 		section_1.setLayoutData(td);
 		Section section_2 =CreateScopeSection(managedForm);
 		td = new TableWrapData(TableWrapData.FILL_GRAB);
-		td.rowspan = 2;
-		td.heightHint=400;
+		//td.rowspan = 2;
+		td.heightHint=TableWrapData.FILL_GRAB;
 		section_2.setLayoutData(td);
 		
 		Section section_3 =CreateRelySection(managedForm);
 		td = new TableWrapData(TableWrapData.FILL_GRAB);
-		td.heightHint=150;
+		td.heightHint=TableWrapData.FILL_GRAB;
 		section_3.setLayoutData(td);
 		
+		
+		Section section_4 = CreateTrackingSection(managedForm);
+		td = new TableWrapData(TableWrapData.FILL_GRAB);
+		td.heightHint=TableWrapData.FILL_GRAB;
+		section_4.setLayoutData(td);
 		//CreateBaseInfoSection(managedForm);
 		
 		//section.setClient(composite);
@@ -138,13 +150,6 @@ public class BFormPage extends FormPage {
 	private Section CreateRelySection(final IManagedForm managedForm)
 	{
 		Section section = managedForm.getToolkit().createSection(managedForm.getForm().getBody(), Section.TWISTIE | Section.TITLE_BAR);
-//		ColumnLayoutData cld_section = new ColumnLayoutData();
-//		cld_section.heightHint = 150;
-//		//cld_section.heightHint = 237;
-//		//cld_section.widthHint = 217;
-//		cld_section.widthHint = ColumnLayoutData.FILL;
-//		cld_section.horizontalAlignment=ColumnLayoutData.FILL;
-//		section.setLayoutData(cld_section);
 		managedForm.getToolkit().paintBordersFor(section);
 		section.setText("\u66F4\u65B0\u4F9D\u8D56");
 		section.setExpanded(true);
@@ -154,24 +159,28 @@ public class BFormPage extends FormPage {
 		managedForm.getToolkit().paintBordersFor(client);
 		client.setLayout(new FormLayout());
 		
-		Composite composite = new Composite(client, SWT.NONE);
-		composite.setLayout(new GridLayout(1, false));
-		FormData fd_composite = new FormData();
-		fd_composite.right = new FormAttachment(100);
-		fd_composite.bottom = new FormAttachment(100);
-		fd_composite.top = new FormAttachment(0);
-		fd_composite.left = new FormAttachment(100, -50);
-		composite.setLayoutData(fd_composite);
-		managedForm.getToolkit().adapt(composite);
-		managedForm.getToolkit().paintBordersFor(composite);
-		
 		Table t = managedForm.getToolkit().createTable(client, SWT.NULL);
 		FormData fd_t = new FormData();
+		fd_t.right = new FormAttachment(100);
+		fd_t.left = new FormAttachment(0);
 		fd_t.bottom = new FormAttachment(100);
-		fd_t.right = new FormAttachment(composite);
+		fd_t.top = new FormAttachment(0, 2);
+		t.setLayoutData(fd_t);
 		
-		Button button = new Button(composite, SWT.NONE);
-		button.addSelectionListener(new SelectionAdapter() {
+		
+		final SectionPart spart = new SectionPart(section);
+		Section section_1 = spart.getSection();
+		managedForm.addPart(spart);
+		
+		ToolBar toolBar = new ToolBar(section_1, SWT.FLAT | SWT.RIGHT);
+		managedForm.getToolkit().adapt(toolBar);
+		managedForm.getToolkit().paintBordersFor(toolBar);
+		section_1.setTextClient(toolBar);
+		
+		ToolItem toolItem = new ToolItem(toolBar, SWT.NONE);
+		toolItem.setToolTipText("\u589E\u52A0\u66F4\u65B0\u5305\u4F9D\u8D56");
+		toolItem.setImage(ResourceManager.getPluginImage("WiosftUpdatePack", "icons/add.gif"));
+		toolItem.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				PackRelyDialog pd = new PackRelyDialog(getPartControl().getShell());
@@ -190,14 +199,14 @@ public class BFormPage extends FormPage {
 					viewer.refresh();
 				}
 			}
-		});
-		managedForm.getToolkit().adapt(button, true, true);
-		button.setText("\u65B0\u589E");
-		
-		Button button_1 = new Button(composite, SWT.NONE);
-		button_1.addSelectionListener(new SelectionAdapter() {
+			});
+		ToolItem toolItem_1 = new ToolItem(toolBar, SWT.NONE);
+		toolItem_1.setToolTipText("\u5220\u9664\u4F9D\u8D56");
+		toolItem_1.setImage(ResourceManager.getPluginImage("WiosftUpdatePack", "icons/del.png"));
+		toolItem_1.addSelectionListener(new SelectionAdapter(){
 			@Override
 			public void widgetSelected(SelectionEvent e) {
+				// TODO Auto-generated method stub
 				IStructuredSelection selection = (IStructuredSelection)viewer.getSelection();
 				 List<?> selectionlist = selection.toList();
 				 Element relys =xmlo.OnlyElementInRoot(UpdateInfo.PackRelys);
@@ -213,15 +222,7 @@ public class BFormPage extends FormPage {
 				 viewer.refresh();
 			}
 		});
-		managedForm.getToolkit().adapt(button_1, true, true);
-		button_1.setText("\u5220\u9664");
-		fd_t.top = new FormAttachment(0, 2);
-		fd_t.left = new FormAttachment(0);
-		t.setLayoutData(fd_t);
 		
-		
-		final SectionPart spart = new SectionPart(section);
-		managedForm.addPart(spart);
 		viewer = new TableViewer(t);
 		viewer.addSelectionChangedListener(new ISelectionChangedListener() {
 			public void selectionChanged(SelectionChangedEvent event) {
@@ -416,6 +417,50 @@ public class BFormPage extends FormPage {
 		return section;
 	}
 	
+	private Section CreateTrackingSection(final IManagedForm managedForm)
+	{
+		Section section = managedForm.getToolkit().createSection(managedForm.getForm().getBody(), Section.EXPANDED | Section.TWISTIE | Section.TITLE_BAR);
+		managedForm.getToolkit().paintBordersFor(section);
+		section.setText("\u4FEE\u8BA2\u7684\u95EE\u9898\u5355");
+		
+		Composite composite = new Composite(section, SWT.NONE);
+		managedForm.getToolkit().adapt(composite);
+		managedForm.getToolkit().paintBordersFor(composite);
+		section.setClient(composite);
+		composite.setLayout(new FillLayout(SWT.HORIZONTAL));
+		
+		table = new Table(composite, SWT.BORDER | SWT.FULL_SELECTION);
+		managedForm.getToolkit().adapt(table);
+		managedForm.getToolkit().paintBordersFor(table);
+		table.setHeaderVisible(true);
+		table.setLinesVisible(true);
+		
+		TableColumn tableColumn = new TableColumn(table, SWT.NONE);
+		tableColumn.setWidth(SWT.FILL);
+		tableColumn.setText("\u95EE\u9898\u5355\u53F7");
+		
+		TableColumn tableColumn_1 = new TableColumn(table, SWT.NONE);
+		tableColumn_1.setWidth(SWT.FILL);
+		tableColumn_1.setText("\u63CF\u8FF0");
+		
+		ToolBar toolBar = new ToolBar(section, SWT.FLAT | SWT.RIGHT);
+		managedForm.getToolkit().adapt(toolBar);
+		managedForm.getToolkit().paintBordersFor(toolBar);
+		section.setTextClient(toolBar);
+		
+		ToolItem toolItem = new ToolItem(toolBar, SWT.NONE);
+		toolItem.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+			}
+		});
+		toolItem.setToolTipText("\u589E\u52A0\u4FEE\u8BA2\u95EE\u9898\u5355");
+		toolItem.setImage(ResourceManager.getPluginImage("WiosftUpdatePack", "icons/add.gif"));
+		ToolItem toolItem_1 = new ToolItem(toolBar, SWT.NONE);
+		toolItem_1.setToolTipText("\u5220\u9664\u4FEE\u8BA2\u95EE\u9898\u5355");
+		toolItem_1.setImage(ResourceManager.getPluginImage("WiosftUpdatePack", "icons/del.png"));
+		return section;
+	}
 	public synchronized void save()
 	{
 		xmlo.save();
