@@ -67,7 +67,8 @@ public class BFormPage extends FormPage {
 	
 	
 	private Text txtNewText;
-	private Button btnNewButton;
+	//private Button btnNewButton;
+	private ToolItem tltmNewItem;
 	
 	private TableViewer viewer;
 	private Table table;
@@ -254,34 +255,48 @@ public class BFormPage extends FormPage {
 		managedForm.getToolkit().adapt(composite);
 		managedForm.getToolkit().paintBordersFor(composite);
 		section.setClient(composite);
-		composite.setLayout(new FormLayout());
+		composite.setLayout(new FillLayout(SWT.HORIZONTAL));
 		
 		txtNewText = managedForm.getToolkit().createText(composite, "New Text", SWT.H_SCROLL | SWT.V_SCROLL | SWT.CANCEL | SWT.MULTI);
-	
-		FormData fd_txtNewText = new FormData();
-		fd_txtNewText.right = new FormAttachment(100);
-		fd_txtNewText.top = new FormAttachment(0);
-		fd_txtNewText.left = new FormAttachment(0);
-		txtNewText.setLayoutData(fd_txtNewText);
 		
-		btnNewButton = managedForm.getToolkit().createButton(composite, "\u5E94\u7528", SWT.NONE);
-		btnNewButton.setEnabled(false);
-		btnNewButton.addSelectionListener(new SelectionAdapter() {
+//		btnNewButton = managedForm.getToolkit().createButton(composite, "\u5E94\u7528", SWT.NONE);
+//		btnNewButton.setEnabled(false);
+//		btnNewButton.addSelectionListener(new SelectionAdapter() {
+//			@Override
+//			public void widgetSelected(SelectionEvent e) {
+//				 Element relys =xmlo.OnlyElementInRoot(UpdateInfo.ReleaseNote);
+//				 relys.clearContent(); 
+//				 relys.addCDATA(txtNewText.getText());
+//				 xmlo.save();
+//				 btnNewButton.setEnabled(false);
+//				 //isRNedit = false;
+//			}
+//		});
+		//fd_txtNewText.bottom = new FormAttachment(btnNewButton);
+//		FormData fd_btnNewButton = new FormData();
+//		fd_btnNewButton.bottom = new FormAttachment(100);
+//		fd_btnNewButton.right = new FormAttachment(100);
+//		btnNewButton.setLayoutData(fd_btnNewButton);
+		
+		ToolBar toolBar = new ToolBar(section, SWT.FLAT | SWT.RIGHT);
+		managedForm.getToolkit().adapt(toolBar);
+		managedForm.getToolkit().paintBordersFor(toolBar);
+		section.setTextClient(toolBar);
+		
+		tltmNewItem = new ToolItem(toolBar, SWT.NONE);
+		tltmNewItem.setImage(ResourceManager.getPluginImage("WiosftUpdatePack", "icons/save.gif"));
+		tltmNewItem.setEnabled(false);
+		tltmNewItem.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				 Element relys =xmlo.OnlyElementInRoot(UpdateInfo.ReleaseNote);
+				Element relys =xmlo.OnlyElementInRoot(UpdateInfo.ReleaseNote);
 				 relys.clearContent(); 
 				 relys.addCDATA(txtNewText.getText());
 				 xmlo.save();
-				 btnNewButton.setEnabled(false);
-				 //isRNedit = false;
+				 tltmNewItem.setEnabled(false);
 			}
 		});
-		fd_txtNewText.bottom = new FormAttachment(btnNewButton);
-		FormData fd_btnNewButton = new FormData();
-		fd_btnNewButton.bottom = new FormAttachment(100);
-		fd_btnNewButton.right = new FormAttachment(100);
-		btnNewButton.setLayoutData(fd_btnNewButton);
+		tltmNewItem.setToolTipText("\u4FDD\u5B58");
 		section.addExpansionListener(new ExpansionAdapter() {
 			public void expansionStateChanged(ExpansionEvent e) {
 				form.reflow(false);
@@ -482,7 +497,7 @@ public class BFormPage extends FormPage {
 				
 				@Override
 				public void modifyText(ModifyEvent e) {
-					btnNewButton.setEnabled(true);
+					tltmNewItem.setEnabled(true);
 				}
 			});
 	}
