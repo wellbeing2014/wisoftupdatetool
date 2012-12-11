@@ -17,8 +17,8 @@ import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.layout.FormLayout;
@@ -28,7 +28,10 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Table;
+import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.Text;
+import org.eclipse.swt.widgets.ToolBar;
+import org.eclipse.swt.widgets.ToolItem;
 import org.eclipse.ui.forms.IManagedForm;
 import org.eclipse.ui.forms.SectionPart;
 import org.eclipse.ui.forms.editor.FormEditor;
@@ -40,17 +43,14 @@ import org.eclipse.ui.forms.widgets.ScrolledForm;
 import org.eclipse.ui.forms.widgets.Section;
 import org.eclipse.ui.forms.widgets.TableWrapData;
 import org.eclipse.ui.forms.widgets.TableWrapLayout;
+import org.eclipse.wb.swt.ResourceManager;
 
 import wisoft.pack.app.Activator;
 import wisoft.pack.dialogs.PackRelyDialog;
+import wisoft.pack.dialogs.TrackingListSelDialog;
 import wisoft.pack.models.PackRelyModel;
 import wisoft.pack.utils.UpdateInfo;
 import wisoft.pack.utils.XmlOperator;
-import org.eclipse.swt.layout.FillLayout;
-import org.eclipse.swt.widgets.ToolBar;
-import org.eclipse.swt.widgets.ToolItem;
-import org.eclipse.wb.swt.ResourceManager;
-import org.eclipse.swt.widgets.TableColumn;
 
 public class BFormPage extends FormPage {
 	
@@ -467,6 +467,12 @@ public class BFormPage extends FormPage {
 		toolItem.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
+				TrackingListSelDialog td = new TrackingListSelDialog(getPartControl().getShell());
+				int i=td.open();
+				if(i==IDialogConstants.OK_ID)
+				{
+					
+				}
 			}
 		});
 		toolItem.setToolTipText("\u589E\u52A0\u4FEE\u8BA2\u95EE\u9898\u5355");
