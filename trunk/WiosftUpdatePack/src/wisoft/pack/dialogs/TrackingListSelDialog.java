@@ -1,22 +1,43 @@
 package wisoft.pack.dialogs;
 
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.Vector;
+
+import org.apache.cxf.jaxws.JaxWsProxyFactoryBean;
+import org.apache.soap.Constants;
+import org.apache.soap.Fault;
+import org.apache.soap.SOAPException;
+import org.apache.soap.rpc.Call;
+import org.apache.soap.rpc.Parameter;
+import org.apache.soap.rpc.Response;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.IDialogConstants;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.FocusAdapter;
+import org.eclipse.swt.events.FocusEvent;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
+import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Shell;
-import org.eclipse.swt.widgets.Text;
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.layout.GridData;
-import org.eclipse.swt.widgets.Button;
-import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
+import org.eclipse.swt.widgets.TableItem;
+import org.eclipse.swt.widgets.Text;
+import org.eclipse.wb.swt.SWTResourceManager;
 
 import wisoft.pack.app.Activator;
+
+import com.wisoft.framework.wims.pojo.WimsSingleIssueTracking;
+import com.wisoft.framework.wims.servicein.TrackServicesIn;
+import com.wisoft.framework.wims.servicereturn.resultReturn;
+import com.wisoft.framework.wims.ws.IWimsManagerWS;
 
 public class TrackingListSelDialog extends Dialog {
 	private Text text;
@@ -46,11 +67,94 @@ public class TrackingListSelDialog extends Dialog {
 		gridLayout.numColumns = 2;
 		
 		text = new Text(container, SWT.BORDER);
+		text.setTabs(11);
+		text.addFocusListener(new FocusAdapter() {
+			@Override
+			public void focusGained(FocusEvent e) {
+				if(text.getText().equals("\u8BF7\u8F93\u5165\u95EE\u9898\u5355\u53F7\u3001\u9879\u76EE\u3001\u7533\u8BF7\u4EBA\uFF08\u652F\u6301\u6A21\u7CCA\u67E5\u8BE2\uFF09"))
+				{
+					text.setText("");
+					text.setForeground(SWTResourceManager.getColor(SWT.COLOR_BLACK));
+					text.setFont(SWTResourceManager.getFont("Î¢ÈíÑÅºÚ", 9, SWT.NORMAL));
+				}
+			}
+			
+			@Override
+			public void focusLost(FocusEvent e) {
+				if(text.getText().length()==0)
+				{
+					text.setText("\u8BF7\u8F93\u5165\u95EE\u9898\u5355\u53F7\u3001\u9879\u76EE\u3001\u7533\u8BF7\u4EBA\uFF08\u652F\u6301\u6A21\u7CCA\u67E5\u8BE2\uFF09");
+					text.setForeground(SWTResourceManager.getColor(SWT.COLOR_WIDGET_NORMAL_SHADOW));
+					text.setFont(SWTResourceManager.getFont("Î¢ÈíÑÅºÚ", 9, SWT.ITALIC));
+				}
+			}
+		});
+		
+		text.setText("\u8BF7\u8F93\u5165\u95EE\u9898\u5355\u53F7\u3001\u9879\u76EE\u3001\u7533\u8BF7\u4EBA\uFF08\u652F\u6301\u6A21\u7CCA\u67E5\u8BE2\uFF09");
+		text.setForeground(SWTResourceManager.getColor(SWT.COLOR_WIDGET_NORMAL_SHADOW));
+		text.setFont(SWTResourceManager.getFont("Î¢ÈíÑÅºÚ", 9, SWT.ITALIC));
 		text.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
 		
 		Button btnNewButton = new Button(container, SWT.NONE);
+		btnNewButton.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				URL url = null;
+				try {
+					url=new URL("http://58.214.246.37:8120/wisoftintegrateframe/services/WimsManager?wsdl");
+				} catch (MalformedURLException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+				Call soapCall = new Call();
+				soapCall.setEncodingStyleURI(Constants.NS_URI_SOAP_ENC);
+				soapCall.setTargetObjectURI("urn:xmethods-caSynrochnized");
+				soapCall.setMethodName("findTrackByServicesInParames");
+			    Vector soapParams = new Vector();
+		        TrackServicesIn trackparam = new TrackServicesIn();
+		        trackparam.setFpqk("all");
+		        trackparam.setState("1");
+		        trackparam.setZrpersonid("all");
+		        trackparam.setSearch(text.getText());
+		        // name, type, value, encoding style
+		        Parameter isbnParam = new Parameter("arg0", TrackServicesIn.class, trackparam, null);
+		        soapParams.addElement(isbnParam);
+		        soapParams.addElement( new Parameter("arg1", int.class, 0, null));
+		        soapParams.addElement( new Parameter("arg2", int.class, 10, null));
+		        soapCall.setParams(soapParams);
+		        try {
+		            // Invoke the remote method on the object
+		            Response soapResponse = soapCall.invoke(url,"");
+		            // Check to see if there is an error, return "N/A"
+		            if (soapResponse.generatedFault()) {
+		                Fault fault = soapResponse.getFault();
+		               String f = fault.getFaultString();
+		               System.out.println("f");
+		            } else {
+		               // read result
+		               Parameter soapResult = soapResponse.getReturnValue();
+		               // get a string from the result
+		               System.out.println("aaa");
+		            }
+		         } catch (SOAPException se) {
+		           se.printStackTrace();
+		         }
+		        resultReturn rR = new resultReturn();
+		        table.removeAll();
+		        for(int i=0;i<rR.getLst().size();i++)
+		        {
+		        	WimsSingleIssueTracking single = (WimsSingleIssueTracking)rR.getLst().get(i);
+		        	 TableItem item = new TableItem(table, SWT.NONE);
+		        	 item.setText( new String[] { single.getLsh(), 
+		        			 					  single.getProid(),
+		        			 					  single.getSqpersonid(),
+		        			 					  single.getContent() });
+		        }
+		      
+			}
+		});
 		btnNewButton.setText("\u67E5\u8BE2");
-		
+		btnNewButton.setFocus();
 		table = new Table(container, SWT.BORDER | SWT.FULL_SELECTION);
 		table.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 2, 1));
 		table.setHeaderVisible(true);
