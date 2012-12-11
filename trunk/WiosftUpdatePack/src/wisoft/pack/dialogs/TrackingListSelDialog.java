@@ -2,15 +2,11 @@ package wisoft.pack.dialogs;
 
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.Vector;
 
-import org.apache.cxf.jaxws.JaxWsProxyFactoryBean;
-import org.apache.soap.Constants;
-import org.apache.soap.Fault;
-import org.apache.soap.SOAPException;
-import org.apache.soap.rpc.Call;
-import org.apache.soap.rpc.Parameter;
-import org.apache.soap.rpc.Response;
+import org.codehaus.xfire.XFireFactory;
+import org.codehaus.xfire.client.XFireProxyFactory;
+import org.codehaus.xfire.service.Service;
+import org.codehaus.xfire.service.binding.ObjectServiceFactory;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.swt.SWT;
@@ -106,40 +102,23 @@ public class TrackingListSelDialog extends Dialog {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
 				}
-				Call soapCall = new Call();
-				soapCall.setEncodingStyleURI(Constants.NS_URI_SOAP_ENC);
-				soapCall.setTargetObjectURI("urn:xmethods-caSynrochnized");
-				soapCall.setMethodName("findTrackByServicesInParames");
-			    Vector soapParams = new Vector();
-		        TrackServicesIn trackparam = new TrackServicesIn();
+				Service s=new ObjectServiceFactory().create(IWimsManagerWS.class);
+				XFireProxyFactory xf=new XFireProxyFactory(XFireFactory.newInstance().getXFire());
+				resultReturn rR = new resultReturn();
+				 TrackServicesIn trackparam = new TrackServicesIn();
 		        trackparam.setFpqk("all");
 		        trackparam.setState("1");
 		        trackparam.setZrpersonid("all");
 		        trackparam.setSearch(text.getText());
-		        // name, type, value, encoding style
-		        Parameter isbnParam = new Parameter("arg0", TrackServicesIn.class, trackparam, null);
-		        soapParams.addElement(isbnParam);
-		        soapParams.addElement( new Parameter("arg1", int.class, 0, null));
-		        soapParams.addElement( new Parameter("arg2", int.class, 10, null));
-		        soapCall.setParams(soapParams);
-		        try {
-		            // Invoke the remote method on the object
-		            Response soapResponse = soapCall.invoke(url,"");
-		            // Check to see if there is an error, return "N/A"
-		            if (soapResponse.generatedFault()) {
-		                Fault fault = soapResponse.getFault();
-		               String f = fault.getFaultString();
-		               System.out.println("f");
-		            } else {
-		               // read result
-		               Parameter soapResult = soapResponse.getReturnValue();
-		               // get a string from the result
-		               System.out.println("aaa");
-		            }
-		         } catch (SOAPException se) {
-		           se.printStackTrace();
-		         }
-		        resultReturn rR = new resultReturn();
+				try{
+					IWimsManagerWS iwmg =(IWimsManagerWS)xf.create(s,"http://58.214.246.37:8120/wisoftintegrateframe/services/WimsManager");
+					rR = iwmg.findTrackByServicesInParames(trackparam, 0, 10);
+				}
+				catch(Exception e2)
+				{
+					e2.printStackTrace();
+				}
+				
 		        table.removeAll();
 		        for(int i=0;i<rR.getLst().size();i++)
 		        {
