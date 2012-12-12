@@ -1,12 +1,8 @@
 package wisoft.pack.dialogs;
 
-import java.net.MalformedURLException;
-import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 
-import org.codehaus.xfire.XFireFactory;
-import org.codehaus.xfire.client.XFireProxyFactory;
-import org.codehaus.xfire.service.Service;
-import org.codehaus.xfire.service.binding.ObjectServiceFactory;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.swt.SWT;
@@ -21,6 +17,8 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
@@ -30,14 +28,16 @@ import org.eclipse.wb.swt.SWTResourceManager;
 
 import wisoft.pack.app.Activator;
 
-import com.wisoft.framework.wims.pojo.WimsSingleIssueTracking;
-import com.wisoft.framework.wims.servicein.TrackServicesIn;
-import com.wisoft.framework.wims.servicereturn.resultReturn;
-import com.wisoft.framework.wims.ws.IWimsManagerWS;
+import com.wisoft.wims.IWimsManagerWSPortType;
+import com.wisoft.wims.ResultReturn;
+import com.wisoft.wims.TrackServicesIn;
+import com.wisoft.wims.TrankingManager;
+import com.wisoft.wims.WimsSingleIssueTracking;
 
 public class TrackingListSelDialog extends Dialog {
 	private Text text;
 	private Table table;
+	public List<WimsSingleIssueTracking> wimstracklist = new ArrayList<WimsSingleIssueTracking>();
 	/**
 	 * Create the dialog.
 	 * @param parentShell
@@ -52,6 +52,15 @@ public class TrackingListSelDialog extends Dialog {
 	    shell.setText("查询选择问题单");  
 	    shell.setImage(new Image(null,Activator.getImageDescriptor("icons/wi_updatetool.ico").getImageData()));
 	}  
+	
+	@Override
+	protected void okPressed() {
+		for(TableItem item :table.getSelection())
+		{
+			wimstracklist.add((WimsSingleIssueTracking)item.getData());
+		}
+		
+	}
 	/**
 	 * Create contents of the dialog.
 	 * @param parent
@@ -95,61 +104,83 @@ public class TrackingListSelDialog extends Dialog {
 		btnNewButton.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				URL url = null;
-				try {
-					url=new URL("http://58.214.246.37:8120/wisoftintegrateframe/services/WimsManager?wsdl");
-				} catch (MalformedURLException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				}
-				Service s=new ObjectServiceFactory().create(IWimsManagerWS.class);
-				XFireProxyFactory xf=new XFireProxyFactory(XFireFactory.newInstance().getXFire());
-				resultReturn rR = new resultReturn();
-				 TrackServicesIn trackparam = new TrackServicesIn();
-		        trackparam.setFpqk("all");
-		        trackparam.setState("1");
-		        trackparam.setZrpersonid("all");
-		        trackparam.setSearch(text.getText());
-				try{
-					IWimsManagerWS iwmg =(IWimsManagerWS)xf.create(s,"http://58.214.246.37:8120/wisoftintegrateframe/services/WimsManager");
-					rR = iwmg.findTrackByServicesInParames(trackparam, 0, 10);
-				}
-				catch(Exception e2)
-				{
-					e2.printStackTrace();
-				}
+				TrankingManager tm = new TrankingManager();
+				IWimsManagerWSPortType iww = tm.getTrackingManager();
+				TrackServicesIn trackparam = new TrackServicesIn();
+			    trackparam.setFpqk("all");
+			    trackparam.setState("1");
+			    trackparam.setZrpersonid("all");
+			    trackparam.setSearch("P201207");
+			    ResultReturn rn =iww.findTrackByServicesInParames(trackparam, 0, 10);
+			    //System.out.println(((WimsSingleIssueTracking)rn.getLst().get(0)).getContent());
+				
 				
 		        table.removeAll();
-		        for(int i=0;i<rR.getLst().size();i++)
+		        for(int i=0;i<rn.getLst().size();i++)
 		        {
-		        	WimsSingleIssueTracking single = (WimsSingleIssueTracking)rR.getLst().get(i);
-		        	 TableItem item = new TableItem(table, SWT.NONE);
-		        	 item.setText( new String[] { single.getLsh(), 
-		        			 					  single.getProid(),
-		        			 					  single.getSqpersonid(),
-		        			 					  single.getContent() });
+		        	WimsSingleIssueTracking single = (WimsSingleIssueTracking)rn.getLst().get(i);
+		        	TableItem item = new TableItem(table, SWT.NONE);
+		        	item.setText( new String[] { single.getLsh(), single.getProid(), single.getSqpersonid(),single.getContent(),single.getId()});
+		        	item.setData(single);
 		        }
-		      
 			}
 		});
 		btnNewButton.setText("\u67E5\u8BE2");
 		btnNewButton.setFocus();
-		table = new Table(container, SWT.BORDER | SWT.FULL_SELECTION);
+		table = new Table(container, SWT.BORDER | SWT.FULL_SELECTION | SWT.MULTI);
 		table.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 2, 1));
 		table.setHeaderVisible(true);
 		table.setLinesVisible(true);
 		
 		TableColumn tblclmnNewColumn = new TableColumn(table, SWT.NONE);
-		tblclmnNewColumn.setWidth(100);
+		tblclmnNewColumn.setWidth(80);
 		tblclmnNewColumn.setText("\u95EE\u9898\u5355\u53F7");
 		
-		TableColumn tblclmnNewColumn_1 = new TableColumn(table, SWT.NONE);
-		tblclmnNewColumn_1.setWidth(175);
+		TableColumn tblclmnNewColumn_1 = new TableColumn(table, SWT.CENTER);
+		tblclmnNewColumn_1.setWidth(120);
 		tblclmnNewColumn_1.setText("\u9879\u76EE");
 		
-		TableColumn tableColumn = new TableColumn(table, SWT.NONE);
-		tableColumn.setWidth(282);
-		tableColumn.setText("\u63CF\u8FF0");
+		TableColumn tableColumn = new TableColumn(table, SWT.CENTER);
+		tableColumn.setWidth(80);
+		tableColumn.setText("\u63D0\u5355\u4EBA");
+		
+		TableColumn tableColumn1 = new TableColumn(table, SWT.CENTER);
+		tableColumn1.setWidth(250);
+		tableColumn1.setText("\u63CF\u8FF0");
+		//table item 多行显示
+		Listener paintListener = new Listener() {
+            public void handleEvent(Event event) {
+                switch(event.type) {        
+                    case SWT.MeasureItem: {
+                        TableItem item = (TableItem)event.item;
+                        String text = getText(item, event.index);
+                        Point size = event.gc.textExtent(text);
+                        event.width = size.x;
+                        event.height = Math.max(event.height, size.y);
+                        break;
+                    }
+                    case SWT.PaintItem: {
+                        TableItem item = (TableItem)event.item;
+                        String text = getText(item, event.index);
+                        Point size = event.gc.textExtent(text);                    
+                       // int offset2 = event.index == 0 ? Math.max(0, (event.height - size.y) / 2) : 0;
+                        int offset2 = Math.max(0, (event.height - size.y) / 2);
+                        event.gc.drawText(text, event.x, event.y + offset2, true);
+                        break;
+                    }
+                    case SWT.EraseItem: {    
+                        event.detail &= ~SWT.FOREGROUND;
+                        break;
+                    }
+                }
+            }
+            String getText(TableItem item, int column) {
+                return item.getText(column);
+            }
+        };
+       table.addListener(SWT.MeasureItem, paintListener);
+       table.addListener(SWT.PaintItem, paintListener);
+       table.addListener(SWT.EraseItem, paintListener);
 
 		return container;
 	}
@@ -171,7 +202,7 @@ public class TrackingListSelDialog extends Dialog {
 	 */
 	@Override
 	protected Point getInitialSize() {
-		return new Point(589, 392);
+		return new Point(562, 394);
 	}
 
 }
