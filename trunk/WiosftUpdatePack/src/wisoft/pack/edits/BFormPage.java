@@ -45,6 +45,9 @@ import org.eclipse.ui.forms.widgets.TableWrapData;
 import org.eclipse.ui.forms.widgets.TableWrapLayout;
 import org.eclipse.wb.swt.ResourceManager;
 
+import com.sun.xml.internal.ws.util.xml.CDATA;
+import com.wisoft.wims.WimsSingleIssueTracking;
+
 import wisoft.pack.app.Activator;
 import wisoft.pack.dialogs.PackRelyDialog;
 import wisoft.pack.dialogs.TrackingListSelDialog;
@@ -186,9 +189,9 @@ public class BFormPage extends FormPage {
 			public void widgetSelected(SelectionEvent e) {
 				PackRelyDialog pd = new PackRelyDialog(getPartControl().getShell());
 				int i=pd.open();
-				Element relys =xmlo.OnlyElementInRoot(UpdateInfo.PackRelys);
 				if(i==IDialogConstants.OK_ID)
 				{
+					Element relys =xmlo.OnlyElementInRoot(UpdateInfo.PackRelys);
 					PackRelyModel prm = new PackRelyModel();
 					prm.setName(pd.name);
 					prm.setCode(pd.code);
@@ -471,6 +474,18 @@ public class BFormPage extends FormPage {
 				int i=td.open();
 				if(i==IDialogConstants.OK_ID)
 				{
+					for(WimsSingleIssueTracking track :td.wimstracklist)
+					{
+						Element trackrelys =xmlo.OnlyElementInRoot(UpdateInfo.TackRelys);
+						Element rely =xmlo.addElementInElement(trackrelys, UpdateInfo.TackRely,UpdateInfo.TackRely_attr_id,track.getId());
+						rely.addAttribute(UpdateInfo.TackRely_attr_personname,track.getSqpersonid());
+						rely.addAttribute(UpdateInfo.TackRely_attr_proname,track.getProinfoId());
+						if(rely.element(UpdateInfo.TackRely_elem_content)!=null)
+							rely.remove(rely.element(UpdateInfo.TackRely_elem_content));
+						Element rely_content = rely.addElement(UpdateInfo.TackRely_elem_content);
+						rely_content.addCDATA(track.getContent());
+					}
+					xmlo.save();
 					
 				}
 			}
