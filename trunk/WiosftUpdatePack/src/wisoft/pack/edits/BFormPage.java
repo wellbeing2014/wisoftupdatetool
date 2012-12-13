@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.dom4j.Element;
 import org.eclipse.jface.dialogs.IDialogConstants;
+import org.eclipse.jface.viewers.ColumnWeightData;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -18,6 +19,7 @@ import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.layout.FormData;
@@ -26,9 +28,12 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
+import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.swt.widgets.ToolItem;
@@ -45,15 +50,15 @@ import org.eclipse.ui.forms.widgets.TableWrapData;
 import org.eclipse.ui.forms.widgets.TableWrapLayout;
 import org.eclipse.wb.swt.ResourceManager;
 
-import com.sun.xml.internal.ws.util.xml.CDATA;
-import com.wisoft.wims.WimsSingleIssueTracking;
-
 import wisoft.pack.app.Activator;
 import wisoft.pack.dialogs.PackRelyDialog;
 import wisoft.pack.dialogs.TrackingListSelDialog;
 import wisoft.pack.models.PackRelyModel;
+import wisoft.pack.utils.AutoResizeTableLayout;
 import wisoft.pack.utils.UpdateInfo;
 import wisoft.pack.utils.XmlOperator;
+
+import com.wisoft.wims.WimsSingleIssueTracking;
 
 public class BFormPage extends FormPage {
 	
@@ -452,14 +457,21 @@ public class BFormPage extends FormPage {
 		managedForm.getToolkit().paintBordersFor(table);
 		table.setHeaderVisible(true);
 		table.setLinesVisible(true);
+		AutoResizeTableLayout layout = new AutoResizeTableLayout(table);
+        table.setLayout(layout);
+		TableColumn tblclmnNewColumn = new TableColumn(table, SWT.NONE);
+		//tblclmnNewColumn.setWidth(80);
+		tblclmnNewColumn.setText("\u95EE\u9898\u5355\u53F7");
+		layout.addColumnData(new ColumnWeightData(80));
 		
-		TableColumn tableColumn = new TableColumn(table, SWT.NONE);
-		tableColumn.setWidth(SWT.FILL);
-		tableColumn.setText("\u95EE\u9898\u5355\u53F7");
+		TableColumn tblclmnNewColumn_1 = new TableColumn(table, SWT.NONE);
+		//tblclmnNewColumn_1.setWidth(50);
+		layout.addColumnData(new ColumnWeightData(50));
+		tblclmnNewColumn_1.setText("\u63D0\u5355\u4EBA");
 		
-		TableColumn tableColumn_1 = new TableColumn(table, SWT.NONE);
-		tableColumn_1.setWidth(SWT.FILL);
-		tableColumn_1.setText("\u63CF\u8FF0");
+		TableColumn tblclmnNewColumn_2 = new TableColumn(table, SWT.NONE);
+		layout.addColumnData(new ColumnWeightData(120));
+		tblclmnNewColumn_2.setText("\u63CF\u8FF0");
 		
 		ToolBar toolBar = new ToolBar(section, SWT.FLAT | SWT.RIGHT);
 		managedForm.getToolkit().adapt(toolBar);
@@ -477,9 +489,9 @@ public class BFormPage extends FormPage {
 					for(WimsSingleIssueTracking track :td.wimstracklist)
 					{
 						Element trackrelys =xmlo.OnlyElementInRoot(UpdateInfo.TackRelys);
-						Element rely =xmlo.addElementInElement(trackrelys, UpdateInfo.TackRely,UpdateInfo.TackRely_attr_id,track.getId());
+						Element rely =xmlo.addElementInElement(trackrelys, UpdateInfo.TackRely,UpdateInfo.TackRely_attr_id,track.getLsh());
 						rely.addAttribute(UpdateInfo.TackRely_attr_personname,track.getSqpersonid());
-						rely.addAttribute(UpdateInfo.TackRely_attr_proname,track.getProinfoId());
+						rely.addAttribute(UpdateInfo.TackRely_attr_proname,track.getProid());
 						if(rely.element(UpdateInfo.TackRely_elem_content)!=null)
 							rely.remove(rely.element(UpdateInfo.TackRely_elem_content));
 						Element rely_content = rely.addElement(UpdateInfo.TackRely_elem_content);
@@ -488,13 +500,61 @@ public class BFormPage extends FormPage {
 					xmlo.save();
 					
 				}
+				getTrackTableData();
 			}
 		});
 		toolItem.setToolTipText("\u589E\u52A0\u4FEE\u8BA2\u95EE\u9898\u5355");
 		toolItem.setImage(ResourceManager.getPluginImage("WiosftUpdatePack", "icons/add.gif"));
 		ToolItem toolItem_1 = new ToolItem(toolBar, SWT.NONE);
+		toolItem_1.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				for(TableItem item:table.getSelection())
+				{
+					String tackid = item.getText(0);
+					Element ele =xmlo.OnlyElementInRoot(UpdateInfo.TackRelys);
+					xmlo.RemoveElementInElement(ele, UpdateInfo.TackRely, UpdateInfo.TackRely_attr_id, tackid);
+				}
+				xmlo.save();
+				getTrackTableData();
+			}
+		});
 		toolItem_1.setToolTipText("\u5220\u9664\u4FEE\u8BA2\u95EE\u9898\u5355");
 		toolItem_1.setImage(ResourceManager.getPluginImage("WiosftUpdatePack", "icons/del.png"));
+		//table item ∂‡––œ‘ æ
+		Listener paintListener = new Listener() {
+            public void handleEvent(Event event) {
+                switch(event.type) {        
+                    case SWT.MeasureItem: {
+                        TableItem item = (TableItem)event.item;
+                        String text = getText(item, event.index);
+                        Point size = event.gc.textExtent(text);
+                        event.width = size.x;
+                        event.height = Math.max(event.height, size.y);
+                        break;
+                    }
+                    case SWT.PaintItem: {
+                        TableItem item = (TableItem)event.item;
+                        String text = getText(item, event.index);
+                        Point size = event.gc.textExtent(text);                    
+                       // int offset2 = event.index == 0 ? Math.max(0, (event.height - size.y) / 2) : 0;
+                        int offset2 = Math.max(0, (event.height - size.y) / 2);
+                        event.gc.drawText(text, event.x, event.y + offset2, true);
+                        break;
+                    }
+                    case SWT.EraseItem: {    
+                        event.detail &= ~SWT.FOREGROUND;
+                        break;
+                    }
+                }
+            }
+            String getText(TableItem item, int column) {
+                return item.getText(column);
+            }
+        };
+       table.addListener(SWT.MeasureItem, paintListener);
+       table.addListener(SWT.PaintItem, paintListener);
+       table.addListener(SWT.EraseItem, paintListener);
 		return section;
 	}
 	public synchronized void save()
@@ -521,6 +581,29 @@ public class BFormPage extends FormPage {
 					tltmNewItem.setEnabled(true);
 				}
 			});
+		getTrackTableData();
+	}
+	
+	private void getTrackTableData()
+	{
+		//ArrayList<PackRelyModel> relyr = new ArrayList<PackRelyModel>();
+		table.removeAll();
+		List el = xmlo.getRootElement().elements(UpdateInfo.TackRelys);
+		Element el1 = null;
+		if(el!=null&&el.size()>0)
+		{
+			el1 = (Element)(el.get(0));
+			List<Element> relys = el1.elements();
+			for(int i = 0;i<relys.size();i++)
+			{
+				String tackid = relys.get(i).attributeValue(UpdateInfo.TackRely_attr_id);
+				//String tackproname = relys.get(i).attributeValue(UpdateInfo.TackRely_attr_proname);
+				String tackperson = relys.get(i).attributeValue(UpdateInfo.TackRely_attr_personname);
+				String tackcontent = relys.get(i).elementText(UpdateInfo.TackRely_elem_content);
+				TableItem item  = new TableItem(table, SWT.NONE);
+				item.setText(new String[]{tackid,tackperson,tackcontent});
+			}
+		}
 	}
 	class PackRelyContentProvider implements IStructuredContentProvider {
 		public Object[] getElements(Object inputElement) {

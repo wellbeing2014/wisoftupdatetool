@@ -112,9 +112,12 @@ public class AddFileIntoPackDialog extends Dialog {
 				dd.setText("Ñ¡ÔñÎÄ¼þ¼Ð");
 				//dd.setFilterPath()
 				String path =dd.open();
+				if(path!=null)
+				{
 				text.setText(path);
 				tv.setInput(new FileModel(new File(path)));
 				tv.refresh();
+				}
 			}
 		});
 		button_4.setToolTipText("\u8BBE\u7F6E\u4E00\u4E2A\u9ED8\u8BA4\u6253\u5F00\u7684\u76EE\u5F55");

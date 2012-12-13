@@ -39,6 +39,7 @@ import org.eclipse.ui.forms.widgets.ScrolledForm;
 import org.eclipse.ui.forms.widgets.Section;
 
 import wisoft.pack.app.Activator;
+import wisoft.pack.dialogs.AddConfIntoPackDialog;
 import wisoft.pack.dialogs.AddFileIntoPackDialog;
 import wisoft.pack.models.FileModel;
 import wisoft.pack.models.FileModel.EditType;
@@ -47,6 +48,11 @@ import wisoft.pack.utils.UpdateInfo;
 import wisoft.pack.utils.XmlOperator;
 import wisoft.pack.views.Console;
 import wisoft.pack.views.Console.ConsoleType;
+import org.eclipse.swt.widgets.ToolBar;
+import org.eclipse.swt.widgets.ToolItem;
+import org.eclipse.wb.swt.ResourceManager;
+import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.layout.FillLayout;
 
 public class FileMasterDetailsBlock extends MasterDetailsBlock {
 
@@ -71,17 +77,9 @@ public class FileMasterDetailsBlock extends MasterDetailsBlock {
 		Composite client = toolkit.createComposite(section, SWT.WRAP);
 		//绘制该面板的边框，与表单的风格一致
 		toolkit.paintBordersFor(client);
-		client.setLayout(new FormLayout());
+		client.setLayout(new FillLayout(SWT.HORIZONTAL));
 		//创建一个树，使用toolkit对象创建
 		Tree tree = toolkit.createTree(client, SWT.NULL);
-		Composite composite = new Composite(client, SWT.NONE);
-		FormData fd_tree = new FormData();
-		fd_tree.right = new FormAttachment(composite);
-		fd_tree.bottom = new FormAttachment(100);
-		//fd_tree.right = new FormAttachment(composite.bottom = new FormAttachment(100);
-		fd_tree.top = new FormAttachment(0);
-		fd_tree.left = new FormAttachment(0, 2);
-		tree.setLayoutData(fd_tree);
 		section.setClient(client); // 
 		/*
 		 IFormPart管理了整个Part的dirty state, saving, commit, focus, selection changes等等这样的事件。
@@ -90,23 +88,18 @@ public class FileMasterDetailsBlock extends MasterDetailsBlock {
 		   它包含一个Section的对象。   
 		 */
 		final SectionPart spart = new SectionPart(section);
+		Section section_1 = spart.getSection();
 		//注册该对象到IManagedForm表单管理器中
 		managedForm.addPart(spart);
-		//将普通的树包装成MVC的树
-		tv = new TreeViewer(tree);
-		composite.setLayout(new GridLayout(1, false));
 		
-		FormData fd_composite = new FormData();
-		fd_composite.bottom = new FormAttachment(100);
-		fd_composite.top = new FormAttachment(0);
-		fd_composite.right = new FormAttachment(100);
-		fd_composite.left = new FormAttachment(100, -70);
-		composite.setLayoutData(fd_composite);
-		toolkit.adapt(composite);
-		toolkit.paintBordersFor(composite);
+		ToolBar toolBar = new ToolBar(section_1, SWT.FLAT | SWT.RIGHT);
+		toolkit.adapt(toolBar);
+		toolkit.paintBordersFor(toolBar);
+		section_1.setTextClient(toolBar);
 		
-		Button button = new Button(composite, SWT.NONE);
-		button.addSelectionListener(new SelectionAdapter() {
+		ToolItem tltmNew = new ToolItem(toolBar, SWT.NONE);
+		tltmNew.setImage(ResourceManager.getPluginImage("WiosftUpdatePack", "icons/add.gif"));
+		tltmNew.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				mylist.removeAll(mylist);
@@ -200,22 +193,31 @@ public class FileMasterDetailsBlock extends MasterDetailsBlock {
 				}
 			}
 		});
-		toolkit.adapt(button, true, true);
-		button.setText("\u6DFB\u52A0\u6587\u4EF6");
+		tltmNew.setText("\u6587\u4EF6");
 		
-		Button button_2 = new Button(composite, SWT.NONE);
-		button_2.addSelectionListener(new SelectionAdapter() {
+		ToolItem tltmNew_1 = new ToolItem(toolBar, SWT.NONE);
+		tltmNew_1.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
+				mylist.removeAll(mylist);
+				mylist.add("/");
+				TreeItem ti =null;
+				if(tv.getTree().getSelectionCount()>0)
+					ti=tv.getTree().getSelection()[0];
+				getPackPaths(tv.getTree().getItems(),"",ti);
+				AddConfIntoPackDialog ap = new AddConfIntoPackDialog(page.getPartControl().getShell(),mylist.toArray(new String[0]),defaultSel);
+				if(IDialogConstants.OK_ID==ap.open())
+				{
+					
+				}
 				
 			}
 		});
-		toolkit.adapt(button_2, true, true);
-		button_2.setText("\u6DFB\u52A0\u914D\u7F6E");
+		tltmNew_1.setImage(ResourceManager.getPluginImage("WiosftUpdatePack", "icons/add.gif"));
+		tltmNew_1.setText("\u914D\u7F6E");
 		
-		Button button_1 = new Button(composite, SWT.NONE);
-		button_1.addSelectionListener(new SelectionAdapter() {
-			
+		ToolItem tltmNew_2 = new ToolItem(toolBar, SWT.NONE);
+		tltmNew_2.addSelectionListener(new SelectionAdapter() {
 			 private  void delFolder(String folderPath) {
 				  try {
 				        delAllFile(folderPath); //删除完里面所有内容
@@ -291,11 +293,12 @@ public class FileMasterDetailsBlock extends MasterDetailsBlock {
 					mb.setText("提示");
 					mb.open();
 				}
-				
 			}
 		});
-		toolkit.adapt(button_1, true, true);
-		button_1.setText("\u5220\u9664");
+		tltmNew_2.setImage(ResourceManager.getPluginImage("WiosftUpdatePack", "icons/del.png"));
+		tltmNew_2.setText("\u5220\u9664");
+		//将普通的树包装成MVC的树
+		tv = new TreeViewer(tree);
 		//注册树的选择事件监听器
 		tv.addSelectionChangedListener(new ISelectionChangedListener() {
 		    //当单击树中某一个节点时

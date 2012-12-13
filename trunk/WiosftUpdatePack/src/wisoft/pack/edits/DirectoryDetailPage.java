@@ -77,19 +77,21 @@ public class DirectoryDetailPage implements IDetailsPage {
 	   fileName.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 3, 1));
 	   toolkit.createLabel( client , "路径:");
 	   filePath = toolkit.createText( client , "");
-	   filePath.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
-	   
+	   GridData gd_filePath = new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1);
+	   gd_filePath.widthHint = 200;
+	   filePath.setLayoutData(gd_filePath);
+	  // filePath.setBounds(50,50,300,50);
 	   label = new Label(client, SWT.NONE);
 	   label.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
 	   toolkit.adapt(label, true, true);
 	   label.setText("\u6E90\u8DEF\u5F84\uFF1A");
 	   
 	   text = new Text(client, SWT.BORDER);
-	   text.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
+	   text.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1));
 	   toolkit.adapt(text, true, true);
 	   toolkit.createLabel( client , "最后修改:");
 	   lastModify = toolkit.createText( client , file!=null?new Date(file.lastModified()).toLocaleString():"");
-	   lastModify.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
+	   lastModify.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1));
 	   
 	   label_1 = new Label(client, SWT.NONE);
 	   toolkit.adapt(label_1, true, true);
@@ -105,6 +107,14 @@ public class DirectoryDetailPage implements IDetailsPage {
 	   		//else
 	   	}
 	   });
+	   new Label(client, SWT.NONE);
+	   new Label(client, SWT.NONE);
+	   new Label(client, SWT.NONE);
+	   new Label(client, SWT.NONE);
+	   new Label(client, SWT.NONE);
+	   new Label(client, SWT.NONE);
+	   new Label(client, SWT.NONE);
+	   new Label(client, SWT.NONE);
 	   new Label(client, SWT.NONE);
 	   new Label(client, SWT.NONE);
 	   new Label(client, SWT.NONE);
