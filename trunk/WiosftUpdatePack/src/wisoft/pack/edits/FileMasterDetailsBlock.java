@@ -208,8 +208,25 @@ public class FileMasterDetailsBlock extends MasterDetailsBlock {
 				AddConfIntoPackDialog ap = new AddConfIntoPackDialog(page.getPartControl().getShell(),mylist.toArray(new String[0]),defaultSel);
 				if(IDialogConstants.OK_ID==ap.open())
 				{
+					String packpath = ap.packPath;
+					String filepath = ap.filePath;
+					boolean isfile = ap.isfile;
+					boolean isdel = ap.isdel;
+					String content = ap.content;
+					PackInfoModel pack =((PackInfoInput)page.getEditorInput()).getPackinfo();
+					XmlOperator xmlo =pack.getXmlo();
 					
+					Element fileconfs =xmlo.OnlyElementInRoot(UpdateInfo.FileConfs);
+					Element rely =xmlo.addElementInElement(fileconfs, UpdateInfo.FileConf,UpdateInfo.FileConf_attr_name,filepath);
+					rely.addAttribute(UpdateInfo.FileConf_attr_opr,isdel?UpdateInfo.Con_FileOpr_Del:UpdateInfo.Con_FileOpr_Mod);
+					rely.addAttribute(UpdateInfo.FileConf_attr_type,isfile?UpdateInfo.Con_FileType_File:UpdateInfo.Con_FileType_Dir);
+					rely.addAttribute(UpdateInfo.FileConf_attr_path, packpath);
+					if(rely.element(UpdateInfo.FileConf_elem_content)!=null)
+						rely.remove(rely.element(UpdateInfo.FileConf_elem_content));
+					Element rely_content = rely.addElement(UpdateInfo.FileConf_elem_content);
+					rely_content.addCDATA(content);
 				}
+				
 				
 			}
 		});

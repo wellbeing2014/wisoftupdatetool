@@ -20,7 +20,6 @@ public class FileModel extends Model {
 		this.edittype = edittype;
 	}
 	
-	
 	public FileModel(File file)
 	{
 		this.file = file;
