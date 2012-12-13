@@ -26,6 +26,19 @@ public class UpdateInfo {
 	public static String TackRely_attr_personname ="personname";
 	public static String TackRely_attr_proname ="proname";
 	public static String TackRely_elem_content ="Content";
+	public static String FileConfs ="FileConfs";
+	public static String FileConfs_attr_path ="path";
+	public static String FileConfs_attr_opr ="opr";
+	public static String FileConfs_attr_type ="type";
+	public static String FileConfs_elem_content ="Content";
+	
+	public static String Con_FileType_Dir = "文件夹";
+	public static String Con_FileType_File="文件";
+	
+	public static String Con_FileOpr_Add = "新增";
+	public static String Con_FileOpr_Del ="删除";
+	
+	
 	public static String PackExtension =".wi";
 	
 }

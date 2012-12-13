@@ -59,7 +59,7 @@ public class TrackingListSelDialog extends Dialog {
 		{
 			wimstracklist.add((WimsSingleIssueTracking)item.getData());
 		}
-		
+		super.okPressed();
 	}
 	/**
 	 * Create contents of the dialog.
@@ -110,7 +110,7 @@ public class TrackingListSelDialog extends Dialog {
 			    trackparam.setFpqk("all");
 			    trackparam.setState("1");
 			    trackparam.setZrpersonid("all");
-			    trackparam.setSearch("P201207");
+			    trackparam.setSearch(text.getText());
 			    ResultReturn rn =iww.findTrackByServicesInParames(trackparam, 0, 10);
 			    //System.out.println(((WimsSingleIssueTracking)rn.getLst().get(0)).getContent());
 				
@@ -133,11 +133,11 @@ public class TrackingListSelDialog extends Dialog {
 		table.setLinesVisible(true);
 		
 		TableColumn tblclmnNewColumn = new TableColumn(table, SWT.NONE);
-		tblclmnNewColumn.setWidth(80);
+		tblclmnNewColumn.setWidth(100);
 		tblclmnNewColumn.setText("\u95EE\u9898\u5355\u53F7");
 		
 		TableColumn tblclmnNewColumn_1 = new TableColumn(table, SWT.CENTER);
-		tblclmnNewColumn_1.setWidth(120);
+		tblclmnNewColumn_1.setWidth(175);
 		tblclmnNewColumn_1.setText("\u9879\u76EE");
 		
 		TableColumn tableColumn = new TableColumn(table, SWT.CENTER);
@@ -145,7 +145,7 @@ public class TrackingListSelDialog extends Dialog {
 		tableColumn.setText("\u63D0\u5355\u4EBA");
 		
 		TableColumn tableColumn1 = new TableColumn(table, SWT.CENTER);
-		tableColumn1.setWidth(250);
+		tableColumn1.setWidth(280);
 		tableColumn1.setText("\u63CF\u8FF0");
 		//table item ∂‡––œ‘ æ
 		Listener paintListener = new Listener() {
@@ -202,7 +202,7 @@ public class TrackingListSelDialog extends Dialog {
 	 */
 	@Override
 	protected Point getInitialSize() {
-		return new Point(562, 394);
+		return new Point(688, 485);
 	}
 
 }
