@@ -28,7 +28,14 @@ public class MasterContentProvider implements ITreeContentProvider {
 
 	public Object[] getChildren(Object element) {
 		
-		return ((FileModel) element).getChildren().toArray(new FileModel[0]);
+//		if(this.isedit)
+//		{
+			System.out.println(((FileModel)element).getFile().toString());
+//			return verifyConfXMl((FileModel)element);
+//		}
+//		else
+			return ((FileModel)element).getChildren().toArray(new FileModel[0]);
+
 	}
 	
 	/**
@@ -39,42 +46,53 @@ public class MasterContentProvider implements ITreeContentProvider {
 	private FileModel[] verifyConfXMl(FileModel file)
 	{
 		FileModel[] files = file.getChildren().toArray(new FileModel[0]);
+		File curfile = file.getFile();       //当前文件
+		String curfilepath = curfile.getPath().replace("\\", "/");  //当前文件路径
+		String currealpath = curfilepath.replace(packPath+"/"+UpdateInfo.UpdateDirName, "");//当前相对路径
+		String curParentPath= currealpath.replace(curfile.getName(), "");// 当前父路径
+		//if(curParentPath.equals("/"))
+		//	System.out.println(currealpath);
+		
 		//读取xml获取配置项数组
-		Iterator confiles = xmlo.OnlyElementInRoot("configFiles").elementIterator();
+		Iterator confiles = xmlo.OnlyElementInRoot(UpdateInfo.FileConfs).elementIterator();
 		//循环数组去与file匹配
 		while(confiles.hasNext())
 		{
 			Element confile = (Element)confiles.next();
-			String fullpath = confile.attributeValue("fullpath");
-			String name = confile.attributeValue("name");
-			String edittype = confile.attributeValue("edittype");
-			String myconfpath = packPath+"/"+UpdateInfo.UpdateDirName+fullpath;
+			String fullpath = confile.attributeValue(UpdateInfo.FileConf_attr_fullpath);
+			String name = confile.attributeValue(UpdateInfo.FileConf_attr_name);
+			String confpackpath = confile.attributeValue(UpdateInfo.FileConf_attr_path);
+			String oprtype = confile.attributeValue(UpdateInfo.FileConf_attr_opr);
+			
+			
 			//判断是否存在全路径，如果存在则标记
 			boolean ishave = false;
-			for(FileModel file1:files)
+			for(FileModel file1:files)//先去检查子文件中，是否包含配置文件
 			{
-				String havefilepath = file1.getFile().getPath().replace("\\", "/");
- 				if(havefilepath.equals(myconfpath))
+				//读取文件
+				String realfilepath = file1.getFile().getPath().replace("\\", "/");
+				String realpath = realfilepath.replace(packPath+"/"+UpdateInfo.UpdateDirName, "");
+ 				if(realpath.equals(fullpath))//直接匹配
 				{
-					if(EditType.DELETE.toString().equals(edittype))
+					if(oprtype.equals(UpdateInfo.Con_FileOpr_Del))// 是删除操作
 						file1.setEdittype(EditType.DELETE);
-					else if(EditType.UPDATE.toString().equals(edittype))
-						file1.setEdittype(EditType.UPDATE);
+					else 
+						file1.setEdittype(EditType.UPDATE);//是修改操作
 					ishave = true;
 					break;
 				}
 			}
-			if(!ishave)
+			if(!ishave)//不包含，看文件路径
 			{
-				String myconfpath1= packPath+"/"+UpdateInfo.UpdateDirName+fullpath.replace("/"+name, "");
-				String filepath =file.getFile().getAbsolutePath().replace("\\", "/");
-				if(myconfpath1.equals(filepath))
+				if(currealpath.equals(confpackpath))//如果父路径相同说明，配置文件应该就在这个下面
 				{
-					FileModel newfile = new FileModel( new File(myconfpath));
-					if(EditType.DELETE.toString().equals(edittype))
+					
+					FileModel newfile = null;
+					newfile = new FileModel( new File(packPath+"/"+UpdateInfo.UpdateDirName+"/"+curParentPath+"/"+name));
+					if(oprtype.equals(UpdateInfo.Con_FileOpr_Del))// 是删除操作
 						newfile.setEdittype(EditType.DELETE);
-					else if(EditType.UPDATE.toString().equals(edittype))
-						newfile.setEdittype(EditType.UPDATE);
+					else 
+						newfile.setEdittype(EditType.UPDATE);//是修改操作
 					file.addChild(newfile);
 				}
 			}
@@ -83,9 +101,12 @@ public class MasterContentProvider implements ITreeContentProvider {
 	}
 	
 	public Object[] getElements(Object element) {
-		if(this.isedit)
-			return verifyConfXMl((FileModel)element);
-		else
+//		if(this.isedit)
+//		{
+			System.out.println(((FileModel)element).getFile().toString());
+//			return verifyConfXMl((FileModel)element);
+//		}
+//		else
 			return ((FileModel)element).getChildren().toArray(new FileModel[0]);
 	}
 

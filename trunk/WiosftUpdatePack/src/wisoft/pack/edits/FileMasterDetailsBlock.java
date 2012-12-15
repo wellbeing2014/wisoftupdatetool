@@ -96,7 +96,7 @@ public class FileMasterDetailsBlock extends MasterDetailsBlock {
 		toolkit.adapt(toolBar);
 		toolkit.paintBordersFor(toolBar);
 		section_1.setTextClient(toolBar);
-		
+		//添加文件按钮
 		ToolItem tltmNew = new ToolItem(toolBar, SWT.NONE);
 		tltmNew.setImage(ResourceManager.getPluginImage("WiosftUpdatePack", "icons/add.gif"));
 		tltmNew.addSelectionListener(new SelectionAdapter() {
@@ -194,7 +194,7 @@ public class FileMasterDetailsBlock extends MasterDetailsBlock {
 			}
 		});
 		tltmNew.setText("\u6587\u4EF6");
-		
+		//添加配置按钮
 		ToolItem tltmNew_1 = new ToolItem(toolBar, SWT.NONE);
 		tltmNew_1.addSelectionListener(new SelectionAdapter() {
 			@Override
@@ -217,22 +217,24 @@ public class FileMasterDetailsBlock extends MasterDetailsBlock {
 					XmlOperator xmlo =pack.getXmlo();
 					
 					Element fileconfs =xmlo.OnlyElementInRoot(UpdateInfo.FileConfs);
-					Element rely =xmlo.addElementInElement(fileconfs, UpdateInfo.FileConf,UpdateInfo.FileConf_attr_name,filepath);
+					Element rely =xmlo.addElementInElement(fileconfs, UpdateInfo.FileConf,UpdateInfo.FileConf_attr_fullpath, packpath+"/"+filepath);
 					rely.addAttribute(UpdateInfo.FileConf_attr_opr,isdel?UpdateInfo.Con_FileOpr_Del:UpdateInfo.Con_FileOpr_Mod);
 					rely.addAttribute(UpdateInfo.FileConf_attr_type,isfile?UpdateInfo.Con_FileType_File:UpdateInfo.Con_FileType_Dir);
 					rely.addAttribute(UpdateInfo.FileConf_attr_path, packpath);
+					rely.addAttribute(UpdateInfo.FileConf_attr_name, filepath);
 					if(rely.element(UpdateInfo.FileConf_elem_content)!=null)
 						rely.remove(rely.element(UpdateInfo.FileConf_elem_content));
 					Element rely_content = rely.addElement(UpdateInfo.FileConf_elem_content);
 					rely_content.addCDATA(content);
+					xmlo.save();
 				}
 				
-				
+				tv.refresh();
 			}
 		});
 		tltmNew_1.setImage(ResourceManager.getPluginImage("WiosftUpdatePack", "icons/add.gif"));
 		tltmNew_1.setText("\u914D\u7F6E");
-		
+		//删除按钮
 		ToolItem tltmNew_2 = new ToolItem(toolBar, SWT.NONE);
 		tltmNew_2.addSelectionListener(new SelectionAdapter() {
 			 private  void delFolder(String folderPath) {
@@ -276,6 +278,7 @@ public class FileMasterDetailsBlock extends MasterDetailsBlock {
 			       }
 			       return flag;
 			 }
+			 
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				if(tv.getTree().getSelectionCount()>0)

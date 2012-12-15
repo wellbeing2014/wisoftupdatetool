@@ -99,6 +99,7 @@ public class AddConfIntoPackDialog extends Dialog {
 		composite.setLayoutData(gd_composite);
 		
 		ckbutton_file = new Button(composite, SWT.RADIO);
+		ckbutton_file.setSelection(true);
 		ckbutton_file.setText("\u6587\u4EF6");
 		
 		ckbutton_dir= new Button(composite, SWT.RADIO);
@@ -116,6 +117,7 @@ public class AddConfIntoPackDialog extends Dialog {
 		label_1.setText("\u64CD\u4F5C\u7C7B\u578B\uFF1A");
 		
 		ckbutton_modify = new Button(container, SWT.RADIO);
+		ckbutton_modify.setSelection(true);
 		ckbutton_modify.setText("\u4FEE\u6539");
 		
 		ckbutton_del = new Button(container, SWT.RADIO);
