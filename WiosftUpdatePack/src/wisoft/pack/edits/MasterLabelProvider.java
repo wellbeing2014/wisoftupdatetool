@@ -3,17 +3,19 @@ package wisoft.pack.edits;
 import java.io.File;
 import java.util.Date;
 
+import org.eclipse.jface.viewers.IColorProvider;
+import org.eclipse.jface.viewers.IFontProvider;
 import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.ILabelProviderListener;
+import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.PlatformUI;
 
-import wisoft.pack.app.Activator;
 import wisoft.pack.models.FileModel;
 import wisoft.pack.models.FileModel.EditType;
 
-public class MasterLabelProvider implements ILabelProvider {
+public class MasterLabelProvider implements ILabelProvider,IColorProvider {
 	private boolean needtime = false;
 	public MasterLabelProvider(boolean needtime)
 	{
@@ -52,7 +54,7 @@ public class MasterLabelProvider implements ILabelProvider {
 	    {
 	    	text +=" "+(new Date(file.lastModified())).toLocaleString();
 	    }
-	    
+	   
 	    return text;
 	}
 
@@ -68,5 +70,17 @@ public class MasterLabelProvider implements ILabelProvider {
 	}
 
 	public void removeListener(ILabelProviderListener listener) {
+	}
+	@Override
+	public Color getForeground(Object element) {
+		// TODO Auto-generated method stub
+		 if(((FileModel) element).getEdittype().equals(EditType.DELETE))
+		 	return new Color(null,128,128,128);
+		return null;
+	}
+	@Override
+	public Color getBackground(Object element) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

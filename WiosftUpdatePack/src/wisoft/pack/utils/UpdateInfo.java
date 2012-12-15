@@ -26,8 +26,10 @@ public class UpdateInfo {
 	public static String TackRely_attr_personname ="personname";
 	public static String TackRely_attr_proname ="proname";
 	public static String TackRely_elem_content ="Content";
+	
 	public static String FileConfs ="FileConfs";
 	public static String FileConf ="FileConf";
+	public static String FileConf_attr_fullpath ="fullpath";
 	public static String FileConf_attr_path ="path";
 	public static String FileConf_attr_name = "filename";
 	public static String FileConf_attr_opr ="opr";
