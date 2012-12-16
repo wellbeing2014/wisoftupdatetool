@@ -4,7 +4,9 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.dom4j.Element;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -19,14 +21,12 @@ import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.layout.FormAttachment;
-import org.eclipse.swt.layout.FormData;
-import org.eclipse.swt.layout.FormLayout;
-import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.MessageBox;
+import org.eclipse.swt.widgets.ToolBar;
+import org.eclipse.swt.widgets.ToolItem;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeItem;
 import org.eclipse.ui.forms.DetailsPart;
@@ -37,22 +37,17 @@ import org.eclipse.ui.forms.editor.FormPage;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.ScrolledForm;
 import org.eclipse.ui.forms.widgets.Section;
+import org.eclipse.wb.swt.ResourceManager;
 
 import wisoft.pack.app.Activator;
 import wisoft.pack.dialogs.AddConfIntoPackDialog;
 import wisoft.pack.dialogs.AddFileIntoPackDialog;
 import wisoft.pack.models.FileModel;
-import wisoft.pack.models.FileModel.EditType;
 import wisoft.pack.models.PackInfoModel;
 import wisoft.pack.utils.UpdateInfo;
 import wisoft.pack.utils.XmlOperator;
 import wisoft.pack.views.Console;
 import wisoft.pack.views.Console.ConsoleType;
-import org.eclipse.swt.widgets.ToolBar;
-import org.eclipse.swt.widgets.ToolItem;
-import org.eclipse.wb.swt.ResourceManager;
-import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.layout.FillLayout;
 
 public class FileMasterDetailsBlock extends MasterDetailsBlock {
 
@@ -102,13 +97,13 @@ public class FileMasterDetailsBlock extends MasterDetailsBlock {
 		tltmNew.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				mylist.removeAll(mylist);
-				mylist.add("/");
+				mylist.clear();
+				//mylist.add("/");
 				TreeItem ti =null;
 				if(tv.getTree().getSelectionCount()>0)
 					ti=tv.getTree().getSelection()[0];
-				getPackPaths(tv.getTree().getItems(),"",ti);
-				AddFileIntoPackDialog ap = new AddFileIntoPackDialog(page.getPartControl().getShell(),mylist.toArray(new String[0]),defaultSel);
+				getPackPaths(tv.getTree().getItems(),pi.getPackinfo().getXmlo().getRootElement().element("UpdateFileList"),ti);
+				AddFileIntoPackDialog ap = new AddFileIntoPackDialog(page.getPartControl().getShell(),mylist,defaultSel);
 				if(IDialogConstants.OK_ID==ap.open())
 				{
 					final PackInfoInput pi = (PackInfoInput)page.getEditorInput();
@@ -181,7 +176,7 @@ public class FileMasterDetailsBlock extends MasterDetailsBlock {
 							
 							Display.getDefault().asyncExec(new Runnable() {                        
 				    			public void run() {      
-				    				tv.setInput(new FileModel(new File(pi.getPackinfo().getSavePath()+"/"+UpdateInfo.UpdateDirName)));
+				    				tv.setInput(pi.getPackinfo().getXmlo().getRootElement().element("UpdateFileList"));
 				    				tv.refresh();
 				    			}});
 							return Status.OK_STATUS;
@@ -199,13 +194,13 @@ public class FileMasterDetailsBlock extends MasterDetailsBlock {
 		tltmNew_1.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				mylist.removeAll(mylist);
-				mylist.add("/");
+				mylist.clear();
+				//mylist.add("/");
 				TreeItem ti =null;
 				if(tv.getTree().getSelectionCount()>0)
 					ti=tv.getTree().getSelection()[0];
-				getPackPaths(tv.getTree().getItems(),"",ti);
-				AddConfIntoPackDialog ap = new AddConfIntoPackDialog(page.getPartControl().getShell(),mylist.toArray(new String[0]),defaultSel);
+				getPackPaths(tv.getTree().getItems(),pi.getPackinfo().getXmlo().getRootElement().element("UpdateFileList"),ti);
+				AddConfIntoPackDialog ap = new AddConfIntoPackDialog(page.getPartControl().getShell(),mylist,defaultSel);
 				if(IDialogConstants.OK_ID==ap.open())
 				{
 					String packpath = ap.packPath;
@@ -216,16 +211,17 @@ public class FileMasterDetailsBlock extends MasterDetailsBlock {
 					PackInfoModel pack =((PackInfoInput)page.getEditorInput()).getPackinfo();
 					XmlOperator xmlo =pack.getXmlo();
 					
-					Element fileconfs =xmlo.OnlyElementInRoot(UpdateInfo.FileConfs);
-					Element rely =xmlo.addElementInElement(fileconfs, UpdateInfo.FileConf,UpdateInfo.FileConf_attr_fullpath, packpath+"/"+filepath);
-					rely.addAttribute(UpdateInfo.FileConf_attr_opr,isdel?UpdateInfo.Con_FileOpr_Del:UpdateInfo.Con_FileOpr_Mod);
-					rely.addAttribute(UpdateInfo.FileConf_attr_type,isfile?UpdateInfo.Con_FileType_File:UpdateInfo.Con_FileType_Dir);
-					rely.addAttribute(UpdateInfo.FileConf_attr_path, packpath);
-					rely.addAttribute(UpdateInfo.FileConf_attr_name, filepath);
-					if(rely.element(UpdateInfo.FileConf_elem_content)!=null)
-						rely.remove(rely.element(UpdateInfo.FileConf_elem_content));
-					Element rely_content = rely.addElement(UpdateInfo.FileConf_elem_content);
-					rely_content.addCDATA(content);
+//					Element fileconfs =xmlo.OnlyElementInRoot(UpdateInfo.FileConfs);
+//					Element rely =xmlo.addElementInElement(fileconfs, UpdateInfo.FileConf,UpdateInfo.FileConf_attr_fullpath, "/".equals(packpath)?packpath+filepath:packpath+"/"+filepath);
+//					rely.addAttribute(UpdateInfo.FileConf_attr_opr,isdel?UpdateInfo.Con_FileOpr_Del:UpdateInfo.Con_FileOpr_Mod);
+//					rely.addAttribute(UpdateInfo.FileConf_attr_type,isfile?UpdateInfo.Con_FileType_File:UpdateInfo.Con_FileType_Dir);
+//					rely.addAttribute(UpdateInfo.FileConf_attr_path, packpath);
+//					rely.addAttribute(UpdateInfo.FileConf_attr_name, filepath);
+//					if(rely.element(UpdateInfo.FileConf_elem_content)!=null)
+//						rely.remove(rely.element(UpdateInfo.FileConf_elem_content));
+//					Element rely_content = rely.addElement(UpdateInfo.FileConf_elem_content);
+//					rely_content.addCDATA(content);
+//					fileconfs.addAttribute(UpdateInfo.FileConfs_attr_needRead,"true" );
 					xmlo.save();
 				}
 				
@@ -284,26 +280,15 @@ public class FileMasterDetailsBlock extends MasterDetailsBlock {
 				if(tv.getTree().getSelectionCount()>0)
 				{
 					TreeItem[] tis = tv.getTree().getSelection();
+					XmlOperator xmlOperator = pi.getPackinfo().getXmlo();
+					Element updatefiles = xmlOperator.getRootElement().element("UpdateFileList");
 					for(TreeItem ti:tis)
 					{
 						FileModel file = (FileModel)ti.getData();
-						if(file.getEdittype()!=EditType.NORMAL)
-						{
-							PackInfoModel pack =((PackInfoInput)page.getEditorInput()).getPackinfo();
-							XmlOperator xmlo =pack.getXmlo();
-							Element confs = xmlo.getRootElement().element("configFiles");
-							String fullpath = file.getFile().getPath().replace("\\" ,"/");
-							xmlo.RemoveElementInElement(confs, "configFile", "fullpath",fullpath.replace(pack.getSavePath()+"/"+UpdateInfo.UpdateDirName, "") );
-							xmlo.save();
-						}
-						else if(file.getFile().exists())
-						{
-							if(file.getFile().isDirectory())
-								delFolder(file.getFile().getAbsolutePath());
-							else file.getFile().delete();
-						}
+						
+						System.out.println("我删除"+file.getFile().attributeValue("filename"));
 					}
-					tv.setInput(new FileModel(new File(pi.getPackinfo().getSavePath()+"/"+UpdateInfo.UpdateDirName)));
+					tv.setInput(pi.getPackinfo().getXmlo().getRootElement().element("UpdateFileList"));
 					tv.refresh();
 				}
 				else
@@ -328,12 +313,13 @@ public class FileMasterDetailsBlock extends MasterDetailsBlock {
 		    }
 		});
 		//设置树的内容
-		tv.setContentProvider(new MasterContentProvider(true));
+		tv.setContentProvider(new FileModelContentProvider() );
 		//设置树的标签
-		tv.setLabelProvider(new MasterLabelProvider(false));
+		tv.setLabelProvider(new FileModelLabelProvider());
 		//设置初始化输入的类
 		pi = (PackInfoInput)page.getEditorInput();
-		tv.setInput(new FileModel(new File(pi.getPackinfo().getSavePath()+"/"+UpdateInfo.UpdateDirName)));
+		Element input =pi.getPackinfo().getXmlo().getRootElement().element("UpdateFileList");
+		tv.setInput(new FileModel(input));
 		tv.expandToLevel(3);
 
 	}
@@ -373,31 +359,30 @@ public class FileMasterDetailsBlock extends MasterDetailsBlock {
 		form.getToolBarManager().add(vAction);
 	}
 	
-	private List<String> mylist=new ArrayList<String>();
-	private String defaultSel ="";
+	private Map<String,Element> mylist=new HashMap<String,Element>();
+	private String defaultSel ;
 	
-	private List<String> getPackPaths(TreeItem[] ti,String parent,TreeItem selti)
+	private Map<String,Element> getPackPaths(TreeItem[] ti,Element parent,TreeItem selti)
 	{
 		for(int i=0;i<ti.length;i++)
 		{	
-			FileModel filemodel = (FileModel)ti[i].getData();
-			if(filemodel.getEdittype()!=EditType.NORMAL)
-				break;
-			File file =filemodel.getFile();
-			if(file.isDirectory())
+			Element updatefile = ((FileModel)ti[i].getData()).getFile();
+			String filetype =updatefile.attributeValue(UpdateInfo.UpdateFile_filetype);
+			String name = updatefile.attributeValue(UpdateInfo.UpdateFile_filename);
+			if(UpdateInfo.FileType_Dir.equals(filetype))
 			{
 				if(ti[i]==selti)
-					defaultSel = parent+"/"+file.getName();
-				mylist.add(parent+"/"+file.getName());
+					defaultSel = parent.attributeValue(UpdateInfo.UpdateFile_filename)+"/"+name;
+				mylist.put(parent.attributeValue(UpdateInfo.UpdateFile_filename)+"/"+name,updatefile);
 			}
 			else
 			{
 				if(ti[i]==selti)
-					defaultSel = parent;
+					defaultSel = parent.attributeValue(UpdateInfo.UpdateFile_filename)+"/"+name;
 			}
 			if(ti[i].getItemCount()>0)
 			{
-				getPackPaths(ti[i].getItems(),parent+"/"+file.getName(),selti);
+				getPackPaths(ti[i].getItems(),updatefile,selti);
 			}
 		}
 		return mylist;

@@ -2,8 +2,11 @@ package wisoft.pack.dialogs;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
+import org.dom4j.Element;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.viewers.TreeViewer;
@@ -27,11 +30,11 @@ import org.eclipse.swt.widgets.TreeItem;
 
 import wisoft.pack.edits.MasterContentProvider;
 import wisoft.pack.edits.MasterLabelProvider;
-import wisoft.pack.models.FileModel;
+import wisoft.pack.edits.MasterStyleLabelProviderC;
 
 public class AddFileIntoPackDialog extends Dialog {
 	private Text text;
-	private String[] packPaths;
+	private Map<String ,Element> packPaths;
 	private Combo combo;
 	private String defaultpath;
 	TreeViewer tv ;
@@ -44,7 +47,7 @@ public class AddFileIntoPackDialog extends Dialog {
 	 * Create the dialog.
 	 * @param parentShell
 	 */
-	public AddFileIntoPackDialog(Shell parentShell,String[] dataprovider,String defaultpath) {
+	public AddFileIntoPackDialog(Shell parentShell,Map<String ,Element> dataprovider,String defaultpath) {
 		super(parentShell);
 		this.packPaths = dataprovider;
 		this.defaultpath = defaultpath;
@@ -55,7 +58,7 @@ public class AddFileIntoPackDialog extends Dialog {
 		{
 			if(ti.getChecked())
 			{
-				filelist.add(((FileModel)ti.getData()).getFile());
+				filelist.add((File)ti.getData());
 			}
 			getCheckedFiles(ti.getItems());
 		}
@@ -74,6 +77,26 @@ public class AddFileIntoPackDialog extends Dialog {
 	    super.configureShell(shell);  
 	    shell.setText("添加选项");  
 	}  
+	
+	private void setcombodata()
+	{
+		int i=0;
+		boolean ishave =false;
+		for(Map.Entry<String, Element> entry :packPaths.entrySet())
+		{
+			combo.setData(entry.getKey(),entry.getValue());
+			if(!ishave)
+			{
+				if(defaultpath.equals(entry.getKey()))
+				{
+					ishave = true;
+				}
+				else
+					i++;
+			}
+		}
+		combo.select(0);
+	}
 	/**
 	 * Create contents of the dialog.
 	 * @param parent
@@ -91,8 +114,7 @@ public class AddFileIntoPackDialog extends Dialog {
 		combo = new Combo(container, SWT.NONE);
 		combo.setToolTipText("\u9009\u62E9\u66F4\u65B0\u5305\u5185\u5DF2\u6709\u7684\u76EE\u5F55");
 		combo.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
-		combo.setItems(packPaths);
-		combo.setText(defaultpath.isEmpty()?packPaths[0]:defaultpath);
+		setcombodata();
 		new Label(container, SWT.NONE);
 		new Label(container, SWT.NONE);
 		
@@ -115,7 +137,7 @@ public class AddFileIntoPackDialog extends Dialog {
 				if(path!=null)
 				{
 				text.setText(path);
-				tv.setInput(new FileModel(new File(path)));
+				tv.setInput(new File(path));
 				tv.refresh();
 				}
 			}
@@ -197,9 +219,10 @@ public class AddFileIntoPackDialog extends Dialog {
 		});
 		
 		tv = new TreeViewer(tree);
-		tv.setContentProvider(new MasterContentProvider(false));
+		tv.setContentProvider(new MasterContentProvider());
 		//设置树的标签
-		tv.setLabelProvider(new MasterLabelProvider(true));
+		
+		tv.setLabelProvider(new MasterLabelProvider(new MasterStyleLabelProviderC()));
 		//tv.setInput();
 		tv.expandToLevel(3);
 		

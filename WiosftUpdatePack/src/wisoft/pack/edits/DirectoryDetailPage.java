@@ -3,6 +3,7 @@ package wisoft.pack.edits;
 import java.io.File;
 import java.util.Date;
 
+import org.dom4j.Element;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.SWT;
@@ -21,8 +22,6 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.Section;
 import org.eclipse.ui.forms.widgets.TableWrapData;
 import org.eclipse.ui.forms.widgets.TableWrapLayout;
-
-import wisoft.pack.models.FileModel;
 
 public class DirectoryDetailPage implements IDetailsPage {
 	public DirectoryDetailPage() {
@@ -169,7 +168,7 @@ public class DirectoryDetailPage implements IDetailsPage {
 	   //首先获得选中的对象
 	   IStructuredSelection currentSelection = (IStructuredSelection)selection;
 	   if (currentSelection.size()==1) 
-	    file = ((FileModel)currentSelection.getFirstElement()).getFile();
+	    file = new File( ((Element)currentSelection.getFirstElement()).attributeValue("filename"));
 	   //如果选中的对象不为null,则刷新控件所显示的值
 	   if (file != null)
 	    update();
