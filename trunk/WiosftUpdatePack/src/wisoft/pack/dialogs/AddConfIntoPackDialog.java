@@ -1,26 +1,27 @@
 package wisoft.pack.dialogs;
 
+import java.util.Map;
+
+import org.dom4j.Element;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.IDialogConstants;
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Point;
+import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.layout.RowLayout;
+import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
-import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
-import org.eclipse.swt.layout.GridData;
-import org.eclipse.swt.widgets.Combo;
-import org.eclipse.swt.widgets.Button;
-import org.eclipse.swt.events.SelectionAdapter;
-import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.layout.RowLayout;
 
 public class AddConfIntoPackDialog extends Dialog {
 	private Text text;
 	private Combo combo;
-	private String[] packPaths;
+	private Map<String ,Element> packPaths;
 	public String packPath="";
 	public String filePath = "";
 	public String content="";
@@ -40,7 +41,7 @@ public class AddConfIntoPackDialog extends Dialog {
 	 * @wbp.parser.constructor
 	 */
 	
-	public AddConfIntoPackDialog(Shell parentShell,String[] dataprovider,String defaultpath)
+	public AddConfIntoPackDialog(Shell parentShell,Map<String ,Element> dataprovider,String defaultpath)
 	{
 		super(parentShell);
 		this.packPaths = dataprovider;
@@ -67,6 +68,26 @@ public class AddConfIntoPackDialog extends Dialog {
 		super.configureShell(newShell);
 		newShell.setText("ÃÌº”≈‰÷√");
 	}
+	
+	private void setcombodata()
+	{
+		int i=0;
+		boolean ishave =false;
+		for(Map.Entry<String, Element> entry :packPaths.entrySet())
+		{
+			combo.setData(entry.getKey(),entry.getValue());
+			if(!ishave)
+			{
+				if(defaultpath.equals(entry.getKey()))
+				{
+					ishave = true;
+				}
+				else
+					i++;
+			}
+		}
+		combo.select(0);
+	}
 	/**
 	 * Create contents of the dialog.
 	 * @param parent
@@ -85,9 +106,7 @@ public class AddConfIntoPackDialog extends Dialog {
 		
 		combo = new Combo(container, SWT.NONE);
 		combo.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 2, 1));
-		combo.setItems(packPaths);
-		combo.setText(defaultpath.isEmpty()?packPaths[0]:defaultpath);
-		
+		setcombodata();
 		Label lblNewLabel_1 = new Label(container, SWT.NONE);
 		lblNewLabel_1.setAlignment(SWT.RIGHT);
 		lblNewLabel_1.setText("\u6587\u4EF6\u7C7B\u578B\uFF1A");
