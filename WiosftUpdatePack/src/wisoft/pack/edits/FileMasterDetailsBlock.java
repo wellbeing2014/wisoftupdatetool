@@ -176,7 +176,7 @@ public class FileMasterDetailsBlock extends MasterDetailsBlock {
 							
 							Display.getDefault().asyncExec(new Runnable() {                        
 				    			public void run() {      
-				    				tv.setInput(pi.getPackinfo().getXmlo().getRootElement().element("UpdateFileList"));
+				    				tv.setInput(pi.getPackinfo().getXmlo().OnlyElementInRoot(UpdateInfo.UpdateFileList));
 				    				tv.refresh();
 				    			}});
 							return Status.OK_STATUS;
@@ -281,14 +281,14 @@ public class FileMasterDetailsBlock extends MasterDetailsBlock {
 				{
 					TreeItem[] tis = tv.getTree().getSelection();
 					XmlOperator xmlOperator = pi.getPackinfo().getXmlo();
-					Element updatefiles = xmlOperator.getRootElement().element("UpdateFileList");
+					//Element updatefiles = xmlOperator.getRootElement().element("UpdateFileList");
 					for(TreeItem ti:tis)
 					{
 						FileModel file = (FileModel)ti.getData();
 						
 						System.out.println("我删除"+file.getFile().attributeValue("filename"));
 					}
-					tv.setInput(pi.getPackinfo().getXmlo().getRootElement().element("UpdateFileList"));
+					tv.setInput(pi.getPackinfo().getXmlo().OnlyElementInRoot(UpdateInfo.UpdateFileList));
 					tv.refresh();
 				}
 				else
@@ -318,7 +318,7 @@ public class FileMasterDetailsBlock extends MasterDetailsBlock {
 		tv.setLabelProvider(new FileModelLabelProvider());
 		//设置初始化输入的类
 		pi = (PackInfoInput)page.getEditorInput();
-		Element input =pi.getPackinfo().getXmlo().getRootElement().element("UpdateFileList");
+		Element input =pi.getPackinfo().getXmlo().OnlyElementInRoot(UpdateInfo.UpdateFileList);
 		tv.setInput(new FileModel(input));
 		tv.expandToLevel(3);
 
@@ -364,6 +364,12 @@ public class FileMasterDetailsBlock extends MasterDetailsBlock {
 	
 	private Map<String,Element> getPackPaths(TreeItem[] ti,Element parent,TreeItem selti)
 	{
+		if(ti.length==0)
+		{	
+			defaultSel = "/";
+			mylist.put("/", parent);
+			return mylist;
+		}
 		for(int i=0;i<ti.length;i++)
 		{	
 			Element updatefile = ((FileModel)ti[i].getData()).getFile();

@@ -24,13 +24,16 @@ public class FileModel extends Model {
 	private Element file;
 	public FileModel(Element file)
 	{
-		this.file = file;
-		List<Element> filelist = file.elements();
-		for(Element zfile :filelist)
+		if(file!=null)
 		{
-			FileModel zfilemodel = new FileModel(zfile);
-			if(!this.children.contains(zfilemodel))
-				addChild(new FileModel(zfile));
+			this.file = file;
+			List<Element> filelist = file.elements();
+			for(Element zfile :filelist)
+			{
+				FileModel zfilemodel = new FileModel(zfile);
+				if(!this.children.contains(zfilemodel))
+					addChild(new FileModel(zfile));
+			}
 		}
 	}
 //	public FileModel(File file)
