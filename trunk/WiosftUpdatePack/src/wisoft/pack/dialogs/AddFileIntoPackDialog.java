@@ -81,21 +81,26 @@ public class AddFileIntoPackDialog extends Dialog {
 	private void setcombodata()
 	{
 		int i=0;
-		boolean ishave =false;
-		for(Map.Entry<String, Element> entry :packPaths.entrySet())
-		{
-			combo.setData(entry.getKey(),entry.getValue());
-			if(!ishave)
-			{
-				if(defaultpath.equals(entry.getKey()))
-				{
-					ishave = true;
-				}
-				else
-					i++;
-			}
-		}
-		combo.select(0);
+//		boolean ishave =false;
+//		for(Map.Entry<String, Element> entry :packPaths.entrySet())
+//		{
+//			combo.setData(entry.getKey(),entry.getValue());
+//			if(!ishave)
+//			{
+//				if(defaultpath.equals(entry.getKey()))
+//				{
+//					ishave = true;
+//				}
+//				else
+//					i++;
+//			}
+//		}
+		combo.setItems(new String[]{"wo","dfasdf","adfasdf"});
+//		for(i=0;i<10;i++)
+//		{
+//			combo.setItems(new String[]{"wo"});
+//		}
+		combo.select(2);
 	}
 	/**
 	 * Create contents of the dialog.
