@@ -31,7 +31,7 @@ public class UpdateInfo {
 	public static String UpdateFile ="UpdateFile";
 	
 	public static String UpdateFile_filetype ="filetype";
-	public static String UpdateFile_fullpath ="fullpath";
+	//public static String UpdateFile_fullpath ="fullpath";
 	public static String UpdateFile_filename = "filename";
 	public static String UpdateFile_isconf ="isconf";
 	public static String UpdateFile_conftype ="conftype";

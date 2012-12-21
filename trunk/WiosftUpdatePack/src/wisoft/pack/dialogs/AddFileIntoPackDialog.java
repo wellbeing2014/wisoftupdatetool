@@ -95,7 +95,15 @@ public class AddFileIntoPackDialog extends Dialog {
 //					i++;
 //			}
 //		}
-		combo.setItems(new String[]{"wo","dfasdf","adfasdf"});
+		List<String> a = new ArrayList<String>();
+		
+		Iterator a1 = packPaths.keySet().iterator();
+		while(a1.hasNext())
+		{
+			a.add((String)a1.next());
+			
+		}
+		combo.setItems(a.toArray(new String[0]));
 //		for(i=0;i<10;i++)
 //		{
 //			combo.setItems(new String[]{"wo"});
