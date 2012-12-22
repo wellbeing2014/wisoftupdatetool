@@ -53,14 +53,18 @@ public class FileMasterDetailsBlock extends MasterDetailsBlock {
 
 	private FormPage page;
 	private TreeViewer tv ;
-	private PackInfoInput pi ;
-
+	private PackInfoModel pi ;
+	private XmlOperator xmlo;
 	public FileMasterDetailsBlock(FormPage page) {
 	    this.page = page;
+	   
 	}
-
+	
+	
 	@Override
 	protected void createMasterPart(final IManagedForm managedForm, Composite parent) {
+		 pi = ((PackInfoInput)page.getEditorInput()).getPackinfo();
+		 xmlo = pi.getXmlo();
 		// TODO Auto-generated method stub
 		FormToolkit toolkit = managedForm.getToolkit();
 		//创建一个内容区
@@ -97,17 +101,21 @@ public class FileMasterDetailsBlock extends MasterDetailsBlock {
 		tltmNew.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				mylist.clear();
-				//mylist.add("/");
+				
 				TreeItem ti =null;
 				if(tv.getTree().getSelectionCount()>0)
 					ti=tv.getTree().getSelection()[0];
-				getPackPaths(tv.getTree().getItems(),pi.getPackinfo().getXmlo().getRootElement().element("UpdateFileList"),ti);
-				AddFileIntoPackDialog ap = new AddFileIntoPackDialog(page.getPartControl().getShell(),mylist,defaultSel);
+				packpaths.clear();
+				packElements.clear();
+				packpaths.add("/");
+				//packElements.add(xmlo.OnlyElementInRoot(UpdateInfo.UpdateFileList));
+				getPackPaths(tv.getTree().getItems(),"",ti);
+				final AddFileIntoPackDialog ap = new AddFileIntoPackDialog(page.getPartControl().getShell(),packpaths,defaultSel);
 				if(IDialogConstants.OK_ID==ap.open())
 				{
-					final PackInfoInput pi = (PackInfoInput)page.getEditorInput();
-					final String toPath = pi.getPackinfo().getSavePath()+"/"+UpdateInfo.UpdateDirName+ap.packPath;
+					//final PackInfoInput pi = (PackInfoInput)page.getEditorInput();
+					final String rootPath = pi.getSavePath()+"/"+UpdateInfo.UpdateDirName;
+					final String toPath = rootPath+ap.packPath;
 					final String fromPath = ap.filePath;
 					final File[] filelist = ap.filelist.toArray(new File[0]);
 					//Console.getInstance().print("从路径中复制文件开始：", pi.getName(), Console.ConsoleType.INFO);	
@@ -140,7 +148,42 @@ public class FileMasterDetailsBlock extends MasterDetailsBlock {
 						   }   
 						}  
 
-					
+						private void recordFileToXml(File f1)
+						{
+							String parentElementPath = ap.packPath;
+							System.out.println(rootPath);
+							String f1abpath = f1.getAbsolutePath().replace("\\", "/");
+							String childElementPath =f1abpath.replace(rootPath+parentElementPath, "");
+							Element rootelement =packElements.get(parentElementPath);
+							if(rootelement==null)
+								rootelement = xmlo.OnlyElementInRoot(UpdateInfo.UpdateFileList);
+							
+							String[] children = childElementPath.split("/");
+							Element has = rootelement;
+							Element lasthas = rootelement;
+							int curChild = 0;
+							String hasRecordString = "";
+							for(int i= 0;i<children.length;i++)
+							{
+								hasRecordString = hasRecordString+"/"+children[i];
+								if(children[i].isEmpty())
+									continue;
+								has = xmlo.getElementInElement(has, UpdateInfo.UpdateFile, UpdateInfo.UpdateFile_filename, children[i]);
+								if(has==null)
+								{
+									has =xmlo.addElementInElement(lasthas, UpdateInfo.UpdateFile, UpdateInfo.UpdateFile_filename,  children[i]);
+									has.addAttribute(UpdateInfo.UpdateFile_fullpath, parentElementPath+hasRecordString);
+									if(f1.isDirectory())
+										has.addAttribute(UpdateInfo.UpdateFile_filetype, UpdateInfo.FileType_Dir);
+									else if(f1.isFile())
+										has.addAttribute(UpdateInfo.UpdateFile_filetype, UpdateInfo.FileType_File);
+								}
+								lasthas = has;
+								curChild++;
+							}	
+							xmlo.save();
+						}
+						
 						@Override
 						protected IStatus run(final IProgressMonitor monitor) {
 							// TODO Auto-generated method stub
@@ -158,6 +201,7 @@ public class FileMasterDetailsBlock extends MasterDetailsBlock {
 								{
 									file2.mkdirs();
 									printlnToConsole("创建文件夹:"+tempfilename,ConsoleType.INFO);
+									recordFileToXml(file2);
 									monitor.worked(i);
 								}
 								else
@@ -165,6 +209,7 @@ public class FileMasterDetailsBlock extends MasterDetailsBlock {
 									try{
 										copyFile(filelist[i],file2);
 										printlnToConsole("复制文件完成:"+tempfilename,ConsoleType.INFO);
+										recordFileToXml(file2);
 										monitor.worked(i);
 									}
 									catch(Exception e)
@@ -173,18 +218,14 @@ public class FileMasterDetailsBlock extends MasterDetailsBlock {
 									}
 								}
 							}
-							
-							Display.getDefault().asyncExec(new Runnable() {                        
-				    			public void run() {      
-				    				tv.setInput(pi.getPackinfo().getXmlo().OnlyElementInRoot(UpdateInfo.UpdateFileList));
-				    				tv.refresh();
-				    			}});
 							return Status.OK_STATUS;
 						}
 						
 					};
 					job.setUser(true);
 					job.schedule();
+					tv.setInput(new FileModel(xmlo.OnlyElementInRoot(UpdateInfo.UpdateFileList)));
+					tv.refresh();
 				}
 			}
 		});
@@ -194,13 +235,13 @@ public class FileMasterDetailsBlock extends MasterDetailsBlock {
 		tltmNew_1.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				mylist.clear();
-				//mylist.add("/");
 				TreeItem ti =null;
 				if(tv.getTree().getSelectionCount()>0)
 					ti=tv.getTree().getSelection()[0];
-				getPackPaths(tv.getTree().getItems(),pi.getPackinfo().getXmlo().getRootElement().element("UpdateFileList"),ti);
-				AddConfIntoPackDialog ap = new AddConfIntoPackDialog(page.getPartControl().getShell(),mylist,defaultSel);
+				packpaths.clear();
+				packpaths.add("/");
+				getPackPaths(tv.getTree().getItems(),"",ti);
+				AddConfIntoPackDialog ap = new AddConfIntoPackDialog(page.getPartControl().getShell(),packpaths,defaultSel);
 				if(IDialogConstants.OK_ID==ap.open())
 				{
 					String packpath = ap.packPath;
@@ -280,7 +321,7 @@ public class FileMasterDetailsBlock extends MasterDetailsBlock {
 				if(tv.getTree().getSelectionCount()>0)
 				{
 					TreeItem[] tis = tv.getTree().getSelection();
-					XmlOperator xmlOperator = pi.getPackinfo().getXmlo();
+					//XmlOperator xmlOperator = pi.getPackinfo().getXmlo();
 					//Element updatefiles = xmlOperator.getRootElement().element("UpdateFileList");
 					for(TreeItem ti:tis)
 					{
@@ -288,7 +329,7 @@ public class FileMasterDetailsBlock extends MasterDetailsBlock {
 						
 						System.out.println("我删除"+file.getFile().attributeValue("filename"));
 					}
-					tv.setInput(pi.getPackinfo().getXmlo().OnlyElementInRoot(UpdateInfo.UpdateFileList));
+					tv.setInput(xmlo.OnlyElementInRoot(UpdateInfo.UpdateFileList));
 					tv.refresh();
 				}
 				else
@@ -317,8 +358,8 @@ public class FileMasterDetailsBlock extends MasterDetailsBlock {
 		//设置树的标签
 		tv.setLabelProvider(new FileModelLabelProvider());
 		//设置初始化输入的类
-		pi = (PackInfoInput)page.getEditorInput();
-		Element input =pi.getPackinfo().getXmlo().OnlyElementInRoot(UpdateInfo.UpdateFileList);
+		//pi = (PackInfoInput)page.getEditorInput();
+		Element input =xmlo.OnlyElementInRoot(UpdateInfo.UpdateFileList);
 		tv.setInput(new FileModel(input));
 		tv.expandToLevel(3);
 
@@ -359,39 +400,31 @@ public class FileMasterDetailsBlock extends MasterDetailsBlock {
 		form.getToolBarManager().add(vAction);
 	}
 	
-	private Map<String,Element> mylist=new HashMap<String,Element>();
-	private String defaultSel ;
+	//private Map<String,Element> mylist=new HashMap<String,Element>();
 	
-	private Map<String,Element> getPackPaths(TreeItem[] ti,Element parent,TreeItem selti)
+	private String defaultSel ;
+	private List<String> packpaths= new ArrayList<String>();
+	private Map<String,Element> packElements = new HashMap<String,Element>();
+	private void getPackPaths(TreeItem[] ti,String parentname,TreeItem sel)
 	{
-		if(ti.length==0)
-		{	
+		if(sel==null)
 			defaultSel = "/";
-			mylist.put("/", parent);
-			return mylist;
-		}
 		for(int i=0;i<ti.length;i++)
 		{	
 			Element updatefile = ((FileModel)ti[i].getData()).getFile();
-			String filetype =updatefile.attributeValue(UpdateInfo.UpdateFile_filetype);
 			String name = updatefile.attributeValue(UpdateInfo.UpdateFile_filename);
-			if(UpdateInfo.FileType_Dir.equals(filetype))
+			boolean isdir =  updatefile.attributeValue(UpdateInfo.UpdateFile_filetype).equals(UpdateInfo.FileType_Dir);
+			String fullname = parentname+"/"+name;
+			if(ti[i].equals(sel))
+				defaultSel=fullname;
+			if(isdir)
 			{
-				if(ti[i]==selti)
-					defaultSel = parent.attributeValue(UpdateInfo.UpdateFile_filename)+"/"+name;
-				mylist.put(parent.attributeValue(UpdateInfo.UpdateFile_filename)+"/"+name,updatefile);
-			}
-			else
-			{
-				if(ti[i]==selti)
-					defaultSel = parent.attributeValue(UpdateInfo.UpdateFile_filename)+"/"+name;
-			}
-			if(ti[i].getItemCount()>0)
-			{
-				getPackPaths(ti[i].getItems(),updatefile,selti);
+				packpaths.add(fullname);
+				packElements.put(fullname,updatefile);
+				getPackPaths(ti[i].getItems(),parentname+"/"+name,sel);
 			}
 		}
-		return mylist;
+		
 	}
 	
 

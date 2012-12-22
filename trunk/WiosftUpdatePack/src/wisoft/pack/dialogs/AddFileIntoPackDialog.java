@@ -2,11 +2,8 @@ package wisoft.pack.dialogs;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
-import org.dom4j.Element;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.viewers.TreeViewer;
@@ -34,7 +31,7 @@ import wisoft.pack.edits.MasterStyleLabelProviderC;
 
 public class AddFileIntoPackDialog extends Dialog {
 	private Text text;
-	private Map<String ,Element> packPaths;
+	private List<String> packPaths;
 	private Combo combo;
 	private String defaultpath;
 	TreeViewer tv ;
@@ -47,7 +44,7 @@ public class AddFileIntoPackDialog extends Dialog {
 	 * Create the dialog.
 	 * @param parentShell
 	 */
-	public AddFileIntoPackDialog(Shell parentShell,Map<String ,Element> dataprovider,String defaultpath) {
+	public AddFileIntoPackDialog(Shell parentShell,List<String> dataprovider,String defaultpath) {
 		super(parentShell);
 		this.packPaths = dataprovider;
 		this.defaultpath = defaultpath;
@@ -80,35 +77,8 @@ public class AddFileIntoPackDialog extends Dialog {
 	
 	private void setcombodata()
 	{
-		int i=0;
-//		boolean ishave =false;
-//		for(Map.Entry<String, Element> entry :packPaths.entrySet())
-//		{
-//			combo.setData(entry.getKey(),entry.getValue());
-//			if(!ishave)
-//			{
-//				if(defaultpath.equals(entry.getKey()))
-//				{
-//					ishave = true;
-//				}
-//				else
-//					i++;
-//			}
-//		}
-		List<String> a = new ArrayList<String>();
-		
-		Iterator a1 = packPaths.keySet().iterator();
-		while(a1.hasNext())
-		{
-			a.add((String)a1.next());
-			
-		}
-		combo.setItems(a.toArray(new String[0]));
-//		for(i=0;i<10;i++)
-//		{
-//			combo.setItems(new String[]{"wo"});
-//		}
-		combo.select(2);
+		combo.setItems(packPaths.toArray(new String[0]));
+		combo.setText(defaultpath);
 	}
 	/**
 	 * Create contents of the dialog.

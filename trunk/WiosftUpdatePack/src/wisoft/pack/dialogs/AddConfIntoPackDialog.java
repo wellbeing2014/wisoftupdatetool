@@ -1,8 +1,7 @@
 package wisoft.pack.dialogs;
 
-import java.util.Map;
+import java.util.List;
 
-import org.dom4j.Element;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.swt.SWT;
@@ -21,7 +20,7 @@ import org.eclipse.swt.widgets.Text;
 public class AddConfIntoPackDialog extends Dialog {
 	private Text text;
 	private Combo combo;
-	private Map<String ,Element> packPaths;
+	private List<String> packPaths;
 	public String packPath="";
 	public String filePath = "";
 	public String content="";
@@ -41,7 +40,7 @@ public class AddConfIntoPackDialog extends Dialog {
 	 * @wbp.parser.constructor
 	 */
 	
-	public AddConfIntoPackDialog(Shell parentShell,Map<String ,Element> dataprovider,String defaultpath)
+	public AddConfIntoPackDialog(Shell parentShell,List<String> dataprovider,String defaultpath)
 	{
 		super(parentShell);
 		this.packPaths = dataprovider;
@@ -71,22 +70,8 @@ public class AddConfIntoPackDialog extends Dialog {
 	
 	private void setcombodata()
 	{
-		int i=0;
-		boolean ishave =false;
-		for(Map.Entry<String, Element> entry :packPaths.entrySet())
-		{
-			combo.setData(entry.getKey(),entry.getValue());
-			if(!ishave)
-			{
-				if(defaultpath.equals(entry.getKey()))
-				{
-					ishave = true;
-				}
-				else
-					i++;
-			}
-		}
-		combo.select(0);
+		combo.setItems(packPaths.toArray(new String[0]));
+		combo.setText(defaultpath);
 	}
 	/**
 	 * Create contents of the dialog.
