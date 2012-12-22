@@ -140,6 +140,8 @@ public class XmlOperator {
 		else 
 			return father.addElement(elementname);
 	}
+	
+	
 
 	
 	/**
@@ -217,6 +219,24 @@ public class XmlOperator {
 				element.remove( ets.get(i));
 		}
 		return element;
+	}
+	
+	/**根据属性和值返回element 中的element。
+	 * @param element
+	 * @param elementname
+	 * @param Attributename
+	 * @param AttributeValue
+	 * @return
+	 */
+	public Element getElementInElement(Element element ,String elementname,String Attributename,String AttributeValue)
+	{
+		List<Element> ets =element.elements(elementname);
+		for(int i=0;i<ets.size();i++)
+		{
+			if(isEqualByAttribute(ets.get(i),Attributename,AttributeValue))
+				return ets.get(i);
+		}
+		return null;
 	}
 	
 	/**
