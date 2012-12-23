@@ -1,19 +1,27 @@
 package wisoft.pack.edits;
 
+import org.dom4j.Element;
+import org.eclipse.jface.viewers.DecoratingStyledCellLabelProvider;
 import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.swt.graphics.Image;
+import org.eclipse.ui.ISharedImages;
+import org.eclipse.ui.PlatformUI;
 
 import wisoft.pack.models.FileModel;
+import wisoft.pack.utils.UpdateInfo;
 
-public class FileModelLabelProvider  implements ILabelProvider {
+public class FileModelLabelProvider extends  DecoratingStyledCellLabelProvider   implements ILabelProvider {
 
-	
+	public FileModelLabelProvider(IStyledLabelProvider labelProvider) {
+		super(labelProvider, PlatformUI.getWorkbench().getDecoratorManager().getLabelDecorator(), null);
+		// TODO Auto-generated constructor stub
+	}
 
 	@Override
 	public String getText(Object element) {
 		// TODO Auto-generated method stub
-		return ((FileModel)element).getFile().attributeValue("filename");
+		return getStyledText(element).getString();
 	}
 
 	@Override
@@ -43,7 +51,8 @@ public class FileModelLabelProvider  implements ILabelProvider {
 	@Override
 	public Image getImage(Object element) {
 		// TODO Auto-generated method stub
-		return null;
+		return super.getImage(element);
+		
 	}
 	
 

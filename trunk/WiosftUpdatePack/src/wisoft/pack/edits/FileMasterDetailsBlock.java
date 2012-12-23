@@ -15,12 +15,20 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.dialogs.IDialogConstants;
+import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
+import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
+import org.eclipse.jface.viewers.StyledString;
 import org.eclipse.jface.viewers.TreeViewer;
+import org.eclipse.jface.viewers.DelegatingStyledCellLabelProvider.IStyledLabelProvider;
+import org.eclipse.jface.viewers.StyledString.Styler;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.graphics.TextStyle;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
@@ -29,6 +37,8 @@ import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.swt.widgets.ToolItem;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeItem;
+import org.eclipse.ui.ISharedImages;
+import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.forms.DetailsPart;
 import org.eclipse.ui.forms.IManagedForm;
 import org.eclipse.ui.forms.MasterDetailsBlock;
@@ -38,6 +48,7 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.ScrolledForm;
 import org.eclipse.ui.forms.widgets.Section;
 import org.eclipse.wb.swt.ResourceManager;
+import org.eclipse.wb.swt.SWTResourceManager;
 
 import wisoft.pack.app.Activator;
 import wisoft.pack.dialogs.AddConfIntoPackDialog;
@@ -102,15 +113,32 @@ public class FileMasterDetailsBlock extends MasterDetailsBlock {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				
-				TreeItem ti =null;
+				Element ti =null;
+				String defaultp = "/";
 				if(tv.getTree().getSelectionCount()>0)
-					ti=tv.getTree().getSelection()[0];
+				{
+					
+					ti=((FileModel)(tv.getTree().getSelection()[0].getData())).getFile();
+					if(UpdateInfo.FileType_Dir.equals(ti.attributeValue(UpdateInfo.UpdateFile_filetype)))
+						defaultp = ti.attributeValue(UpdateInfo.UpdateFile_filename);
+					else
+					{
+						if(ti.getParent()!=null)
+						{
+							defaultp = ti.getParent().attributeValue(UpdateInfo.UpdateFile_filename);
+							if(defaultp==null||defaultp.equals("")||defaultp.equals("null"))
+								defaultp ="/";
+						}
+					}
+				}
 				packpaths.clear();
 				packElements.clear();
 				packpaths.add("/");
+				
+
 				//packElements.add(xmlo.OnlyElementInRoot(UpdateInfo.UpdateFileList));
-				getPackPaths(tv.getTree().getItems(),"",ti);
-				final AddFileIntoPackDialog ap = new AddFileIntoPackDialog(page.getPartControl().getShell(),packpaths,defaultSel);
+				getPackPaths(xmlo.OnlyElementInRoot(UpdateInfo.UpdateFileList).elements(UpdateInfo.UpdateFile).toArray(new Element[0]),"");
+				final AddFileIntoPackDialog ap = new AddFileIntoPackDialog(page.getPartControl().getShell(),packpaths,defaultp);
 				if(IDialogConstants.OK_ID==ap.open())
 				{
 					//final PackInfoInput pi = (PackInfoInput)page.getEditorInput();
@@ -165,14 +193,14 @@ public class FileMasterDetailsBlock extends MasterDetailsBlock {
 							String hasRecordString = "";
 							for(int i= 0;i<children.length;i++)
 							{
-								hasRecordString = hasRecordString+"/"+children[i];
 								if(children[i].isEmpty())
 									continue;
+								hasRecordString = hasRecordString+"/"+children[i];
 								has = xmlo.getElementInElement(has, UpdateInfo.UpdateFile, UpdateInfo.UpdateFile_filename, children[i]);
 								if(has==null)
 								{
 									has =xmlo.addElementInElement(lasthas, UpdateInfo.UpdateFile, UpdateInfo.UpdateFile_filename,  children[i]);
-									has.addAttribute(UpdateInfo.UpdateFile_fullpath, parentElementPath+hasRecordString);
+									has.addAttribute(UpdateInfo.UpdateFile_fullpath, (parentElementPath.equals("/")?"":parentElementPath)+hasRecordString);
 									if(f1.isDirectory())
 										has.addAttribute(UpdateInfo.UpdateFile_filetype, UpdateInfo.FileType_Dir);
 									else if(f1.isFile())
@@ -235,13 +263,26 @@ public class FileMasterDetailsBlock extends MasterDetailsBlock {
 		tltmNew_1.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				TreeItem ti =null;
+				Element ti =null;
+				String defaultp = "/";
 				if(tv.getTree().getSelectionCount()>0)
-					ti=tv.getTree().getSelection()[0];
+					ti=((FileModel)(tv.getTree().getSelection()[0].getData())).getFile();
 				packpaths.clear();
+				packElements.clear();
 				packpaths.add("/");
-				getPackPaths(tv.getTree().getItems(),"",ti);
-				AddConfIntoPackDialog ap = new AddConfIntoPackDialog(page.getPartControl().getShell(),packpaths,defaultSel);
+				if(UpdateInfo.FileType_Dir.equals(ti.attributeValue(UpdateInfo.UpdateFile_filetype)))
+					defaultp = ti.attributeValue(UpdateInfo.UpdateFile_filename);
+				else
+				{
+					if(ti.getParent()!=null)
+					{
+						defaultp = ti.getParent().attributeValue(UpdateInfo.UpdateFile_filename);
+						if(defaultp==null||defaultp.equals("")||defaultp.equals("null"))
+							defaultp ="/";
+					}
+				}
+				getPackPaths(xmlo.OnlyElementInRoot(UpdateInfo.UpdateFileList).elements(UpdateInfo.UpdateFile).toArray(new Element[0]),"");
+				AddConfIntoPackDialog ap = new AddConfIntoPackDialog(page.getPartControl().getShell(),packpaths,defaultp);
 				if(IDialogConstants.OK_ID==ap.open())
 				{
 					String packpath = ap.packPath;
@@ -356,7 +397,67 @@ public class FileMasterDetailsBlock extends MasterDetailsBlock {
 		//设置树的内容
 		tv.setContentProvider(new FileModelContentProvider() );
 		//设置树的标签
-		tv.setLabelProvider(new FileModelLabelProvider());
+		tv.setLabelProvider(new FileModelLabelProvider(new IStyledLabelProvider() {
+			
+			@Override
+			public void removeListener(ILabelProviderListener listener) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public boolean isLabelProperty(Object element, String property) {
+				// TODO Auto-generated method stub
+				return false;
+			}
+			
+			@Override
+			public void dispose() {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void addListener(ILabelProviderListener listener) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public StyledString getStyledText(Object element) {
+				// TODO Auto-generated method stub
+				Element file = ((FileModel)element).getFile();
+				String str =file.attributeValue(UpdateInfo.UpdateFile_filename);
+				boolean isconf =Boolean.valueOf(file.attributeValue(UpdateInfo.UpdateFile_isconf));
+				StyledString str1= new StyledString(str, null);
+				if(isconf)
+					str1.append("(仅配置)",new Styler(){
+						@Override
+						public void applyStyles(TextStyle textStyle) {
+							textStyle.foreground=new Color(null,128,128,128);
+							textStyle.font = SWTResourceManager.getFont("微软雅黑", 10, SWT.ITALIC);
+						}});
+				else
+					str1.append("(含配置)",new Styler(){
+						@Override
+						public void applyStyles(TextStyle textStyle) {
+							textStyle.foreground=new Color(null,128,128,128);
+							textStyle.font = SWTResourceManager.getFont("微软雅黑", 10, SWT.ITALIC);
+						}});
+				return str1;
+			}
+			
+			@Override
+			public Image getImage(Object element) {
+				// TODO Auto-generated method stub
+				FileModel filemodel = (FileModel)element;
+				Element file = filemodel.getFile();
+				if(file.attributeValue(UpdateInfo.UpdateFile_filetype).equals(UpdateInfo.FileType_Dir))
+					return PlatformUI.getWorkbench().getSharedImages().getImage(ISharedImages.IMG_OBJ_FOLDER);
+				else
+					return PlatformUI.getWorkbench().getSharedImages().getImage(ISharedImages.IMG_OBJ_FILE);
+			}
+		}));
 		//设置初始化输入的类
 		//pi = (PackInfoInput)page.getEditorInput();
 		Element input =xmlo.OnlyElementInRoot(UpdateInfo.UpdateFileList);
@@ -368,7 +469,7 @@ public class FileMasterDetailsBlock extends MasterDetailsBlock {
 	@Override
 	protected void registerPages(DetailsPart detailsPart) {
 		// TODO Auto-generated method stub
-		detailsPart.registerPage(FileModel.class, new DirectoryDetailPage());
+		detailsPart.registerPage(FileModel.class, new DirectoryDetailPage(pi));
 	}
 
 	@Override
@@ -400,28 +501,23 @@ public class FileMasterDetailsBlock extends MasterDetailsBlock {
 		form.getToolBarManager().add(vAction);
 	}
 	
-	//private Map<String,Element> mylist=new HashMap<String,Element>();
 	
-	private String defaultSel ;
+	//private String defaultSel ;
 	private List<String> packpaths= new ArrayList<String>();
 	private Map<String,Element> packElements = new HashMap<String,Element>();
-	private void getPackPaths(TreeItem[] ti,String parentname,TreeItem sel)
+	private void getPackPaths(Element[] ti,String parentname)
 	{
-		if(sel==null)
-			defaultSel = "/";
 		for(int i=0;i<ti.length;i++)
 		{	
-			Element updatefile = ((FileModel)ti[i].getData()).getFile();
-			String name = updatefile.attributeValue(UpdateInfo.UpdateFile_filename);
-			boolean isdir =  updatefile.attributeValue(UpdateInfo.UpdateFile_filetype).equals(UpdateInfo.FileType_Dir);
-			String fullname = parentname+"/"+name;
-			if(ti[i].equals(sel))
-				defaultSel=fullname;
+			//System.out.println("我打出了"+parentname);
+			String name = ti[i].attributeValue(UpdateInfo.UpdateFile_filename);
+			boolean isdir =  ti[i].attributeValue(UpdateInfo.UpdateFile_filetype).equals(UpdateInfo.FileType_Dir);
+			String fullname = parentname+"/"+name;			
 			if(isdir)
 			{
 				packpaths.add(fullname);
-				packElements.put(fullname,updatefile);
-				getPackPaths(ti[i].getItems(),parentname+"/"+name,sel);
+				packElements.put(fullname,ti[i]);
+				getPackPaths(ti[i].elements(UpdateInfo.UpdateFile).toArray(new Element[0]),parentname+"/"+name);
 			}
 		}
 		
