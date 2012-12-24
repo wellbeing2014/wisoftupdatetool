@@ -34,6 +34,7 @@ public class UpdateInfo {
 	public static String UpdateFile_fullpath ="fullpath";
 	public static String UpdateFile_filename = "filename";
 	public static String UpdateFile_isconf ="isconf";
+	public static String UpdateFile_isVirtual ="isVirtual";
 	public static String UpdateFile_conftype ="conftype";
 	public static String UpdateFile_conftent ="Content";
 	
