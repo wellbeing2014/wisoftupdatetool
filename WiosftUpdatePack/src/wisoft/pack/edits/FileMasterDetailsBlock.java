@@ -429,21 +429,49 @@ public class FileMasterDetailsBlock extends MasterDetailsBlock {
 				Element file = ((FileModel)element).getFile();
 				String str =file.attributeValue(UpdateInfo.UpdateFile_filename);
 				boolean isconf =Boolean.valueOf(file.attributeValue(UpdateInfo.UpdateFile_isconf));
+				boolean isVirtual =Boolean.valueOf(file.attributeValue(UpdateInfo.UpdateFile_isVirtual));
+				String conftype = file.attributeValue(UpdateInfo.UpdateFile_conftype);
+				
 				StyledString str1= new StyledString(str, null);
 				if(isconf)
-					str1.append("(½öÅäÖÃ)",new Styler(){
-						@Override
-						public void applyStyles(TextStyle textStyle) {
-							textStyle.foreground=new Color(null,128,128,128);
-							textStyle.font = SWTResourceManager.getFont("Î¢ÈíÑÅºÚ", 10, SWT.ITALIC);
-						}});
-				else
-					str1.append("(º¬ÅäÖÃ)",new Styler(){
-						@Override
-						public void applyStyles(TextStyle textStyle) {
-							textStyle.foreground=new Color(null,128,128,128);
-							textStyle.font = SWTResourceManager.getFont("Î¢ÈíÑÅºÚ", 10, SWT.ITALIC);
-						}});
+				{
+					if(isVirtual)
+					{
+						StyledString str2= new StyledString(str, StyledString.COUNTER_STYLER);
+						if(conftype.equals(UpdateInfo.FileOpr_Mod))
+						{
+						str2.append("(±¾ÎÄ¼þ½öÅäÖÃ)",new Styler(){
+							@Override
+							public void applyStyles(TextStyle textStyle) {
+								textStyle.foreground=new Color(null,128,128,128);
+								textStyle.font = SWTResourceManager.getFont("Î¢ÈíÑÅºÚ", 10, SWT.ITALIC);
+							}});
+						}
+						if(conftype.equals(UpdateInfo.FileOpr_Del))
+						{
+							Styler red =new Styler(){
+								@Override
+								public void applyStyles(TextStyle textStyle) {
+									textStyle.foreground=new Color(null,128,0,0);
+									textStyle.font = SWTResourceManager.getFont("Î¢ÈíÑÅºÚ", 10, SWT.ITALIC);
+								}};
+							str2= new StyledString(str,red);
+							str2.append("(±¾ÎÄ¼þÐèÒªÉ¾³ý)");
+						}
+						return str2;
+					}
+					else
+					{
+						str1.append("(ÐèÒªÅäÖÃ)",new Styler(){
+							@Override
+							public void applyStyles(TextStyle textStyle) {
+								textStyle.foreground=new Color(null,128,128,128);
+								textStyle.font = SWTResourceManager.getFont("Î¢ÈíÑÅºÚ", 10, SWT.ITALIC);
+							}});
+					}
+				}
+						
+				
 				return str1;
 			}
 			

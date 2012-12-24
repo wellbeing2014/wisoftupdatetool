@@ -3,6 +3,7 @@ package wisoft.pack.edits;
 import java.io.File;
 import java.util.Date;
 
+import org.dom4j.Element;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.SWT;
@@ -13,9 +14,11 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.swt.widgets.ToolItem;
+import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.forms.IDetailsPage;
 import org.eclipse.ui.forms.IFormPart;
 import org.eclipse.ui.forms.IManagedForm;
@@ -31,6 +34,7 @@ import wisoft.pack.utils.UpdateInfo;
 
 public class DirectoryDetailPage implements IDetailsPage {
 	private PackInfoModel pack;
+	private FileModel fm;
 	public DirectoryDetailPage(PackInfoModel pack) {
 		this.pack = pack;
 	}
@@ -47,9 +51,10 @@ public class DirectoryDetailPage implements IDetailsPage {
 	private Composite client;
 	private Text text_1;
 	private Button button_1;
-	private ToolBar toolBar;
-	private ToolItem toolItem;
 	private Button button_2;
+	private ToolBar toolBar_1;
+	private ToolItem tltmNewItem;
+	private ToolItem toolItem;
 	@SuppressWarnings("deprecation")
 	public void createContents(Composite parent) {
 	   //设置父类面板的布局
@@ -98,14 +103,65 @@ public class DirectoryDetailPage implements IDetailsPage {
 	   		text_1.setVisible(button_2.getSelection());
 	   		button_1.setVisible(button_2.getSelection());
 	   		isManalConf.setVisible(button_2.getSelection());
+	   		tltmNewItem.setEnabled(button_2.getSelection());
 	   	}
 	   });
 	   toolkit.adapt(button_2, true, true);
-	   button_2.setText("\u7279\u6B8A\u64CD\u4F5C");
-	   new Label(client, SWT.NONE);
+	   button_2.setText("\u914D\u7F6E\u64CD\u4F5C");
+	   
+	   toolBar_1 = new ToolBar(client, SWT.FLAT | SWT.RIGHT);
+	   toolkit.adapt(toolBar_1);
+	   toolkit.paintBordersFor(toolBar_1);
+	   
+	   //保存配置按钮
+	   tltmNewItem = new ToolItem(toolBar_1, SWT.NONE);
+	   tltmNewItem.addSelectionListener(new SelectionAdapter() {
+	   	@Override
+	   	public void widgetSelected(SelectionEvent e) {
+	   		MessageBox mb = new MessageBox(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell());
+   				mb.setText("提示");
+	   		if(button_1.getSelection()||isManalConf.getSelection())
+	   		{
+	   			if(isManalConf.getSelection()&&text_1.getText().isEmpty())
+	   			{
+	   				mb.setMessage("修改操作必须书写操作说明");
+		   			mb.open();
+		   			return;
+	   			}
+	   			Element element = fm.getFile().addAttribute(UpdateInfo.UpdateFile_isconf, "true");
+	   			if(isManalConf.getSelection())
+	   				element.addAttribute(UpdateInfo.UpdateFile_conftype, UpdateInfo.FileOpr_Mod);
+	   			if(isManalConf.getSelection())
+	   				element.addAttribute(UpdateInfo.UpdateFile_conftype, UpdateInfo.FileOpr_Mod);
+	   			//fm.getFile().addElement(UpdateInfo.UpdateFile_conftent).;
+	   			Element element_content =element.element(UpdateInfo.UpdateFile_conftent);
+	   			if(element_content!=null)
+	   				element.remove(element_content);
+	   			element_content = element.addElement(UpdateInfo.UpdateFile_conftent);
+	   			element_content.addCDATA(text_1.getText());
+	   			pack.getXmlo().save();
+	   		}
+	   		else
+	   		{
+	   			
+	   			mb.setMessage("请选择一个配置操作");
+	   			mb.open();
+	   			return;
+	   		}
+	   	}
+	   });
+	   tltmNewItem.setText("\u4FDD\u5B58\u914D\u7F6E");
+	   tltmNewItem.setImage(ResourceManager.getPluginImage("WiosftUpdatePack", "icons/save.gif"));
+	   tltmNewItem.setEnabled(button_2.getSelection());
+	   
+	   toolItem = new ToolItem(toolBar_1, SWT.NONE);
+	   toolItem.setText("\u5220\u9664\u914D\u7F6E");
+	   
 	   new Label(client, SWT.NONE);
 	   new Label(client, SWT.NONE);
 	   isManalConf = toolkit.createButton( client , "\u9700\u8981\u7F16\u8F91" ,SWT.RADIO);
+	   toolkit.adapt(isManalConf, true, true);
+	   isManalConf.setVisible(button_2.getSelection());
 	   
 	   button_1 = new Button(client, SWT.RADIO);
 	   toolkit.adapt(button_1, true, true);
@@ -114,33 +170,12 @@ public class DirectoryDetailPage implements IDetailsPage {
 	   new Label(client, SWT.NONE);
 	   new Label(client, SWT.NONE);
 	   
-	   
 	   text_1 = new Text(client, SWT.BORDER | SWT.H_SCROLL | SWT.V_SCROLL | SWT.CANCEL | SWT.MULTI);
-
-	 //  text_1.setLayoutData(twd_text_1);
-	  // text_1.setVisible(isManalConf.getSelection());
 	   GridData gd_text_1 = new GridData(SWT.FILL, SWT.FILL, true, false, 4, 1);
-	   gd_text_1.heightHint = 250;
+	   gd_text_1.heightHint = 220;
 	   text_1.setLayoutData(gd_text_1);
 	   toolkit.adapt(text_1, true, true);
 	   text_1.setVisible(button_2.getSelection());
-	   
-	   toolBar = new ToolBar(fileSection, SWT.FLAT | SWT.RIGHT);
-	   toolkit.adapt(toolBar);
-	   toolkit.paintBordersFor(toolBar);
-	   fileSection.setTextClient(toolBar);
-	   
-	   toolItem = new ToolItem(toolBar, SWT.NONE);
-	   toolItem.addSelectionListener(new SelectionAdapter() {
-	   	@Override
-	   	public void widgetSelected(SelectionEvent e) {
-	   	}
-	   });
-	   toolItem.setToolTipText("\u5E94\u7528\u8BBE\u7F6E");
-	   toolItem.setImage(ResourceManager.getPluginImage("WiosftUpdatePack", "icons/save.gif"));
-	   toolItem.setEnabled(isManalConf.getSelection()||button_1.getSelection());
-	   //isWrite = toolkit.createButton( client , "是否可写" ,SWT.CHECK);
-	  
 	}
 
 	public void initialize(IManagedForm form) {
@@ -175,23 +210,57 @@ public class DirectoryDetailPage implements IDetailsPage {
 	   if (currentSelection.size()==1) 
 	   {
 		   FileModel fm =(FileModel)currentSelection.getFirstElement();
+		   this.fm = fm;
 		   String filepath =pack.getSavePath()+"/"+UpdateInfo.UpdateDirName+fm.getFile().attributeValue(UpdateInfo.UpdateFile_fullpath);
 		   file = new File(filepath);
 	   }
 	   //如果选中的对象不为null,则刷新控件所显示的值
-	   if (file.exists())
+	  
 	    update();
 	}
 	//刷新值
 	@SuppressWarnings("deprecation")
 	public void update (){
-	   //设置文件名
-	   fileName.setText(file.getName());
-	   //设置路径
-	   filePath.setText(file.getAbsolutePath().replace(pack.getSavePath()+"/"+UpdateInfo.UpdateDirName, ""));
-	   //设置上次修改
-	   lastModify.setText(new Date(file.lastModified()).toLocaleString());
-	   //设置建立时间
+		if (file.exists())
+		{
+		   //设置文件名
+		   fileName.setText(file.getName());
+		   //设置路径
+		   String filefullpath = file.getAbsolutePath().replace("\\", "/");
+		   filePath.setText(filefullpath.replace(pack.getSavePath()+"/"+UpdateInfo.UpdateDirName, ""));
+		   //设置上次修改
+		   lastModify.setText(new Date(file.lastModified()).toLocaleString());
+		}
+		else
+		{
+			//设置文件名
+		   fileName.setText("不可取");
+		   //设置路径
+		   filePath.setText("不可取");
+		   //设置上次修改
+		   lastModify.setText("不可取");
+		}
+		boolean isconf =Boolean.valueOf(fm.getFile().attributeValue(UpdateInfo.UpdateFile_isconf));
+		if(isconf)
+		{
+			button_2.setSelection(Boolean.TRUE);
+			isManalConf.setVisible(Boolean.TRUE);
+			button_1.setVisible(Boolean.TRUE);
+			text_1.setVisible(Boolean.TRUE);
+			String conftype = fm.getFile().attributeValue(UpdateInfo.UpdateFile_conftype);
+			if(conftype.equals(UpdateInfo.FileOpr_Del))
+			{
+				isManalConf.setSelection(false);
+				button_1.setSelection(true);
+			}
+			if(conftype.equals(UpdateInfo.FileOpr_Mod))
+			{
+				isManalConf.setSelection(true);
+				button_1.setSelection(false);
+			}
+			text_1.setText(fm.getFile().elementText(UpdateInfo.UpdateFile_conftent));
+		}
+	   
 	}
 
 	@Override
