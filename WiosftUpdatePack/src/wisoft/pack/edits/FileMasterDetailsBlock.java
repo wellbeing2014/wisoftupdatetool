@@ -15,15 +15,13 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.dialogs.IDialogConstants;
-import org.eclipse.jface.viewers.AbstractTreeViewer;
+import org.eclipse.jface.viewers.DelegatingStyledCellLabelProvider.IStyledLabelProvider;
 import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
-import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.StyledString;
-import org.eclipse.jface.viewers.TreeViewer;
-import org.eclipse.jface.viewers.DelegatingStyledCellLabelProvider.IStyledLabelProvider;
 import org.eclipse.jface.viewers.StyledString.Styler;
+import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -101,7 +99,113 @@ public class FileMasterDetailsBlock extends MasterDetailsBlock {
 		Section section_1 = spart.getSection();
 		//注册该对象到IManagedForm表单管理器中
 		managedForm.addPart(spart);
-		
+		//将普通的树包装成MVC的树
+		tv = new TreeViewer(tree);
+		//注册树的选择事件监听器
+		tv.addSelectionChangedListener(new ISelectionChangedListener() {
+		    //当单击树中某一个节点时
+		    public void selectionChanged(SelectionChangedEvent event) {
+		     //通过IManagedForm来发布IFormPart所对应的事件
+		    	managedForm.fireSelectionChanged(spart, event.getSelection());
+		    }
+		});
+		//设置树的内容
+		tv.setContentProvider(new FileModelContentProvider() );
+		//设置树的标签
+		tv.setLabelProvider(new FileModelLabelProvider(new IStyledLabelProvider() {
+			
+			@Override
+			public void removeListener(ILabelProviderListener listener) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public boolean isLabelProperty(Object element, String property) {
+				// TODO Auto-generated method stub
+				return false;
+			}
+			
+			@Override
+			public void dispose() {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void addListener(ILabelProviderListener listener) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public StyledString getStyledText(Object element) {
+				// TODO Auto-generated method stub
+				Element file = ((FileModel)element).getFile();
+				String str =file.attributeValue(UpdateInfo.UpdateFile_filename);
+				boolean isconf =Boolean.valueOf(file.attributeValue(UpdateInfo.UpdateFile_isconf));
+				boolean isVirtual =Boolean.valueOf(file.attributeValue(UpdateInfo.UpdateFile_isVirtual));
+				String conftype = file.attributeValue(UpdateInfo.UpdateFile_conftype);
+				
+				StyledString str1= new StyledString(str, null);
+				if(isconf)
+				{
+					if(isVirtual)
+					{
+						StyledString str2= new StyledString(str, StyledString.COUNTER_STYLER);
+						if(conftype.equals(UpdateInfo.FileOpr_Mod))
+						{
+						str2.append("(本文件仅配置)",new Styler(){
+							@Override
+							public void applyStyles(TextStyle textStyle) {
+								textStyle.foreground=new Color(null,128,128,128);
+								textStyle.font = SWTResourceManager.getFont("微软雅黑", 10, SWT.ITALIC);
+							}});
+						}
+						if(conftype.equals(UpdateInfo.FileOpr_Del))
+						{
+							Styler red =new Styler(){
+								@Override
+								public void applyStyles(TextStyle textStyle) {
+									textStyle.foreground=new Color(null,128,0,0);
+									textStyle.font = SWTResourceManager.getFont("微软雅黑", 10, SWT.ITALIC);
+								}};
+							str2= new StyledString(str,red);
+							str2.append("(本文件需要删除)");
+						}
+						return str2;
+					}
+					else
+					{
+						str1.append("(需要配置)",new Styler(){
+							@Override
+							public void applyStyles(TextStyle textStyle) {
+								textStyle.foreground=new Color(null,128,128,128);
+								textStyle.font = SWTResourceManager.getFont("微软雅黑", 10, SWT.ITALIC);
+							}});
+					}
+				}
+						
+				
+				return str1;
+			}
+			
+			@Override
+			public Image getImage(Object element) {
+				// TODO Auto-generated method stub
+				FileModel filemodel = (FileModel)element;
+				Element file = filemodel.getFile();
+				if(file.attributeValue(UpdateInfo.UpdateFile_filetype).equals(UpdateInfo.FileType_Dir))
+					return PlatformUI.getWorkbench().getSharedImages().getImage(ISharedImages.IMG_OBJ_FOLDER);
+				else
+					return PlatformUI.getWorkbench().getSharedImages().getImage(ISharedImages.IMG_OBJ_FILE);
+			}
+		}));
+		//设置初始化输入的类
+		//pi = (PackInfoInput)page.getEditorInput();
+		Element input =xmlo.OnlyElementInRoot(UpdateInfo.UpdateFileList);
+		tv.setInput(new FileModel(input));
+		tv.expandToLevel(3);
 		ToolBar toolBar = new ToolBar(section_1, SWT.FLAT | SWT.RIGHT);
 		toolkit.adapt(toolBar);
 		toolkit.paintBordersFor(toolBar);
@@ -373,9 +477,12 @@ public class FileMasterDetailsBlock extends MasterDetailsBlock {
 					{
 						FileModel file = (FileModel)ti.getData();
 						
-						System.out.println("我删除"+file.getFile().attributeValue("filename"));
+						Element del_element = file.getFile();
+						del_element.getParent().remove(del_element);
+						
 					}
-					tv.setInput(xmlo.OnlyElementInRoot(UpdateInfo.UpdateFileList));
+					xmlo.save();
+					tv.setInput(new FileModel(xmlo.OnlyElementInRoot(UpdateInfo.UpdateFileList)));
 					tv.refresh();
 				}
 				else
@@ -389,113 +496,7 @@ public class FileMasterDetailsBlock extends MasterDetailsBlock {
 		});
 		tltmNew_2.setImage(ResourceManager.getPluginImage("WiosftUpdatePack", "icons/del.png"));
 		tltmNew_2.setText("\u5220\u9664");
-		//将普通的树包装成MVC的树
-		tv = new TreeViewer(tree);
-		//注册树的选择事件监听器
-		tv.addSelectionChangedListener(new ISelectionChangedListener() {
-		    //当单击树中某一个节点时
-		    public void selectionChanged(SelectionChangedEvent event) {
-		     //通过IManagedForm来发布IFormPart所对应的事件
-		    	managedForm.fireSelectionChanged(spart, event.getSelection());
-		    }
-		});
-		//设置树的内容
-		tv.setContentProvider(new FileModelContentProvider() );
-		//设置树的标签
-		tv.setLabelProvider(new FileModelLabelProvider(new IStyledLabelProvider() {
-			
-			@Override
-			public void removeListener(ILabelProviderListener listener) {
-				// TODO Auto-generated method stub
-				
-			}
-			
-			@Override
-			public boolean isLabelProperty(Object element, String property) {
-				// TODO Auto-generated method stub
-				return false;
-			}
-			
-			@Override
-			public void dispose() {
-				// TODO Auto-generated method stub
-				
-			}
-			
-			@Override
-			public void addListener(ILabelProviderListener listener) {
-				// TODO Auto-generated method stub
-				
-			}
-			
-			@Override
-			public StyledString getStyledText(Object element) {
-				// TODO Auto-generated method stub
-				Element file = ((FileModel)element).getFile();
-				String str =file.attributeValue(UpdateInfo.UpdateFile_filename);
-				boolean isconf =Boolean.valueOf(file.attributeValue(UpdateInfo.UpdateFile_isconf));
-				boolean isVirtual =Boolean.valueOf(file.attributeValue(UpdateInfo.UpdateFile_isVirtual));
-				String conftype = file.attributeValue(UpdateInfo.UpdateFile_conftype);
-				
-				StyledString str1= new StyledString(str, null);
-				if(isconf)
-				{
-					if(isVirtual)
-					{
-						StyledString str2= new StyledString(str, StyledString.COUNTER_STYLER);
-						if(conftype.equals(UpdateInfo.FileOpr_Mod))
-						{
-						str2.append("(本文件仅配置)",new Styler(){
-							@Override
-							public void applyStyles(TextStyle textStyle) {
-								textStyle.foreground=new Color(null,128,128,128);
-								textStyle.font = SWTResourceManager.getFont("微软雅黑", 10, SWT.ITALIC);
-							}});
-						}
-						if(conftype.equals(UpdateInfo.FileOpr_Del))
-						{
-							Styler red =new Styler(){
-								@Override
-								public void applyStyles(TextStyle textStyle) {
-									textStyle.foreground=new Color(null,128,0,0);
-									textStyle.font = SWTResourceManager.getFont("微软雅黑", 10, SWT.ITALIC);
-								}};
-							str2= new StyledString(str,red);
-							str2.append("(本文件需要删除)");
-						}
-						return str2;
-					}
-					else
-					{
-						str1.append("(需要配置)",new Styler(){
-							@Override
-							public void applyStyles(TextStyle textStyle) {
-								textStyle.foreground=new Color(null,128,128,128);
-								textStyle.font = SWTResourceManager.getFont("微软雅黑", 10, SWT.ITALIC);
-							}});
-					}
-				}
-						
-				
-				return str1;
-			}
-			
-			@Override
-			public Image getImage(Object element) {
-				// TODO Auto-generated method stub
-				FileModel filemodel = (FileModel)element;
-				Element file = filemodel.getFile();
-				if(file.attributeValue(UpdateInfo.UpdateFile_filetype).equals(UpdateInfo.FileType_Dir))
-					return PlatformUI.getWorkbench().getSharedImages().getImage(ISharedImages.IMG_OBJ_FOLDER);
-				else
-					return PlatformUI.getWorkbench().getSharedImages().getImage(ISharedImages.IMG_OBJ_FILE);
-			}
-		}));
-		//设置初始化输入的类
-		//pi = (PackInfoInput)page.getEditorInput();
-		Element input =xmlo.OnlyElementInRoot(UpdateInfo.UpdateFileList);
-		tv.setInput(new FileModel(input));
-		tv.expandToLevel(3);
+		
 		
 
 	}
