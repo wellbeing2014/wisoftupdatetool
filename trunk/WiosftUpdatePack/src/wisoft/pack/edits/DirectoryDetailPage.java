@@ -3,6 +3,7 @@ package wisoft.pack.edits;
 import java.io.File;
 import java.util.Date;
 
+import org.dom4j.Attribute;
 import org.dom4j.Element;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -131,15 +132,16 @@ public class DirectoryDetailPage implements IDetailsPage {
 	   			Element element = fm.getFile().addAttribute(UpdateInfo.UpdateFile_isconf, "true");
 	   			if(isManalConf.getSelection())
 	   				element.addAttribute(UpdateInfo.UpdateFile_conftype, UpdateInfo.FileOpr_Mod);
-	   			if(isManalConf.getSelection())
-	   				element.addAttribute(UpdateInfo.UpdateFile_conftype, UpdateInfo.FileOpr_Mod);
-	   			//fm.getFile().addElement(UpdateInfo.UpdateFile_conftent).;
+	   			if(button_1.getSelection())
+	   				element.addAttribute(UpdateInfo.UpdateFile_conftype, UpdateInfo.FileOpr_Del);
 	   			Element element_content =element.element(UpdateInfo.UpdateFile_conftent);
 	   			if(element_content!=null)
 	   				element.remove(element_content);
 	   			element_content = element.addElement(UpdateInfo.UpdateFile_conftent);
 	   			element_content.addCDATA(text_1.getText());
 	   			pack.getXmlo().save();
+	   			tltmNewItem.setEnabled(false);
+	   			toolItem.setEnabled(true);
 	   		}
 	   		else
 	   		{
@@ -155,11 +157,46 @@ public class DirectoryDetailPage implements IDetailsPage {
 	   tltmNewItem.setEnabled(button_2.getSelection());
 	   
 	   toolItem = new ToolItem(toolBar_1, SWT.NONE);
+	   toolItem.addSelectionListener(new SelectionAdapter() {
+	   	@Override
+	   	public void widgetSelected(SelectionEvent e) {
+	   		
+	   		MessageBox mb = new MessageBox(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),SWT.YES|SWT.NO);
+	   		mb.setText("配置即将删除");
+	   		mb.setMessage("你确定要删除该处配置吗？");
+	   		if(SWT.YES==mb.open())
+		   	{
+		   		Attribute attr = fm.getFile().attribute(UpdateInfo.UpdateFile_isconf);
+		   		if(attr!=null)
+		   			fm.getFile().remove(attr);
+		   		Attribute attr_opr =fm.getFile().attribute(UpdateInfo.UpdateFile_conftype);
+	   			if(attr_opr!=null)
+	   				fm.getFile().remove(attr_opr);
+	   			Element element_content =fm.getFile().element(UpdateInfo.UpdateFile_conftent);
+	   			if(element_content!=null)
+	   				fm.getFile().remove(element_content);
+	   			pack.getXmlo().save();
+		   		button_2.setSelection(false);
+		   		isManalConf.setVisible(false);
+		   		button_1.setVisible(false);
+		   		text_1.setVisible(false);
+		   		tltmNewItem.setEnabled(false);
+		   		toolItem.setEnabled(false);
+		   	}
+	   	}
+	   });
 	   toolItem.setText("\u5220\u9664\u914D\u7F6E");
+	   toolItem.setEnabled(button_2.getSelection());
 	   
 	   new Label(client, SWT.NONE);
 	   new Label(client, SWT.NONE);
 	   isManalConf = toolkit.createButton( client , "\u9700\u8981\u7F16\u8F91" ,SWT.RADIO);
+	   isManalConf.addSelectionListener(new SelectionAdapter() {
+	   	@Override
+	   	public void widgetSelected(SelectionEvent e) {
+	   		tltmNewItem.setEnabled(true);
+	   	}
+	   });
 	   toolkit.adapt(isManalConf, true, true);
 	   isManalConf.setVisible(button_2.getSelection());
 	   
@@ -167,6 +204,12 @@ public class DirectoryDetailPage implements IDetailsPage {
 	   toolkit.adapt(button_1, true, true);
 	   button_1.setText("\u9700\u8981\u5220\u9664");
 	   button_1.setVisible(button_2.getSelection());
+	   button_1.addSelectionListener(new SelectionAdapter() {
+		   	@Override
+		   	public void widgetSelected(SelectionEvent e) {
+		   		tltmNewItem.setEnabled(true);
+		   	}
+		   });
 	   new Label(client, SWT.NONE);
 	   new Label(client, SWT.NONE);
 	   
@@ -217,6 +260,7 @@ public class DirectoryDetailPage implements IDetailsPage {
 	   //如果选中的对象不为null,则刷新控件所显示的值
 	  
 	    update();
+	
 	}
 	//刷新值
 	@SuppressWarnings("deprecation")
@@ -247,6 +291,7 @@ public class DirectoryDetailPage implements IDetailsPage {
 			isManalConf.setVisible(Boolean.TRUE);
 			button_1.setVisible(Boolean.TRUE);
 			text_1.setVisible(Boolean.TRUE);
+			toolItem.setEnabled(true);
 			String conftype = fm.getFile().attributeValue(UpdateInfo.UpdateFile_conftype);
 			if(conftype.equals(UpdateInfo.FileOpr_Del))
 			{

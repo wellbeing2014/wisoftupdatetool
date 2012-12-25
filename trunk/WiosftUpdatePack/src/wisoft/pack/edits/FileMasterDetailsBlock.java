@@ -15,6 +15,7 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.dialogs.IDialogConstants;
+import org.eclipse.jface.viewers.AbstractTreeViewer;
 import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.LabelProvider;
@@ -71,7 +72,6 @@ public class FileMasterDetailsBlock extends MasterDetailsBlock {
 	   
 	}
 	
-	
 	@Override
 	protected void createMasterPart(final IManagedForm managedForm, Composite parent) {
 		 pi = ((PackInfoInput)page.getEditorInput()).getPackinfo();
@@ -120,12 +120,12 @@ public class FileMasterDetailsBlock extends MasterDetailsBlock {
 					
 					ti=((FileModel)(tv.getTree().getSelection()[0].getData())).getFile();
 					if(UpdateInfo.FileType_Dir.equals(ti.attributeValue(UpdateInfo.UpdateFile_filetype)))
-						defaultp = ti.attributeValue(UpdateInfo.UpdateFile_filename);
+						defaultp = ti.attributeValue(UpdateInfo.UpdateFile_fullpath);
 					else
 					{
 						if(ti.getParent()!=null)
 						{
-							defaultp = ti.getParent().attributeValue(UpdateInfo.UpdateFile_filename);
+							defaultp = ti.getParent().attributeValue(UpdateInfo.UpdateFile_fullpath);
 							if(defaultp==null||defaultp.equals("")||defaultp.equals("null"))
 								defaultp ="/";
 						}
@@ -179,7 +179,7 @@ public class FileMasterDetailsBlock extends MasterDetailsBlock {
 						private void recordFileToXml(File f1)
 						{
 							String parentElementPath = ap.packPath;
-							System.out.println(rootPath);
+							//System.out.println(rootPath);
 							String f1abpath = f1.getAbsolutePath().replace("\\", "/");
 							String childElementPath =f1abpath.replace(rootPath+parentElementPath, "");
 							Element rootelement =packElements.get(parentElementPath);
@@ -246,14 +246,19 @@ public class FileMasterDetailsBlock extends MasterDetailsBlock {
 									}
 								}
 							}
+							Display.getDefault().asyncExec(new Runnable() {                        
+				    			public void run() { 
+				    				tv.refresh();
+				    				tv.expandToLevel(3);
+				    				
+				    				
+				    			}});
 							return Status.OK_STATUS;
 						}
 						
 					};
 					job.setUser(true);
 					job.schedule();
-					tv.setInput(new FileModel(xmlo.OnlyElementInRoot(UpdateInfo.UpdateFileList)));
-					tv.refresh();
 				}
 			}
 		});
@@ -271,12 +276,12 @@ public class FileMasterDetailsBlock extends MasterDetailsBlock {
 				packElements.clear();
 				packpaths.add("/");
 				if(UpdateInfo.FileType_Dir.equals(ti.attributeValue(UpdateInfo.UpdateFile_filetype)))
-					defaultp = ti.attributeValue(UpdateInfo.UpdateFile_filename);
+					defaultp = ti.attributeValue(UpdateInfo.UpdateFile_fullpath);
 				else
 				{
 					if(ti.getParent()!=null)
 					{
-						defaultp = ti.getParent().attributeValue(UpdateInfo.UpdateFile_filename);
+						defaultp = ti.getParent().attributeValue(UpdateInfo.UpdateFile_fullpath);
 						if(defaultp==null||defaultp.equals("")||defaultp.equals("null"))
 							defaultp ="/";
 					}
@@ -491,6 +496,7 @@ public class FileMasterDetailsBlock extends MasterDetailsBlock {
 		Element input =xmlo.OnlyElementInRoot(UpdateInfo.UpdateFileList);
 		tv.setInput(new FileModel(input));
 		tv.expandToLevel(3);
+		
 
 	}
 
