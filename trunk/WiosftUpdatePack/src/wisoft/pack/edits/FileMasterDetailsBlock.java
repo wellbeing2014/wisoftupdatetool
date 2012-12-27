@@ -108,10 +108,10 @@ public class FileMasterDetailsBlock extends MasterDetailsBlock {
 		tv.setLabelProvider(new FileModelLabelProvider());
 		//设置初始化输入的类
 		Element input =xmlo.OnlyElementInRoot(UpdateInfo.UpdateFileList);
-		List<FileModel> inputfile = new ArrayList<FileModel>();
-		for(int i=0;i<input.elements(UpdateInfo.UpdateFile).size();i++)
+		final List<FileModel> inputfile = new ArrayList<FileModel>();
+		for(Element element :input.elements(UpdateInfo.UpdateFile))
 		{
-			inputfile.add(new FileModel(input.elements(UpdateInfo.UpdateFile).get(i)));
+			inputfile.add(new FileModel(element));
 		}
 		tv.setInput(inputfile);
 		tv.setAutoExpandLevel(3);
@@ -127,11 +127,6 @@ public class FileMasterDetailsBlock extends MasterDetailsBlock {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				final IStructuredSelection selection = (IStructuredSelection) tv.getSelection();
-				//IStructuredSelection selection1 = (IStructuredSelection) tv.getSelection();
-				FileModel fm = (FileModel)selection.getFirstElement();
-				fm.setName("我操");
-				tv.refresh(fm);
-				//return;
 				FileModel ti;
 				String defaultp = "/";
 				//初始化 获取 文件树的选中项 设置 参数
@@ -155,7 +150,7 @@ public class FileMasterDetailsBlock extends MasterDetailsBlock {
 				if(!packpaths.contains("/"))
 					packpaths.add("/");
 				//获取文件结构给弹出窗口
-				getPackPaths(((FileModel)tv.getInput()).getChildren().toArray(new FileModel[0]),"");
+				getPackPaths(inputfile.toArray(new FileModel[0]),"");
 				final AddFileIntoPackDialog ap = new AddFileIntoPackDialog(page.getPartControl().getShell(),packpaths,defaultp);
 				if(IDialogConstants.OK_ID==ap.open())
 				{
