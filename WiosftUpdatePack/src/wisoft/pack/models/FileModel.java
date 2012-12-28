@@ -59,6 +59,14 @@ public class FileModel extends Model {
 	{
 		return UpdateInfo.FileType_Dir.equals(getFileType());
 	}
+	//fullpath
+	public String getFullPath() {
+		String fullpath=file.attributeValue(UpdateInfo.UpdateFile_fullpath);
+		return fullpath;
+	}
+	public void setFullPath(String fullpath) {
+		file.addAttribute(UpdateInfo.UpdateFile_fullpath,fullpath);
+	}
 	
 	public FileModel(Element file)
 	{
@@ -88,5 +96,15 @@ public class FileModel extends Model {
 		// TODO Auto-generated method stub
 		
 		return super.getChildren();
+	}
+	
+	public FileModel isContain(String filename)
+	{
+		for(Model zfile :getChildren())
+		{
+			if(((FileModel)zfile).getName().equals(filename))
+				return (FileModel)zfile;
+		}
+		return null;
 	}
 }
