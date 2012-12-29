@@ -221,7 +221,7 @@ public class FileMasterDetailsBlock extends MasterDetailsBlock {
 									FileModel child =new FileModel(element); 
 									child.setName(children[i]);
 									String parentfullpath = "";
-									if(!parent.getFullPath().isEmpty()&&!parent.getFullPath().equals("null"))
+									if(null!=(parent.getFullPath())&&!parent.getFullPath().isEmpty())
 										parentfullpath = parent.getFullPath();
 									child.setFullPath(parentfullpath+"/"+children[i]);
 									if(file.isDirectory())
