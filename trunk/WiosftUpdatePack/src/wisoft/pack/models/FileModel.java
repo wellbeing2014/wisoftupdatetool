@@ -100,11 +100,26 @@ public class FileModel extends Model {
 	
 	public FileModel isContain(String filename)
 	{
-		for(Model zfile :getChildren())
+		List<Model> zfilelist = getChildren();
+		for(Model zfile :zfilelist)
 		{
 			if(((FileModel)zfile).getName().equals(filename))
 				return (FileModel)zfile;
 		}
 		return null;
+	}
+	 
+	@Override
+	public void removeChild(Model model)
+	{
+		this.getFile().remove(((FileModel)model).getFile());
+		super.removeChild(model);
+		
+	}
+	
+	public void remove()
+	{
+		FileModel parent = (FileModel)this.getParent();
+		parent.removeChild(this);
 	}
 }

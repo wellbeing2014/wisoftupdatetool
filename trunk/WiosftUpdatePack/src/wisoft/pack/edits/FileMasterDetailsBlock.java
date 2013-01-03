@@ -380,22 +380,12 @@ public class FileMasterDetailsBlock extends MasterDetailsBlock {
 			 
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				if(tv.getTree().getSelectionCount()>0)
+				IStructuredSelection selection = (IStructuredSelection) tv.getSelection();
+				if(selection!=null&&selection.getFirstElement()!=null)
 				{
-					TreeItem[] tis = tv.getTree().getSelection();
-					//XmlOperator xmlOperator = pi.getPackinfo().getXmlo();
-					//Element updatefiles = xmlOperator.getRootElement().element("UpdateFileList");
-					for(TreeItem ti:tis)
-					{
-						FileModel file = (FileModel)ti.getData();
-						
-						Element del_element = file.getFile();
-						del_element.getParent().remove(del_element);
-						
-					}
-					xmlo.save();
-					tv.setInput(new FileModel(xmlo.OnlyElementInRoot(UpdateInfo.UpdateFileList)));
-					tv.refresh();
+					FileModel fm = (FileModel)selection.getFirstElement();
+					fm.remove();
+					tv.remove(fm);
 				}
 				else
 				{
