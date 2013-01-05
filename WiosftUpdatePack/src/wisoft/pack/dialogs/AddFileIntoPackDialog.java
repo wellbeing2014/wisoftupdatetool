@@ -31,23 +31,22 @@ import wisoft.pack.edits.MasterStyleLabelProviderC;
 
 public class AddFileIntoPackDialog extends Dialog {
 	private Text text;
-	private List<String> packPaths;
-	private Combo combo;
+	//private List<String> packPaths;
 	private String defaultpath;
 	TreeViewer tv ;
 	Tree tree;
-	public String packPath="";
+	//public String packPath="";
 	public String filePath = "";
 	public List<File> filelist = new ArrayList<File>();
+	private Text text_1;
 
 	/**
 	 * Create the dialog.
 	 * @param parentShell
 	 */
-	public AddFileIntoPackDialog(Shell parentShell,List<String> dataprovider,String defaultpath) {
+	public AddFileIntoPackDialog(Shell parentShell,String defaultpath) {
 		super(parentShell);
-		this.packPaths = dataprovider;
-		this.defaultpath = defaultpath;
+		this.defaultpath =defaultpath;
 	}
 	private void getCheckedFiles(TreeItem[] tis)
 	{
@@ -64,7 +63,7 @@ public class AddFileIntoPackDialog extends Dialog {
 	protected void okPressed() 
 	{
 		//final PackInfoInput pi = (PackInfoInput)page.getEditorInput();
-		packPath = this.combo.getText();
+		//packPath = this.text.getText();
 		filePath = this.text.getText();
 		getCheckedFiles(tv.getTree().getItems());
 		super.okPressed();
@@ -77,8 +76,6 @@ public class AddFileIntoPackDialog extends Dialog {
 	
 	private void setcombodata()
 	{
-		combo.setItems(packPaths.toArray(new String[0]));
-		combo.setText(defaultpath);
 	}
 	/**
 	 * Create contents of the dialog.
@@ -93,11 +90,12 @@ public class AddFileIntoPackDialog extends Dialog {
 		Label label_1 = new Label(container, SWT.NONE);
 		label_1.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
 		label_1.setText("\u6DFB\u52A0\u81F3\uFF1A");
-		
-		combo = new Combo(container, SWT.NONE);
-		combo.setToolTipText("\u9009\u62E9\u66F4\u65B0\u5305\u5185\u5DF2\u6709\u7684\u76EE\u5F55");
-		combo.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
 		setcombodata();
+		
+		text_1 = new Text(container, SWT.BORDER);
+		text_1.setText(defaultpath);
+		text_1.setEditable(false);
+		text_1.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
 		new Label(container, SWT.NONE);
 		new Label(container, SWT.NONE);
 		

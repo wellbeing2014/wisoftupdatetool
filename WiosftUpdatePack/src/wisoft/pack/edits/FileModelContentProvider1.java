@@ -23,9 +23,9 @@ public class FileModelContentProvider1 implements ITreeContentProvider {
 
 	@Override
 	public Object[] getElements(Object inputElement) {
-		  if(inputElement instanceof List) {
-              List list = (List) inputElement;
-              return list.toArray();
+		  if(inputElement instanceof FileModel) {
+			  FileModel file = (FileModel) inputElement;
+              return file.getChildren().toArray(new FileModel[0]);
 	      }else{
 	              return new Object[0];
 	      }

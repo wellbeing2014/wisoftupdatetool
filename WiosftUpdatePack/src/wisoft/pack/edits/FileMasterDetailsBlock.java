@@ -28,7 +28,6 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.swt.widgets.ToolItem;
-import org.eclipse.swt.widgets.TreeItem;
 import org.eclipse.ui.forms.DetailsPart;
 import org.eclipse.ui.forms.IManagedForm;
 import org.eclipse.ui.forms.MasterDetailsBlock;
@@ -43,7 +42,6 @@ import wisoft.pack.app.Activator;
 import wisoft.pack.dialogs.AddConfIntoPackDialog;
 import wisoft.pack.dialogs.AddFileIntoPackDialog;
 import wisoft.pack.models.FileModel;
-import wisoft.pack.models.Model;
 import wisoft.pack.models.PackInfoModel;
 import wisoft.pack.utils.UpdateInfo;
 import wisoft.pack.utils.XmlOperator;
@@ -56,6 +54,8 @@ public class FileMasterDetailsBlock extends MasterDetailsBlock {
 	private TreeViewer tv ;
 	private PackInfoModel pi ;
 	private XmlOperator xmlo;
+	private FileModel parent_fm;
+	private FileModel root_fm;
 	public FileMasterDetailsBlock(FormPage page) {
 	    this.page = page;
 	   
@@ -110,7 +110,8 @@ public class FileMasterDetailsBlock extends MasterDetailsBlock {
 		//设置初始化输入的类
 		Element input =xmlo.OnlyElementInRoot(UpdateInfo.UpdateFileList);
 		//List<Model> inputfile = (new FileModel(input)).getChildren();
-		tv.setInput((new FileModel(input)).getChildren());
+		root_fm = new FileModel(input);
+		tv.setInput(root_fm);
 		tv.setAutoExpandLevel(3);
 		//tv.expandToLevel(AbstractTreeViewer.ALL_LEVELS);
 		ToolBar toolBar = new ToolBar(section_1, SWT.FLAT | SWT.RIGHT);
@@ -126,6 +127,7 @@ public class FileMasterDetailsBlock extends MasterDetailsBlock {
 				final IStructuredSelection selection = (IStructuredSelection) tv.getSelection();
 				
 				FileModel ti;
+				 ti= root_fm;
 				String defaultp = "/";
 				//初始化 获取 文件树的选中项 设置 参数
 				if(selection!=null)
@@ -135,29 +137,39 @@ public class FileMasterDetailsBlock extends MasterDetailsBlock {
 						defaultp = ti.getFullPath();
 					else if(ti!=null&&(ti.getParent()!=null))
 					{
-						defaultp = ((FileModel)ti.getParent()).getFullPath();
+						ti = (FileModel)ti.getParent();
+						defaultp = ti.getFullPath();
 					}
+					else
+						ti= root_fm;
 					if(defaultp==null||defaultp.equals("")||defaultp.equals("null"))
 						defaultp ="/";
 				}
-				packpaths.clear();
-				packElements.clear();
-				if(!packpaths.contains("/"))
-				{
-					packpaths.add("/");
-					packElements.put("/", new FileModel(xmlo.OnlyElementInRoot(UpdateInfo.UpdateFileList)));
-				}
+				
 				//获取文件结构给弹出窗口
-				getPackPaths((new FileModel(xmlo.OnlyElementInRoot(UpdateInfo.UpdateFileList))).getChildren().toArray(new FileModel[0]),"");
-				final AddFileIntoPackDialog ap = new AddFileIntoPackDialog(page.getPartControl().getShell(),packpaths,defaultp);
+				//getPackPaths((new FileModel(xmlo.OnlyElementInRoot(UpdateInfo.UpdateFileList))).getChildren().toArray(new FileModel[0]),"");
+				final String defaultPath =defaultp;
+				final AddFileIntoPackDialog ap = new AddFileIntoPackDialog(page.getPartControl().getShell(),defaultPath);
+				//FileModel parent  = packElements.get("/ams/icons");
+				if(!tv.getExpandedState(ti)) {
+                    tv.expandToLevel(ti, 1);
+				}
+				parent_fm = ti;
+//				FileModel fmc = new FileModel(null);
+//				fmc.setName("aaaab");
+//				fmc.setFullPath("/aaac");
+//				parent_fm.addChild(fmc);
+//				tv.add(parent_fm,fmc);
+				
 				if(IDialogConstants.OK_ID==ap.open())
 				{
 					final String rootPath = pi.getSavePath()+"/"+UpdateInfo.UpdateDirName;
-					final String toPath = rootPath+ap.packPath;
+					final String toPath = rootPath+defaultPath;
 					final String fromPath = ap.filePath;
 					final File[] filelist = ap.filelist.toArray(new File[0]);
 					Job job = new Job("导出更新包") {
 						//日志写往控制台的方法
+						//FileModel parent = ti;
 						private void printlnToConsole(final String msg,final ConsoleType type)
 						{
 							Display.getDefault().asyncExec(new Runnable() {                        
@@ -174,7 +186,7 @@ public class FileMasterDetailsBlock extends MasterDetailsBlock {
 			                            tv.expandToLevel(parent, 1);
 				    				}
 				    				tv.add(parent, child);
-				    				tv.refresh(parent);
+				    				//tv.refresh(parent);
 				    			}});
 						}
 						
@@ -201,38 +213,37 @@ public class FileMasterDetailsBlock extends MasterDetailsBlock {
 						private void recordFileToXml1(File file)
 						{
 							//已存在的父目录
-							String parentElementPath = ap.packPath;
-							//已存在的父目录的树元素对象
-							FileModel root = packElements.get(parentElementPath);
+							String parentElementPath = defaultPath;
 							//子文件的绝对路径
 							String fileabpath = file.getAbsolutePath().replace("\\", "/");
 							//子文件的相对路径
 							String childElementPath =fileabpath.replace(rootPath+parentElementPath, "");
 							//子文件目录结构数组
 							String[] children = childElementPath.split("/");
-							FileModel parent = root;
 							for(int i= 0;i<children.length;i++)
 							{
 								if(children[i].isEmpty())
 									continue;
-								if(parent.isContain(children[i])==null)
+								if(parent_fm.isContain(children[i])==null)
 								{
-									Element element =parent.getFile().addElement(UpdateInfo.UpdateFile);
+									Element element =parent_fm.getFile().addElement(UpdateInfo.UpdateFile);
 									FileModel child =new FileModel(element); 
 									child.setName(children[i]);
 									String parentfullpath = "";
-									if(null!=(parent.getFullPath())&&!parent.getFullPath().isEmpty())
-										parentfullpath = parent.getFullPath();
+									if(null!=(parent_fm.getFullPath())&&!parent_fm.getFullPath().isEmpty())
+										parentfullpath = parent_fm.getFullPath();
 									child.setFullPath(parentfullpath+"/"+children[i]);
 									if(file.isDirectory())
 										child.setFileType(UpdateInfo.FileType_Dir);
 									else if(file.isFile())
 										child.setFileType(UpdateInfo.FileType_File);
-									addTreeItem(parent,child);
+									parent_fm.addChild(child);
+									addTreeItem(parent_fm,child);
 								}
-								else
-									parent = parent.isContain(children[i]);
+//								else
+//									parent_fm = parent_fm.isContain(children[i]);
 							}
+							
 							xmlo.save();
 						}
 						
@@ -242,6 +253,7 @@ public class FileMasterDetailsBlock extends MasterDetailsBlock {
 							printlnToConsole("原路径："+fromPath,ConsoleType.INFO);
 							printlnToConsole("复制到："+toPath,ConsoleType.INFO);
 							printlnToConsole("需要复制"+filelist.length+"个文件",ConsoleType.INFO);
+							
 							for(int i=0;i<filelist.length; i++)
 							{
 								String tempfilename=filelist[i].getAbsolutePath().replace(fromPath, "");
@@ -386,6 +398,7 @@ public class FileMasterDetailsBlock extends MasterDetailsBlock {
 					FileModel fm = (FileModel)selection.getFirstElement();
 					fm.remove();
 					tv.remove(fm);
+					xmlo.save();
 				}
 				else
 				{
