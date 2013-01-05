@@ -10,62 +10,108 @@ public class FileModel extends Model {
 	private Element file;
 	
 	//name
+	private String name;
 	public String getName() {
+		if(file==null)
+			return name;
 		return file.attributeValue(UpdateInfo.UpdateFile_filename);
 	}
 	public void setName(String name) {
-		file.addAttribute(UpdateInfo.UpdateFile_filename,name);
+		if(file==null)
+			this.name = name;
+		else
+			file.addAttribute(UpdateInfo.UpdateFile_filename,name);
 	}
 	//isconf
+	private boolean isconf;
 	public boolean isConf() {
+		if(file==null)
+			return isconf;
 		return Boolean.valueOf(file.attributeValue(UpdateInfo.UpdateFile_isconf));
 	}
 	public void setIsConf(boolean isconf) {
-		file.addAttribute(UpdateInfo.UpdateFile_isconf,Boolean.toString(isconf));
+		if(file==null)
+			this.isconf = isconf;
+		else
+			file.addAttribute(UpdateInfo.UpdateFile_isconf,Boolean.toString(isconf));
 	}
 	//isvirtual
+	private boolean isVirtual;
 	public boolean isVirtual() {
+		if(file==null)
+			return this.isVirtual;
 		return Boolean.valueOf(file.attributeValue(UpdateInfo.UpdateFile_isVirtual));
 	}
 	public void setVirtual(boolean isVirtual) {
-		file.addAttribute(UpdateInfo.UpdateFile_isVirtual,Boolean.toString(isVirtual));
+		if(file==null)
+			this.isVirtual = isVirtual;
+		else file.addAttribute(UpdateInfo.UpdateFile_isVirtual,Boolean.toString(isVirtual));
 	}
 	//conftype
+	private String conftype;
 	public String getConftype() {
+		if(file==null)
+			return conftype;
 		return file.attributeValue(UpdateInfo.UpdateFile_conftype);
 	}
 	public void setConftype(String conftype) {
-		file.addAttribute(UpdateInfo.UpdateFile_isVirtual,conftype);
+		if(file==null)
+			this.conftype = conftype;
+		else
+			file.addAttribute(UpdateInfo.UpdateFile_isVirtual,conftype);
 	}
 	//content
+	private String content;
 	public String getContent() {
+		if(file==null)
+			return content;
 		return file.elementText(UpdateInfo.UpdateFile_conftent);
 	}
-	public void setContent(String conftype) {
-		Element element_content =file.element(UpdateInfo.UpdateFile_conftent);
+	public void setContent(String content) {
+		if(file==null)
+			this.content = content;
+		else
+		{
+			Element element_content =file.element(UpdateInfo.UpdateFile_conftent);
 			if(element_content!=null)
 				file.remove(element_content);
 			element_content = file.addElement(UpdateInfo.UpdateFile_conftent);
-			element_content.addCDATA(conftype);
+			element_content.addCDATA(content);
+		}
 	}
 	//isdir
+	private boolean isdir;
 	public String getFileType() {
 		return file.attributeValue(UpdateInfo.UpdateFile_filetype);
 	}
 	public void setFileType(String filetype) {
 		file.addAttribute(UpdateInfo.UpdateFile_filetype,filetype);
 	}
+	public void setDir(boolean isdir)
+	{
+		if(file==null)
+			this.isdir = isdir;
+		else
+			setFileType(isdir?UpdateInfo.FileType_Dir:UpdateInfo.FileType_File);
+	}
 	public boolean isDir()
 	{
+		if(file==null)
+			return isdir;
 		return UpdateInfo.FileType_Dir.equals(getFileType());
 	}
 	//fullpath
+	private String fullpath;
 	public String getFullPath() {
-		String fullpath=file.attributeValue(UpdateInfo.UpdateFile_fullpath);
-		return fullpath;
+		if(file==null)
+			return fullpath;
+		return file.attributeValue(UpdateInfo.UpdateFile_fullpath);
 	}
 	public void setFullPath(String fullpath) {
-		file.addAttribute(UpdateInfo.UpdateFile_fullpath,fullpath);
+		if(file==null)
+			this.fullpath =fullpath;
+		else
+			file.addAttribute(UpdateInfo.UpdateFile_fullpath,fullpath);
 	}
 	
 	public FileModel(Element file)
@@ -89,6 +135,12 @@ public class FileModel extends Model {
 
 	public void setFile(Element file) {
 		this.file = file;
+		this.setDir(isdir);
+		this.setContent(content);
+		this.setIsConf(isconf);
+		this.setName(name);
+		this.setFullPath(fullpath);
+		this.setVirtual(isVirtual);
 	}
 
 	@Override
@@ -114,6 +166,20 @@ public class FileModel extends Model {
 	{
 		this.getFile().remove(((FileModel)model).getFile());
 		super.removeChild(model);
+		
+	}
+	
+	@Override
+	public void addChild(Model model)
+	{
+		FileModel child = (FileModel)model;
+		Element childfile = child.getFile();
+		if(childfile==null)
+		{
+			childfile = this.getFile().addElement(UpdateInfo.UpdateFile);
+			child.setFile(childfile);
+		}
+		super.addChild(model);
 		
 	}
 	
