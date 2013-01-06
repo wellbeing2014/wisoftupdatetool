@@ -293,14 +293,21 @@ public class DirectoryDetailPage implements IDetailsPage {
 			text_1.setVisible(Boolean.TRUE);
 			toolItem.setEnabled(true);
 			String conftype = fm.getFile().attributeValue(UpdateInfo.UpdateFile_conftype);
-			if(conftype.equals(UpdateInfo.FileOpr_Del))
+			if(conftype!=null)
+			{	if(conftype.equals(UpdateInfo.FileOpr_Del))
+				{
+					isManalConf.setSelection(false);
+					button_1.setSelection(true);
+				}
+				if(conftype.equals(UpdateInfo.FileOpr_Mod))
+				{
+					isManalConf.setSelection(true);
+					button_1.setSelection(false);
+				}
+			}
+			else
 			{
 				isManalConf.setSelection(false);
-				button_1.setSelection(true);
-			}
-			if(conftype.equals(UpdateInfo.FileOpr_Mod))
-			{
-				isManalConf.setSelection(true);
 				button_1.setSelection(false);
 			}
 			text_1.setText(fm.getFile().elementText(UpdateInfo.UpdateFile_conftent));

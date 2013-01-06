@@ -1,32 +1,33 @@
 package wisoft.pack.dialogs;
 
-import java.util.List;
-
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.IDialogConstants;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.Button;
-import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 
+import wisoft.pack.models.FileModel;
+
 public class AddConfIntoPackDialog extends Dialog {
 	private Text text;
-	private Combo combo;
-	private List<String> packPaths;
-	public String packPath="";
+	public boolean isdirect=false;
 	public String filePath = "";
 	public String content="";
 	public boolean isfile = true;
 	public boolean isdel =  false;
 	
+	public FileModel parentfile;
 	private String defaultpath;
 	
 	private Text text_1;
@@ -34,29 +35,35 @@ public class AddConfIntoPackDialog extends Dialog {
 	private Button ckbutton_dir;
 	private Button ckbutton_modify;
 	private Button ckbutton_del;
+	private Button ckbutton_isdirect;
+	private Text text_2;
+	private Composite composite;
 	/**
 	 * Create the dialog.
 	 * @param parentShell
 	 * @wbp.parser.constructor
 	 */
 	
-	public AddConfIntoPackDialog(Shell parentShell,List<String> dataprovider,String defaultpath)
+	public AddConfIntoPackDialog(Shell parentShell,String defaultpath,FileModel parent)
 	{
 		super(parentShell);
-		this.packPaths = dataprovider;
 		this.defaultpath = defaultpath;
+		this.parentfile = parent;
 	}
 	
 	@Override
 	protected void okPressed() 
 	{
-		//final PackInfoInput pi = (PackInfoInput)page.getEditorInput();
-		packPath = this.combo.getText();
 		filePath = this.text.getText();
 		content = this.text_1.getText();
-		//getCheckedFiles(tv.getTree().getItems());
 		isfile = ckbutton_file.getSelection();
 		isdel = ckbutton_del.getSelection();
+		isdirect = ckbutton_isdirect.getSelection();
+		if(isdirect)
+		{
+			if(!MessageDialog.openConfirm(this.getShell(),"您确定这样配置吗？","你选中了直接配置"+defaultpath+"，确定这样做吗？"))
+				return;  
+		}
 		super.okPressed();
 	}
 	
@@ -70,8 +77,6 @@ public class AddConfIntoPackDialog extends Dialog {
 	
 	private void setcombodata()
 	{
-		combo.setItems(packPaths.toArray(new String[0]));
-		combo.setText(defaultpath);
 	}
 	/**
 	 * Create contents of the dialog.
@@ -84,19 +89,32 @@ public class AddConfIntoPackDialog extends Dialog {
 		gridLayout.numColumns = 3;
 		
 		
-		Label lblNewLabel = new Label(container, SWT.NONE);
+		Label lblNewLabel = new Label(container, SWT.RIGHT);
 		lblNewLabel.setAlignment(SWT.RIGHT);
 		lblNewLabel.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
 		lblNewLabel.setText("\u6DFB\u52A0\u81F3\uFF1A");
-		
-		combo = new Combo(container, SWT.NONE);
-		combo.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 2, 1));
 		setcombodata();
-		Label lblNewLabel_1 = new Label(container, SWT.NONE);
+		
+		text_2 = new Text(container, SWT.BORDER);
+		text_2.setText(this.defaultpath);
+		text_2.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 2, 1));
+		new Label(container, SWT.NONE);
+		
+		ckbutton_isdirect = new Button(container, SWT.CHECK);
+		ckbutton_isdirect.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				composite.setEnabled(!ckbutton_isdirect.getSelection());
+				text.setEnabled(!ckbutton_isdirect.getSelection());
+			}
+		});
+		ckbutton_isdirect.setText("\u914D\u7F6E\u8BE5\u76EE\u5F55");
+		new Label(container, SWT.NONE);
+		Label lblNewLabel_1 = new Label(container, SWT.RIGHT);
 		lblNewLabel_1.setAlignment(SWT.RIGHT);
 		lblNewLabel_1.setText("\u6587\u4EF6\u7C7B\u578B\uFF1A");
 		
-		Composite composite = new Composite(container, SWT.NONE);
+		composite = new Composite(container, SWT.NONE);
 		composite.setLayout(new RowLayout(SWT.HORIZONTAL));
 		GridData gd_composite = new GridData(SWT.LEFT, SWT.CENTER, false, false, 2, 1);
 		gd_composite.heightHint = 20;
@@ -117,7 +135,7 @@ public class AddConfIntoPackDialog extends Dialog {
 		text = new Text(container, SWT.BORDER);
 		text.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 2, 1));
 		
-		Label label_1 = new Label(container, SWT.NONE);
+		Label label_1 = new Label(container, SWT.RIGHT);
 		label_1.setText("\u64CD\u4F5C\u7C7B\u578B\uFF1A");
 		
 		ckbutton_modify = new Button(container, SWT.RADIO);
@@ -127,7 +145,7 @@ public class AddConfIntoPackDialog extends Dialog {
 		ckbutton_del = new Button(container, SWT.RADIO);
 		ckbutton_del.setText("\u5220\u9664");
 		
-		Label label_2 = new Label(container, SWT.NONE);
+		Label label_2 = new Label(container, SWT.RIGHT);
 		label_2.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
 		label_2.setText("\u914D\u7F6E\u8BF4\u660E\uFF1A");
 		
