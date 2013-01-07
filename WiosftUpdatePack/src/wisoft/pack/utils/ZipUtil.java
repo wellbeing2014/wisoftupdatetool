@@ -1,6 +1,7 @@
 package wisoft.pack.utils;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -24,6 +25,59 @@ public class ZipUtil {
 	public String curHandleFileName="";
 	public int FilesNum = 0;
 	public int curHandleNum = 0;
+	private ZipOutputStream zipout;
+	public String getEncoding() {
+		return Encoding;
+	}
+	public void setEncoding(String encoding) {
+		Encoding = encoding;
+	}
+
+	private String Encoding;
+	
+	public ZipUtil() {
+		// TODO Auto-generated constructor stub
+	}
+	public ZipUtil(String dest,String encoding) {
+		// TODO Auto-generated constructor stub
+		try {
+			zipout=new ZipOutputStream(new FileOutputStream(dest));
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		zipout.setEncoding(encoding);
+	}
+	
+	/** 单独写入文本文件到压缩包
+	 * @param desc 压缩包里面的文件路径
+	 * @param content 文件内容
+	 * @throws Exception
+	 */
+	public void appendText(String desc,String content)throws Exception { 
+		FilesNum =1;
+        curHandleNum=0;
+        handleListener();
+		zipout.putNextEntry(new ZipEntry(desc));  
+		zipout.write(content.getBytes());
+	}
+	/** 写 入文件夹到压缩包
+	 * @param src  要压缩的文件
+	 * @param desc 压缩包里面的文件路径 ，根目录为 “”
+	 * @throws Exception
+	 */
+	public void appendFile(String src, String desc)throws Exception { 
+		 File srcFile = new File(src);     
+        FilesNum =(int)getlist(srcFile);
+        curHandleNum=0;
+        handleListener();
+        zip(zipout,srcFile,desc); 
+	}
+	
+	public void close() throws Exception {
+		if(zipout!=null)
+			zipout.close();
+	}
 	
 	public void addZipEventListener(ZipHandleEventListener listen)
 	{
@@ -66,9 +120,9 @@ public class ZipUtil {
         handleListener();
         zip(out,srcFile,"");     
         out.close();     
-
     }  
-
+   
+    
     public void zip(ZipOutputStream out, File srcFile, String base, List filter) throws Exception {     
         if(srcFile.exists()==false) {     
              throw new Exception("压缩目录不存在!");     
@@ -175,7 +229,9 @@ public class ZipUtil {
      
      public static long getlist(File f){//递归求取目录文件个数
         long size = 0;
-        File flist[] = f.listFiles();
+        if(f.isFile())
+        	return 1;
+        File[] flist = f.listFiles();
         size=flist.length;
         for (int i = 0; i < flist.length; i++) {
             if (flist[i].isDirectory()) {

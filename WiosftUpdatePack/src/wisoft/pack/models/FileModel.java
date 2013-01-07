@@ -58,7 +58,7 @@ public class FileModel extends Model {
 		if(file==null)
 			this.conftype = conftype;
 		else
-			file.addAttribute(UpdateInfo.UpdateFile_isVirtual,conftype);
+			file.addAttribute(UpdateInfo.UpdateFile_conftype,conftype);
 	}
 	//content
 	private String content;

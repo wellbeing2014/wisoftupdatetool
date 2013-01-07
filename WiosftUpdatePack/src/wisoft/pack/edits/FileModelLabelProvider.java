@@ -8,6 +8,7 @@ import org.eclipse.jface.viewers.StyledString.Styler;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.graphics.ImageData;
 import org.eclipse.swt.graphics.TextStyle;
 import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.PlatformUI;
@@ -59,7 +60,26 @@ public class FileModelLabelProvider      implements IStyledLabelProvider,ILabelP
 		}
 		
 	}
-
+	private static ImageData watermark(ImageData srcData1, ImageData srcData2, double alpha) {  
+	    if(srcData1.width != srcData2.width || srcData1.height !=   
+	        srcData2.height || srcData1.bytesPerLine != srcData2.bytesPerLine)  
+	        //未考虑不同大小图片的叠加  
+	        return null;  
+	    int bytesPerPixe = srcData1.bytesPerLine / srcData1.width;  
+	    int destBytesPerLine = srcData1.width * bytesPerPixe;  
+	    byte[] newData = new byte[srcData1.data.length];  
+	  
+	    ImageData newImageData = new ImageData(srcData1.width, srcData1.height, srcData1.depth,  
+	            srcData1.palette, destBytesPerLine, newData);  
+	    for (int srcY = 0; srcY < srcData1.height; srcY++) {  
+	        for (int srcX = 0; srcX < srcData1.bytesPerLine; srcX++) {  
+	            int idx = srcY * srcData1.bytesPerLine + srcX;  
+	            newImageData.data[idx] = (byte)(alpha * srcData1.data[idx]  +   
+	                    (1- alpha) * srcData2.data[idx]);  
+	        }  
+	    }  
+	    return newImageData;  
+	}
 	@Override
 	public StyledString getStyledText(Object element) {
 		FileModel file = (FileModel)element;
