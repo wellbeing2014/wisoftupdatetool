@@ -5,9 +5,13 @@ import java.util.Date;
 
 import org.dom4j.Attribute;
 import org.dom4j.Element;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.ModifyEvent;
+import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
@@ -36,8 +40,10 @@ import wisoft.pack.utils.UpdateInfo;
 public class DirectoryDetailPage implements IDetailsPage {
 	private PackInfoModel pack;
 	private FileModel fm;
-	public DirectoryDetailPage(PackInfoModel pack) {
+	private TreeViewer tv;
+	public DirectoryDetailPage(PackInfoModel pack,TreeViewer tv) {
 		this.pack = pack;
+		this.tv = tv;
 	}
 
 	private IManagedForm mform;
@@ -46,16 +52,16 @@ public class DirectoryDetailPage implements IDetailsPage {
 	private Text fileName;
 	private Text filePath;
 	private Text lastModify;
-//	private Button isRead;
-//	private Button isWrite;
 	private Button isManalConf;
 	private Composite client;
 	private Text text_1;
-	private Button button_1;
-	private Button button_2;
+	private Button isDelConf;
+	private Button button_isconf;
 	private ToolBar toolBar_1;
-	private ToolItem tltmNewItem;
-	private ToolItem toolItem;
+	private ToolItem Item_save;
+	private ToolItem Item_del;
+	
+	private ModifyListener listener;
 	@SuppressWarnings("deprecation")
 	public void createContents(Composite parent) {
 	   //设置父类面板的布局
@@ -97,42 +103,43 @@ public class DirectoryDetailPage implements IDetailsPage {
 	   lastModify.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 2, 1));
 	   new Label(client, SWT.NONE);
 	   
-	   button_2 = new Button(client, SWT.CHECK);
-	   button_2.addSelectionListener(new SelectionAdapter() {
+	   button_isconf = new Button(client, SWT.CHECK);
+	   button_isconf.addSelectionListener(new SelectionAdapter() {
 	   	@Override
 	   	public void widgetSelected(SelectionEvent e) {
-	   		text_1.setVisible(button_2.getSelection());
-	   		button_1.setVisible(button_2.getSelection());
-	   		isManalConf.setVisible(button_2.getSelection());
-	   		tltmNewItem.setEnabled(button_2.getSelection());
+	   		text_1.setText("");
+	   		isDelConf.setSelection(false);
+	   		isManalConf.setSelection(false);
+	   		text_1.setVisible(button_isconf.getSelection());
+	   		isDelConf.setVisible(button_isconf.getSelection());
+	   		isManalConf.setVisible(button_isconf.getSelection());
+	   		Item_save.setEnabled(button_isconf.getSelection());
 	   	}
 	   });
-	   toolkit.adapt(button_2, true, true);
-	   button_2.setText("\u914D\u7F6E\u64CD\u4F5C");
+	   toolkit.adapt(button_isconf, true, true);
+	   button_isconf.setText("\u914D\u7F6E\u64CD\u4F5C");
 	   
 	   toolBar_1 = new ToolBar(client, SWT.FLAT | SWT.RIGHT);
 	   toolkit.adapt(toolBar_1);
 	   toolkit.paintBordersFor(toolBar_1);
 	   
 	   //保存配置按钮
-	   tltmNewItem = new ToolItem(toolBar_1, SWT.NONE);
-	   tltmNewItem.addSelectionListener(new SelectionAdapter() {
+	   Item_save = new ToolItem(toolBar_1, SWT.NONE);
+	   Item_save.addSelectionListener(new SelectionAdapter() {
 	   	@Override
 	   	public void widgetSelected(SelectionEvent e) {
-	   		MessageBox mb = new MessageBox(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell());
-   				mb.setText("提示");
-	   		if(button_1.getSelection()||isManalConf.getSelection())
+	   		if(isDelConf.getSelection()||isManalConf.getSelection())
 	   		{
 	   			if(isManalConf.getSelection()&&text_1.getText().isEmpty())
 	   			{
-	   				mb.setMessage("修改操作必须书写操作说明");
-		   			mb.open();
+		   			MessageDialog.openError(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
+		   					"提示", "修改操作必须书写操作说明");
 		   			return;
 	   			}
 	   			Element element = fm.getFile().addAttribute(UpdateInfo.UpdateFile_isconf, "true");
 	   			if(isManalConf.getSelection())
 	   				element.addAttribute(UpdateInfo.UpdateFile_conftype, UpdateInfo.FileOpr_Mod);
-	   			if(button_1.getSelection())
+	   			if(isDelConf.getSelection())
 	   				element.addAttribute(UpdateInfo.UpdateFile_conftype, UpdateInfo.FileOpr_Del);
 	   			Element element_content =element.element(UpdateInfo.UpdateFile_conftent);
 	   			if(element_content!=null)
@@ -140,31 +147,30 @@ public class DirectoryDetailPage implements IDetailsPage {
 	   			element_content = element.addElement(UpdateInfo.UpdateFile_conftent);
 	   			element_content.addCDATA(text_1.getText());
 	   			pack.getXmlo().save();
-	   			tltmNewItem.setEnabled(false);
-	   			toolItem.setEnabled(true);
+	   			Item_save.setEnabled(false);
+	   			Item_del.setEnabled(true);
 	   		}
 	   		else
 	   		{
-	   			
-	   			mb.setMessage("请选择一个配置操作");
-	   			mb.open();
+	   			MessageDialog.openError(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
+	   					"提示", "选择一个配置的操作类型");
 	   			return;
 	   		}
 	   	}
 	   });
-	   tltmNewItem.setText("\u4FDD\u5B58\u914D\u7F6E");
-	   tltmNewItem.setImage(ResourceManager.getPluginImage("WiosftUpdatePack", "icons/save.gif"));
-	   tltmNewItem.setEnabled(button_2.getSelection());
+	   Item_save.setText("\u4FDD\u5B58\u914D\u7F6E");
+	   Item_save.setImage(ResourceManager.getPluginImage("WiosftUpdatePack", "icons/save.gif"));
+	   Item_save.setEnabled(button_isconf.getSelection());
 	   
-	   toolItem = new ToolItem(toolBar_1, SWT.NONE);
-	   toolItem.addSelectionListener(new SelectionAdapter() {
+	   Item_del = new ToolItem(toolBar_1, SWT.NONE);
+	   Item_del.addSelectionListener(new SelectionAdapter() {
 	   	@Override
 	   	public void widgetSelected(SelectionEvent e) {
 	   		
-	   		MessageBox mb = new MessageBox(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),SWT.YES|SWT.NO);
-	   		mb.setText("配置即将删除");
-	   		mb.setMessage("你确定要删除该处配置吗？");
-	   		if(SWT.YES==mb.open())
+	   		boolean isconfim =MessageDialog.openConfirm(
+	   				PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
+	   				"配置即将删除", "你确定要删除该处配置吗？");
+	   		if(isconfim)
 		   	{
 		   		Attribute attr = fm.getFile().attribute(UpdateInfo.UpdateFile_isconf);
 		   		if(attr!=null)
@@ -176,17 +182,17 @@ public class DirectoryDetailPage implements IDetailsPage {
 	   			if(element_content!=null)
 	   				fm.getFile().remove(element_content);
 	   			pack.getXmlo().save();
-		   		button_2.setSelection(false);
+		   		button_isconf.setSelection(false);
 		   		isManalConf.setVisible(false);
-		   		button_1.setVisible(false);
+		   		isDelConf.setVisible(false);
 		   		text_1.setVisible(false);
-		   		tltmNewItem.setEnabled(false);
-		   		toolItem.setEnabled(false);
+		   		Item_save.setEnabled(false);
+		   		Item_del.setEnabled(false);
 		   	}
 	   	}
 	   });
-	   toolItem.setText("\u5220\u9664\u914D\u7F6E");
-	   toolItem.setEnabled(button_2.getSelection());
+	   Item_del.setText("\u5220\u9664\u914D\u7F6E");
+	   Item_del.setEnabled(button_isconf.getSelection());
 	   
 	   new Label(client, SWT.NONE);
 	   new Label(client, SWT.NONE);
@@ -194,20 +200,20 @@ public class DirectoryDetailPage implements IDetailsPage {
 	   isManalConf.addSelectionListener(new SelectionAdapter() {
 	   	@Override
 	   	public void widgetSelected(SelectionEvent e) {
-	   		tltmNewItem.setEnabled(true);
+	   		Item_save.setEnabled(true);
 	   	}
 	   });
 	   toolkit.adapt(isManalConf, true, true);
-	   isManalConf.setVisible(button_2.getSelection());
+	   isManalConf.setVisible(button_isconf.getSelection());
 	   
-	   button_1 = new Button(client, SWT.RADIO);
-	   toolkit.adapt(button_1, true, true);
-	   button_1.setText("\u9700\u8981\u5220\u9664");
-	   button_1.setVisible(button_2.getSelection());
-	   button_1.addSelectionListener(new SelectionAdapter() {
+	   isDelConf = new Button(client, SWT.RADIO);
+	   toolkit.adapt(isDelConf, true, true);
+	   isDelConf.setText("\u9700\u8981\u5220\u9664");
+	   isDelConf.setVisible(button_isconf.getSelection());
+	   isDelConf.addSelectionListener(new SelectionAdapter() {
 		   	@Override
 		   	public void widgetSelected(SelectionEvent e) {
-		   		tltmNewItem.setEnabled(true);
+		   		Item_save.setEnabled(true);
 		   	}
 		   });
 	   new Label(client, SWT.NONE);
@@ -218,7 +224,14 @@ public class DirectoryDetailPage implements IDetailsPage {
 	   gd_text_1.heightHint = 220;
 	   text_1.setLayoutData(gd_text_1);
 	   toolkit.adapt(text_1, true, true);
-	   text_1.setVisible(button_2.getSelection());
+	   text_1.setVisible(button_isconf.getSelection());
+	   listener = new ModifyListener() {
+			
+			@Override
+			public void modifyText(ModifyEvent e) {
+				Item_save.setEnabled(true);
+			}
+	   };
 	}
 
 	public void initialize(IManagedForm form) {
@@ -287,32 +300,47 @@ public class DirectoryDetailPage implements IDetailsPage {
 		boolean isconf =Boolean.valueOf(fm.getFile().attributeValue(UpdateInfo.UpdateFile_isconf));
 		if(isconf)
 		{
-			button_2.setSelection(Boolean.TRUE);
+			button_isconf.setSelection(Boolean.TRUE);
 			isManalConf.setVisible(Boolean.TRUE);
-			button_1.setVisible(Boolean.TRUE);
+			isDelConf.setVisible(Boolean.TRUE);
 			text_1.setVisible(Boolean.TRUE);
-			toolItem.setEnabled(true);
+			Item_del.setEnabled(true);
+			Item_save.setEnabled(false);
 			String conftype = fm.getFile().attributeValue(UpdateInfo.UpdateFile_conftype);
 			if(conftype!=null)
 			{	if(conftype.equals(UpdateInfo.FileOpr_Del))
 				{
 					isManalConf.setSelection(false);
-					button_1.setSelection(true);
+					isDelConf.setSelection(true);
 				}
 				if(conftype.equals(UpdateInfo.FileOpr_Mod))
 				{
 					isManalConf.setSelection(true);
-					button_1.setSelection(false);
+					isDelConf.setSelection(false);
 				}
 			}
 			else
 			{
+				
 				isManalConf.setSelection(false);
-				button_1.setSelection(false);
+				isDelConf.setSelection(false);
 			}
-			text_1.setText(fm.getFile().elementText(UpdateInfo.UpdateFile_conftent));
+			String content =fm.getFile().elementText(UpdateInfo.UpdateFile_conftent);
+			
+			text_1.removeModifyListener(listener);
+			text_1.setText(content==null?"":content);
+			text_1.addModifyListener(listener);
 		}
-	   
+		else
+		{
+			button_isconf.setSelection(Boolean.FALSE);
+			text_1.setVisible(button_isconf.getSelection());
+	   		isDelConf.setVisible(button_isconf.getSelection());
+	   		isManalConf.setVisible(button_isconf.getSelection());
+	   		Item_save.setEnabled(button_isconf.getSelection());
+	   		Item_del.setEnabled(button_isconf.getSelection());
+		}
+	   tv.refresh(fm,true);
 	}
 
 	@Override

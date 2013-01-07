@@ -1,5 +1,10 @@
 package wisoft.pack.dialogs;
 
+import java.io.File;
+import java.io.FileWriter;
+
+import javax.sound.sampled.AudioFormat.Encoding;
+
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -7,9 +12,11 @@ import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.swt.widgets.Display;
 
+import wisoft.pack.edits.XmlSqlEditorInput;
 import wisoft.pack.events.ZipHandleEvent;
 import wisoft.pack.events.ZipHandleEventListener;
 import wisoft.pack.models.PackInfoModel;
+import wisoft.pack.utils.UpdateInfo;
 import wisoft.pack.utils.ZipUtil;
 import wisoft.pack.views.Console;
 import wisoft.pack.views.Console.ConsoleType;
@@ -54,14 +61,14 @@ public class ExportPackWizard extends Wizard {
 			protected IStatus run(final IProgressMonitor monitor) {
 				// TODO Auto-generated method stub
 				monitor.beginTask("导出开始",  IProgressMonitor.UNKNOWN);
-				ZipUtil zip = new ZipUtil();
+				ZipUtil zip = new ZipUtil(exportpath,"GBK");
 				zip.addZipEventListener(new ZipHandleEventListener(){
 					@Override
 					public void ZipHandle(ZipHandleEvent me) {
 						monitor.worked(me.curFileNum);
 						monitor.setTaskName(me.curFileName);
 						try {
-							Thread.sleep(200);
+							Thread.sleep(80);
 						} catch (InterruptedException e) {
 							// TODO Auto-generated catch block
 							e.printStackTrace();
@@ -69,7 +76,16 @@ public class ExportPackWizard extends Wizard {
 					}
 				});
 				try {
-					zip.zip(pack.getSavePath(), exportpath);
+					StringBuffer sb = new StringBuffer();
+					sb.append("************************************************************************\r\n");
+					sb.append("                       "+pack.getName()+"发布说明\r\n");
+					sb.append("    【发布日期】  "+pack.getModuleCode()+"\r\n");
+					sb.append("************************************************************************\r\n");
+					
+					zip.appendText(pack.getName()+"_RealseNote.txt", sb.toString());
+					zip.appendFile(pack.getSavePath()+File.separator+UpdateInfo.UpdateDirName,"");
+					zip.appendFile(pack.getSavePath()+File.separator+XmlSqlEditorInput.TYPE_SQL, pack.getName()+"_DataBase.sql");
+					zip.close();
 					printlnToConsole("导出更新包完成！",ConsoleType.INFO);
 					monitor.done();
 				} catch (Exception e) {

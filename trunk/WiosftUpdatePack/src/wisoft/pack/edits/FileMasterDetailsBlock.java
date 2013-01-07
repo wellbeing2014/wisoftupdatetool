@@ -206,6 +206,7 @@ public class FileMasterDetailsBlock extends MasterDetailsBlock {
 										child.setFileType(UpdateInfo.FileType_File);
 									relative_parent.addChild(child);
 									addTreeItem(relative_parent,child);
+									relative_parent = child;
 								}
 								else
 									relative_parent = relative_parent.isContain(children[i]);
@@ -294,23 +295,25 @@ public class FileMasterDetailsBlock extends MasterDetailsBlock {
 								Element element =relative_parent.getFile().addElement(UpdateInfo.UpdateFile);
 								FileModel child =new FileModel(element); 
 								child.setName(children[i]);
-								child.setVirtual(false);
+								child.setVirtual(true);
 								child.setIsConf(true);
 								String parentfullpath = "";
 								if(null!=(relative_parent.getFullPath())&&!relative_parent.getFullPath().isEmpty())
 									parentfullpath = relative_parent.getFullPath();
 								child.setFullPath(parentfullpath+"/"+children[i]);
-									child.setFileType(isFile?UpdateInfo.FileType_File:UpdateInfo.FileType_Dir);
+								child.setFileType(isFile?UpdateInfo.FileType_File:UpdateInfo.FileType_Dir);
+								child.setContent(isFile?content:"请看子文件配置说明");
+								child.setConftype(isdel?UpdateInfo.FileOpr_Del:UpdateInfo.FileOpr_Mod);
 								relative_parent.addChild(child);
 								if(!tv.getExpandedState(relative_parent)) {
 		                            tv.expandToLevel(relative_parent, 1);
 			    				}
 			    				tv.add(relative_parent, child);
+			    				relative_parent = child;
 							}
 							else
 								relative_parent = relative_parent.isContain(children[i]);
 							tv.refresh(parent_fm,true);
-							//tv.setExpandedElements(parent_fm.getChildren().toArray(new FileModel[0])); 
 						}
 					}
 					xmlo.save();
@@ -372,6 +375,14 @@ public class FileMasterDetailsBlock extends MasterDetailsBlock {
 					FileModel fm = (FileModel)selection.getFirstElement();
 					fm.remove();
 					tv.remove(fm);
+					if(!fm.isVirtual())
+					{
+						String filepath = pi.getSavePath()+"/"+UpdateInfo.UpdateDirName+fm.getFullPath();
+						if(fm.isDir())
+							delFolder(filepath);
+						else
+							delAllFile(filepath);
+					}
 					xmlo.save();
 				}
 				else
@@ -390,7 +401,7 @@ public class FileMasterDetailsBlock extends MasterDetailsBlock {
 	@Override
 	protected void registerPages(DetailsPart detailsPart) {
 		// TODO Auto-generated method stub
-		detailsPart.registerPage(FileModel.class, new DirectoryDetailPage(pi));
+		detailsPart.registerPage(FileModel.class, new DirectoryDetailPage(pi,tv));
 	}
 
 	@Override
