@@ -1,12 +1,8 @@
 package wisoft.pack.models;
 
 import java.io.File;
-import java.util.Iterator;
-
 import org.dom4j.Document;
-import org.dom4j.DocumentException;
 import org.dom4j.Element;
-import org.dom4j.io.SAXReader;
 import org.eclipse.ui.IEditorInput;
 
 import wisoft.pack.utils.UpdateInfo;
@@ -19,7 +15,6 @@ public class PackInfoModel extends Model {
 	protected PackInfoOfEditConfs editConfs =new PackInfoOfEditConfs(this);
 	protected PackInfoOfEditSql editSql = new PackInfoOfEditSql(this);
 	
-	//public boolean isdirty = false;
 	private  IEditorInput editInput;
 	private XmlOperator xmlo = new XmlOperator();
 	
@@ -33,7 +28,6 @@ public class PackInfoModel extends Model {
 	private String savePath="";
 
 	
-	//private File updateinfoxml;
 	
 	public String getModuleName() {
 		return moduleName;
