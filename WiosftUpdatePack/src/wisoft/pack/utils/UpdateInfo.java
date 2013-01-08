@@ -20,6 +20,7 @@ public class UpdateInfo {
 	public static String PackRely_attr_name ="name";
 	public static String PackRely_attr_code ="code";
 	public static String PackRely_attr_ver ="version";
+	public static String PackRely_attr_time ="publishtime";
 	public static String TackRelys ="TackRelys";
 	public static String TackRely ="TackRely";
 	public static String TackRely_attr_id ="id";

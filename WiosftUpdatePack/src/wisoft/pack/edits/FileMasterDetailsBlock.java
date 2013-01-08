@@ -3,10 +3,6 @@ package wisoft.pack.edits;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 import org.dom4j.Element;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -58,7 +54,6 @@ public class FileMasterDetailsBlock extends MasterDetailsBlock {
 	private FileModel root_fm;
 	public FileMasterDetailsBlock(FormPage page) {
 	    this.page = page;
-	   
 	}
 	
 	@Override
@@ -287,6 +282,7 @@ public class FileMasterDetailsBlock extends MasterDetailsBlock {
 						FileModel relative_parent =  parent_fm;
 						for(int i= 0;i<children.length;i++)
 						{
+							
 							boolean isFile =(i==children.length-1)&&isfile;
 							if(children[i].isEmpty())
 								continue;
@@ -303,7 +299,8 @@ public class FileMasterDetailsBlock extends MasterDetailsBlock {
 								child.setFullPath(parentfullpath+"/"+children[i]);
 								child.setFileType(isFile?UpdateInfo.FileType_File:UpdateInfo.FileType_Dir);
 								child.setContent(isFile?content:"请看子文件配置说明");
-								child.setConftype(isdel?UpdateInfo.FileOpr_Del:UpdateInfo.FileOpr_Mod);
+								if(isFile)
+									child.setConftype(isdel?UpdateInfo.FileOpr_Del:UpdateInfo.FileOpr_Mod);
 								relative_parent.addChild(child);
 								if(!tv.getExpandedState(relative_parent)) {
 		                            tv.expandToLevel(relative_parent, 1);

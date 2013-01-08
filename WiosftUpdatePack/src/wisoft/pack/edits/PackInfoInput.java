@@ -72,26 +72,5 @@ public class PackInfoInput implements IPathEditorInput {
 		return this.packinfo.getSavePath().hashCode();
 	}
 
-	public PackRelyModel[] getPackRelyData()
-	{
-		XmlOperator xmlo = new XmlOperator(getPath().toString());
-		//Element root =xmlo.getDocument().selectNodes("/root/PackRely");
-		ArrayList<PackRelyModel> relyr = new ArrayList<PackRelyModel>();
-		List el = xmlo.getRootElement().elements(UpdateInfo.PackRelys);
-		Element el1 = null;
-		if(el!=null&&el.size()>0)
-		{
-			el1 = (Element)(el.get(0));
-			List<Element> relys = el1.elements();
-			for(int i = 0;i<relys.size();i++)
-			{
-				PackRelyModel rm = new PackRelyModel();
-				rm.setName(relys.get(i).attributeValue(UpdateInfo.PackRely_attr_name));
-				rm.setCode(relys.get(i).attributeValue(UpdateInfo.PackRely_attr_code));
-				rm.setVersion(relys.get(i).attributeValue(UpdateInfo.PackRely_attr_ver));
-				relyr.add(rm);
-			}
-		}
-		return relyr.toArray(new PackRelyModel[0]);
-	}
+	
 }
