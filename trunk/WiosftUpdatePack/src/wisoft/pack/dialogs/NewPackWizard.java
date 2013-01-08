@@ -12,7 +12,6 @@ import org.eclipse.swt.widgets.Display;
 
 import wisoft.pack.models.PackInfoModel;
 import wisoft.pack.utils.UpdateInfo;
-import wisoft.pack.utils.XmlOperator;
 import wisoft.pack.views.Console;
 import wisoft.pack.views.Console.ConsoleType;
 import wisoft.pack.views.NavigationView;
@@ -82,14 +81,12 @@ public class NewPackWizard extends Wizard {
 					pack.setModuleCode(ModuleCode);
 					pack.setModuleName(ModuleName);
 					pack.setVersion(version);
+					pack.setKeyWord(keyword);
+					pack.setCreateMan(createMan);
+					pack.setCreateTime(new Date().toLocaleString());
+					pack.setReleaseNote(releasenot);
 					pack.saveIntoXML();
-					XmlOperator xmlo =pack.getXmlo();
-					xmlo.OnlyElementInRoot(UpdateInfo.KeyWord).setText(keyword);
-					xmlo.OnlyElementInRoot(UpdateInfo.CreateMan).setText(createMan);
-					xmlo.OnlyElementInRoot(UpdateInfo.CreateTime).setText(new Date().toLocaleString());
-					xmlo.OnlyElementInRoot(UpdateInfo.ReleaseNote).addCDATA(releasenot);
-					xmlo.save();
-					//xmlo.close();
+					
 					File updatedir = new File(savePath+"/"+UpdateInfo.UpdateDirName);
 					updatedir.mkdirs();
 					monitor.worked(2);

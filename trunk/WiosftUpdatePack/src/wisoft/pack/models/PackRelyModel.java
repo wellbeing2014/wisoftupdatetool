@@ -6,7 +6,14 @@ public class PackRelyModel {
 	private String name;
 	private String code;
 	private String version;
+	private String publishTime;
 	
+	public String getPublishTime() {
+		return publishTime;
+	}
+	public void setPublishTime(String publishTime) {
+		this.publishTime = publishTime;
+	}
 	public String getName() {
 		return name;
 	}

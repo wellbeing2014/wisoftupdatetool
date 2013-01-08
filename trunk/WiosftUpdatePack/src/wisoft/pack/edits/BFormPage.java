@@ -2,15 +2,12 @@ package wisoft.pack.edits;
 
 import java.util.List;
 
-import org.dom4j.Element;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.viewers.ColumnWeightData;
-import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.jface.viewers.LabelProvider;
-import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.SWT;
@@ -38,7 +35,6 @@ import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.swt.widgets.ToolItem;
 import org.eclipse.ui.forms.IManagedForm;
-import org.eclipse.ui.forms.SectionPart;
 import org.eclipse.ui.forms.editor.FormEditor;
 import org.eclipse.ui.forms.editor.FormPage;
 import org.eclipse.ui.forms.events.ExpansionAdapter;
@@ -53,16 +49,15 @@ import org.eclipse.wb.swt.ResourceManager;
 import wisoft.pack.app.Activator;
 import wisoft.pack.dialogs.PackRelyDialog;
 import wisoft.pack.dialogs.TrackingListSelDialog;
+import wisoft.pack.models.PackInfoModel;
 import wisoft.pack.models.PackRelyModel;
 import wisoft.pack.utils.AutoResizeTableLayout;
-import wisoft.pack.utils.UpdateInfo;
-import wisoft.pack.utils.XmlOperator;
 
 import com.wisoft.wims.WimsSingleIssueTracking;
 
 public class BFormPage extends FormPage {
 	
-	private XmlOperator xmlo;
+	private PackInfoModel pm;
 	
 	private Text text;
 	private Text text_1;
@@ -102,7 +97,7 @@ public class BFormPage extends FormPage {
 	public BFormPage(FormEditor editor, String id, String title) {
 		super(editor, id, title);
 		//PackInfoInput pack = (PackInfoInput)getEditorInput()).getPackinfo();
-		xmlo = ((PackInfoInput)editor.getEditorInput()).getPackinfo().getXmlo();
+		pm = ((PackInfoInput)editor.getEditorInput()).getPackinfo();
 	}
 
 	/**
@@ -119,15 +114,6 @@ public class BFormPage extends FormPage {
 		toolkit.paintBordersFor(body);
 		TableWrapLayout layout = new TableWrapLayout();
 		TableWrapData td = new TableWrapData();
-//		ColumnLayout layout = new ColumnLayout();
-//		layout.topMargin = 0;
-//		layout.bottomMargin = 5;
-//		layout.leftMargin = 10;
-//		layout.rightMargin = 10;
-//		layout.horizontalSpacing = 10;
-//		layout.verticalSpacing = 10;
-//		layout.maxNumColumns = 2;
-//		layout.minNumColumns = 1;
 		layout.numColumns = 2;
 		form.getBody().setLayout(layout);
 		Section section_1 =CreateBaseInfoSection(managedForm);
@@ -168,7 +154,9 @@ public class BFormPage extends FormPage {
 		managedForm.getToolkit().paintBordersFor(client);
 		client.setLayout(new FormLayout());
 		
-		Table t = managedForm.getToolkit().createTable(client, SWT.NULL);
+		Table t = managedForm.getToolkit().createTable(client, SWT.BORDER | SWT.FULL_SELECTION | SWT.MULTI);
+		t.setHeaderVisible(true);
+		t.setLinesVisible(true);
 		FormData fd_t = new FormData();
 		fd_t.right = new FormAttachment(100);
 		fd_t.left = new FormAttachment(0);
@@ -177,14 +165,10 @@ public class BFormPage extends FormPage {
 		t.setLayoutData(fd_t);
 		
 		
-		final SectionPart spart = new SectionPart(section);
-		Section section_1 = spart.getSection();
-		managedForm.addPart(spart);
-		
-		ToolBar toolBar = new ToolBar(section_1, SWT.FLAT | SWT.RIGHT);
+		ToolBar toolBar = new ToolBar(section, SWT.FLAT | SWT.RIGHT);
 		managedForm.getToolkit().adapt(toolBar);
 		managedForm.getToolkit().paintBordersFor(toolBar);
-		section_1.setTextClient(toolBar);
+		section.setTextClient(toolBar);
 		
 		ToolItem toolItem = new ToolItem(toolBar, SWT.NONE);
 		toolItem.setToolTipText("\u589E\u52A0\u66F4\u65B0\u5305\u4F9D\u8D56");
@@ -196,15 +180,12 @@ public class BFormPage extends FormPage {
 				int i=pd.open();
 				if(i==IDialogConstants.OK_ID)
 				{
-					Element relys =xmlo.OnlyElementInRoot(UpdateInfo.PackRelys);
 					PackRelyModel prm = new PackRelyModel();
 					prm.setName(pd.name);
 					prm.setCode(pd.code);
 					prm.setVersion(pd.version);
-					Element rely =xmlo.addElementInElement(relys, UpdateInfo.PackRely,UpdateInfo.PackRely_attr_name,pd.name);
-					rely.addAttribute(UpdateInfo.PackRely_attr_code, pd.code);
-					rely.addAttribute(UpdateInfo.PackRely_attr_ver, pd.version);
-					xmlo.save();
+					prm.setPublishTime(pd.publishTime);
+					pm.addPackRely(prm);
 					viewer.refresh();
 				}
 			}
@@ -218,34 +199,45 @@ public class BFormPage extends FormPage {
 				// TODO Auto-generated method stub
 				IStructuredSelection selection = (IStructuredSelection)viewer.getSelection();
 				 List<?> selectionlist = selection.toList();
-				 Element relys =xmlo.OnlyElementInRoot(UpdateInfo.PackRelys);
 				 for(int i=0;i<selectionlist.size();i++)
 				 {
 					 if(selectionlist.get(i) instanceof PackRelyModel)
 					 {
-						 PackRelyModel pm =(PackRelyModel) selectionlist.get(i);
-						 xmlo.RemoveElementInElement(relys, UpdateInfo.PackRely, UpdateInfo.PackRely_attr_name, pm.getName());
+						 PackRelyModel prm =(PackRelyModel) selectionlist.get(i);
+						 pm.removePackRely(prm);
 					 }
 				 }
-				 xmlo.save();
 				 viewer.refresh();
 			}
 		});
 		
 		viewer = new TableViewer(t);
-		viewer.addSelectionChangedListener(new ISelectionChangedListener() {
-			public void selectionChanged(SelectionChangedEvent event) {
-				managedForm.fireSelectionChanged(spart, event.getSelection());
-				//viewer.refresh();
-			}
-		});
+		AutoResizeTableLayout layout = new AutoResizeTableLayout(t);
+		TableColumn tableColumn = new TableColumn(t, SWT.NONE);
+		//tableColumn.setWidth(120);
+		layout.addColumnData(new ColumnWeightData(120));
+		tableColumn.setText("\u66F4\u65B0\u5305\u540D\u79F0");
+		
+		TableColumn tableColumn_1 = new TableColumn(t, SWT.NONE);
+		//tableColumn_1.setWidth(50);
+		layout.addColumnData(new ColumnWeightData(50));
+		tableColumn_1.setText("\u4EE3\u7801");
+		
+		TableColumn tableColumn_2 = new TableColumn(t, SWT.NONE);
+		//tableColumn_2.setWidth(50);
+		layout.addColumnData(new ColumnWeightData(50));
+		tableColumn_2.setText("\u7248\u672C");
+		
+		TableColumn tableColumn_3 = new TableColumn(t, SWT.NONE);
+		//tableColumn_3.setWidth(80);
+		layout.addColumnData(new ColumnWeightData(80));
+		tableColumn_3.setText("\u53D1\u5E03\u65F6\u95F4");
 		viewer.setContentProvider(new PackRelyContentProvider());
 		viewer.setLabelProvider(new PackRelyLabelProvider());
-		viewer.setInput(getEditor().getEditorInput());
+		viewer.setInput(pm);
 		section.addExpansionListener(new ExpansionAdapter() {
 			public void expansionStateChanged(ExpansionEvent e) {
 				managedForm.getForm().reflow(false);
-				//System.out.println("adfasdfasdfasdfas dian kai ");
 			}
 		});
 		return section;
@@ -254,7 +246,7 @@ public class BFormPage extends FormPage {
 	private Section CreateScopeSection( IManagedForm managedForm)
 	{
 		final ScrolledForm form = managedForm.getForm();
-		Section section = managedForm.getToolkit().createSection(form.getBody(), Section.EXPANDED|Section.TWISTIE | Section.TITLE_BAR);
+		Section section = managedForm.getToolkit().createSection(form.getBody(), Section.EXPANDED | Section.TITLE_BAR);
 
 		managedForm.getToolkit().paintBordersFor(section);
 		section.setText("\u66F4\u65B0\u8303\u56F4\u8BF4\u660E");
@@ -267,25 +259,6 @@ public class BFormPage extends FormPage {
 		
 		txtNewText = managedForm.getToolkit().createText(composite, "New Text", SWT.H_SCROLL | SWT.V_SCROLL | SWT.CANCEL | SWT.MULTI);
 		
-//		btnNewButton = managedForm.getToolkit().createButton(composite, "\u5E94\u7528", SWT.NONE);
-//		btnNewButton.setEnabled(false);
-//		btnNewButton.addSelectionListener(new SelectionAdapter() {
-//			@Override
-//			public void widgetSelected(SelectionEvent e) {
-//				 Element relys =xmlo.OnlyElementInRoot(UpdateInfo.ReleaseNote);
-//				 relys.clearContent(); 
-//				 relys.addCDATA(txtNewText.getText());
-//				 xmlo.save();
-//				 btnNewButton.setEnabled(false);
-//				 //isRNedit = false;
-//			}
-//		});
-		//fd_txtNewText.bottom = new FormAttachment(btnNewButton);
-//		FormData fd_btnNewButton = new FormData();
-//		fd_btnNewButton.bottom = new FormAttachment(100);
-//		fd_btnNewButton.right = new FormAttachment(100);
-//		btnNewButton.setLayoutData(fd_btnNewButton);
-		
 		ToolBar toolBar = new ToolBar(section, SWT.FLAT | SWT.RIGHT);
 		managedForm.getToolkit().adapt(toolBar);
 		managedForm.getToolkit().paintBordersFor(toolBar);
@@ -297,11 +270,8 @@ public class BFormPage extends FormPage {
 		tltmNewItem.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				Element relys =xmlo.OnlyElementInRoot(UpdateInfo.ReleaseNote);
-				 relys.clearContent(); 
-				 relys.addCDATA(txtNewText.getText());
-				 xmlo.save();
-				 tltmNewItem.setEnabled(false);
+				pm.setReleaseNote(txtNewText.getText());
+				tltmNewItem.setEnabled(false);
 			}
 		});
 		tltmNewItem.setToolTipText("\u4FDD\u5B58");
@@ -317,18 +287,9 @@ public class BFormPage extends FormPage {
 	{
 		final ScrolledForm form = managedForm.getForm();
 		FormToolkit toolkit = managedForm.getToolkit();
-		Section section = managedForm.getToolkit().createSection(form.getBody(), Section.TWISTIE | Section.TITLE_BAR|Section.EXPANDED);
-		//section.setBounds(10, 10, 296, 237);
+		Section section = managedForm.getToolkit().createSection(form.getBody(), Section.EXPANDED | Section.TITLE_BAR);
 		toolkit.paintBordersFor(section);
 		section.setText("\u57FA\u672C\u4FE1\u606F");
-		//section.setExpanded(true);
-//		ColumnLayoutData cld_section = new ColumnLayoutData();
-//		cld_section.heightHint = 245;
-//		//cld_section.heightHint = 232;
-//		//cld_section.widthHint = 217;
-//		cld_section.widthHint = ColumnLayoutData.FILL;
-//		cld_section.horizontalAlignment=ColumnLayoutData.FILL;
-//		section.setLayoutData(cld_section);
 		
 		Composite composite = managedForm.getToolkit().createComposite(section, SWT.NONE);
 		toolkit.paintBordersFor(composite);
@@ -388,12 +349,7 @@ public class BFormPage extends FormPage {
 		button.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				Element scope =xmlo.getRootElement().element(UpdateInfo.Scope);
-				if(button.getSelection())
-					xmlo.OnlyElementInElemnt(scope,UpdateInfo.Scope_Front).setText("true");
-				else
-					xmlo.OnlyElementInElemnt(scope,UpdateInfo.Scope_Front).setText("false");
-				save();
+				pm.setScopeFront(button.getSelection());
 			}
 		});
 		toolkit.adapt(button, true, true);
@@ -404,12 +360,7 @@ public class BFormPage extends FormPage {
 		button_1.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				Element scope =xmlo.getRootElement().element(UpdateInfo.Scope);
-				if(button_1.getSelection())
-					xmlo.OnlyElementInElemnt(scope,UpdateInfo.Scope_Back).setText("true");
-				else
-					xmlo.OnlyElementInElemnt(scope,UpdateInfo.Scope_Back).setText("false");
-				save();
+				pm.setScopeBack(button_1.getSelection());
 			}
 		});
 		toolkit.adapt(button_1, true, true);
@@ -420,12 +371,7 @@ public class BFormPage extends FormPage {
 		button_2.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				Element scope =xmlo.getRootElement().element(UpdateInfo.Scope);
-				if(button_2.getSelection())
-					xmlo.OnlyElementInElemnt(scope,UpdateInfo.Scope_DB).setText("true");
-				else
-					xmlo.OnlyElementInElemnt(scope,UpdateInfo.Scope_DB).setText("false");
-				save();
+				pm.setScopeDB(button_2.getSelection());
 			}
 		});
 		toolkit.adapt(button_2, true, true);
@@ -442,9 +388,10 @@ public class BFormPage extends FormPage {
 	
 	private Section CreateTrackingSection(final IManagedForm managedForm)
 	{
-		Section section = managedForm.getToolkit().createSection(managedForm.getForm().getBody(), Section.EXPANDED | Section.TWISTIE | Section.TITLE_BAR);
+		Section section = managedForm.getToolkit().createSection(managedForm.getForm().getBody(), Section.TWISTIE | Section.TITLE_BAR);
 		managedForm.getToolkit().paintBordersFor(section);
 		section.setText("\u4FEE\u8BA2\u7684\u95EE\u9898\u5355");
+		section.setExpanded(true);
 		
 		Composite composite = new Composite(section, SWT.NONE);
 		managedForm.getToolkit().adapt(composite);
@@ -488,17 +435,8 @@ public class BFormPage extends FormPage {
 				{
 					for(WimsSingleIssueTracking track :td.wimstracklist)
 					{
-						Element trackrelys =xmlo.OnlyElementInRoot(UpdateInfo.TackRelys);
-						Element rely =xmlo.addElementInElement(trackrelys, UpdateInfo.TackRely,UpdateInfo.TackRely_attr_id,track.getLsh());
-						rely.addAttribute(UpdateInfo.TackRely_attr_personname,track.getSqpersonid());
-						rely.addAttribute(UpdateInfo.TackRely_attr_proname,track.getProid());
-						if(rely.element(UpdateInfo.TackRely_elem_content)!=null)
-							rely.remove(rely.element(UpdateInfo.TackRely_elem_content));
-						Element rely_content = rely.addElement(UpdateInfo.TackRely_elem_content);
-						rely_content.addCDATA(track.getContent());
+						pm.addTrackRely(track);
 					}
-					xmlo.save();
-					
 				}
 				getTrackTableData();
 			}
@@ -512,10 +450,8 @@ public class BFormPage extends FormPage {
 				for(TableItem item:table.getSelection())
 				{
 					String tackid = item.getText(0);
-					Element ele =xmlo.OnlyElementInRoot(UpdateInfo.TackRelys);
-					xmlo.RemoveElementInElement(ele, UpdateInfo.TackRely, UpdateInfo.TackRely_attr_id, tackid);
+					pm.removeTrackRely(tackid);
 				}
-				xmlo.save();
 				getTrackTableData();
 			}
 		});
@@ -555,27 +491,26 @@ public class BFormPage extends FormPage {
        table.addListener(SWT.MeasureItem, paintListener);
        table.addListener(SWT.PaintItem, paintListener);
        table.addListener(SWT.EraseItem, paintListener);
+       section.addExpansionListener(new ExpansionAdapter() {
+			public void expansionStateChanged(ExpansionEvent e) {
+				managedForm.getForm().reflow(false);
+			}
+		});
 		return section;
-	}
-	public synchronized void save()
-	{
-		xmlo.save();
 	}
 	
 	public void loadXmlData()
 	{
-		this.text.setText( xmlo.getRootElement().elementText(UpdateInfo.ModuleName));
-		this.text_1.setText( xmlo.getRootElement().elementText(UpdateInfo.ModuleCode));
-		this.text_2.setText( xmlo.getRootElement().elementText(UpdateInfo.Version));
-		this.text_3.setText( xmlo.getRootElement().elementText(UpdateInfo.CreateMan));
-		this.text_4.setText(xmlo.getRootElement().elementText(UpdateInfo.CreateTime));
-		Element scope = xmlo.getRootElement().element(UpdateInfo.Scope);
-		this.button.setSelection(Boolean.parseBoolean(scope.elementText(UpdateInfo.Scope_Front)));
-		this.button_1.setSelection(Boolean.parseBoolean(scope.elementText(UpdateInfo.Scope_Back)));
-		this.button_2.setSelection(Boolean.parseBoolean(scope.elementText(UpdateInfo.Scope_DB)));
-		this.txtNewText.setText(xmlo.getRootElement().elementText(UpdateInfo.ReleaseNote));
+		this.text.setText(pm.getModuleName());
+		this.text_1.setText( pm.getVersion());
+		this.text_2.setText( pm.getModuleCode());
+		this.text_3.setText( pm.getCreateMan());
+		this.text_4.setText( pm.getCreateTime());
+		this.button.setSelection(pm.getScopeFront());
+		this.button_1.setSelection(pm.getScopeBack());
+		this.button_2.setSelection(pm.getScopeDB());
+		this.txtNewText.setText(pm.getReleaseNote());
 		this.txtNewText.addModifyListener(new ModifyListener() {
-				
 				@Override
 				public void modifyText(ModifyEvent e) {
 					tltmNewItem.setEnabled(true);
@@ -586,30 +521,21 @@ public class BFormPage extends FormPage {
 	
 	private void getTrackTableData()
 	{
-		//ArrayList<PackRelyModel> relyr = new ArrayList<PackRelyModel>();
 		table.removeAll();
-		List el = xmlo.getRootElement().elements(UpdateInfo.TackRelys);
-		Element el1 = null;
-		if(el!=null&&el.size()>0)
+		for(WimsSingleIssueTracking track :pm.getTrackRelys())
 		{
-			el1 = (Element)(el.get(0));
-			List<Element> relys = el1.elements();
-			for(int i = 0;i<relys.size();i++)
-			{
-				String tackid = relys.get(i).attributeValue(UpdateInfo.TackRely_attr_id);
-				//String tackproname = relys.get(i).attributeValue(UpdateInfo.TackRely_attr_proname);
-				String tackperson = relys.get(i).attributeValue(UpdateInfo.TackRely_attr_personname);
-				String tackcontent = relys.get(i).elementText(UpdateInfo.TackRely_elem_content);
-				TableItem item  = new TableItem(table, SWT.NONE);
-				item.setText(new String[]{tackid,tackperson,tackcontent});
-			}
+			String tackid = track.getLsh();
+			String tackperson = track.getSqpersonid();
+			String tackcontent = track.getContent();
+			TableItem item  = new TableItem(table, SWT.NONE);
+			item.setText(new String[]{tackid,tackperson,tackcontent});
 		}
 	}
 	class PackRelyContentProvider implements IStructuredContentProvider {
 		public Object[] getElements(Object inputElement) {
-			if (inputElement instanceof PackInfoInput) {
-				PackInfoInput input = (PackInfoInput)getEditor().getEditorInput();
-				return input.getPackRelyData();
+			if (inputElement instanceof PackInfoModel) {
+				PackInfoModel input = (PackInfoModel)inputElement;
+				return input.getPackRelys().toArray();
 			}
 			return new Object[0];
 		}
@@ -622,10 +548,20 @@ public class BFormPage extends FormPage {
 			implements
 				ITableLabelProvider {
 		public String getColumnText(Object obj, int index) {
-			return obj.toString();
+			PackRelyModel prm =(PackRelyModel)obj;
+			switch(index)
+			{
+				case 0:return prm.getName();
+				case 1:return prm.getCode();
+				case 2:return prm.getVersion();
+				case 3:return prm.getPublishTime();
+				default:return prm.toString();
+			}
 		}
 		public Image getColumnImage(Object obj, int index) {
+			if(index==0)
 			return new Image(null, Activator.getImageDescriptor("icons/wi_updatetool.ico").getImageData());
+			else return null;
 		}
 	}
 }

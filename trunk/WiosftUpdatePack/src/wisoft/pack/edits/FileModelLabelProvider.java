@@ -89,41 +89,39 @@ public class FileModelLabelProvider      implements IStyledLabelProvider,ILabelP
 		String conftype = file.getConftype();
 		
 		StyledString str1= new StyledString(str, null);
+		Styler styler = new Styler(){
+			@Override
+			public void applyStyles(TextStyle textStyle) {
+				textStyle.foreground=new Color(null,128,128,128);
+				textStyle.font = SWTResourceManager.getFont("微软雅黑", 10, SWT.ITALIC);
+			}
+			};
+		Styler styler_red = new Styler(){
+			@Override
+			public void applyStyles(TextStyle textStyle) {
+				textStyle.foreground=new Color(null,128,128,128);
+				textStyle.font = SWTResourceManager.getFont("微软雅黑", 10, SWT.ITALIC);
+			}
+			};
 		if(isconf)
 		{
 			if(isVirtual)
 			{
 				StyledString str2= new StyledString(str, StyledString.COUNTER_STYLER);
-				if(conftype.equals(UpdateInfo.FileOpr_Mod))
+				if(conftype!=null&&conftype.equals(UpdateInfo.FileOpr_Mod))
 				{
-				str2.append("(本文件仅配置)",new Styler(){
-					@Override
-					public void applyStyles(TextStyle textStyle) {
-						textStyle.foreground=new Color(null,128,128,128);
-						textStyle.font = SWTResourceManager.getFont("微软雅黑", 10, SWT.ITALIC);
-					}});
+					str2.append("(本文件仅配置)",styler);
 				}
-				if(conftype.equals(UpdateInfo.FileOpr_Del))
+				if(conftype!=null&&conftype.equals(UpdateInfo.FileOpr_Del))
 				{
-					Styler red =new Styler(){
-						@Override
-						public void applyStyles(TextStyle textStyle) {
-							textStyle.foreground=new Color(null,128,0,0);
-							textStyle.font = SWTResourceManager.getFont("微软雅黑", 10, SWT.ITALIC);
-						}};
-					str2= new StyledString(str,red);
+					str2= new StyledString(str,styler_red);
 					str2.append("(本文件需要删除)");
 				}
 				return str2;
 			}
 			else
 			{
-				str1.append("(需要配置)",new Styler(){
-					@Override
-					public void applyStyles(TextStyle textStyle) {
-						textStyle.foreground=new Color(null,128,128,128);
-						textStyle.font = SWTResourceManager.getFont("微软雅黑", 10, SWT.ITALIC);
-					}});
+				str1.append("(需要配置)",styler);
 			}
 		}
 		return str1;

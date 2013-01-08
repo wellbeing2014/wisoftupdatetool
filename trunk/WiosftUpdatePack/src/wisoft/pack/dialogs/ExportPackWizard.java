@@ -1,9 +1,8 @@
 package wisoft.pack.dialogs;
 
 import java.io.File;
-import java.io.FileWriter;
-
-import javax.sound.sampled.AudioFormat.Encoding;
+import java.util.Date;
+import java.util.List;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
@@ -12,10 +11,14 @@ import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.swt.widgets.Display;
 
+import com.wisoft.wims.WimsSingleIssueTracking;
+
 import wisoft.pack.edits.XmlSqlEditorInput;
 import wisoft.pack.events.ZipHandleEvent;
 import wisoft.pack.events.ZipHandleEventListener;
+import wisoft.pack.models.FileModel;
 import wisoft.pack.models.PackInfoModel;
+import wisoft.pack.models.PackRelyModel;
 import wisoft.pack.utils.UpdateInfo;
 import wisoft.pack.utils.ZipUtil;
 import wisoft.pack.views.Console;
@@ -76,13 +79,8 @@ public class ExportPackWizard extends Wizard {
 					}
 				});
 				try {
-					StringBuffer sb = new StringBuffer();
-					sb.append("************************************************************************\r\n");
-					sb.append("                       "+pack.getName()+"发布说明\r\n");
-					sb.append("    【发布日期】  "+pack.getModuleCode()+"\r\n");
-					sb.append("************************************************************************\r\n");
 					
-					zip.appendText(pack.getName()+"_RealseNote.txt", sb.toString());
+					zip.appendText(pack.getName()+"_RealseNote.txt", createRealseNote());
 					zip.appendFile(pack.getSavePath()+File.separator+UpdateInfo.UpdateDirName,"");
 					zip.appendFile(pack.getSavePath()+File.separator+XmlSqlEditorInput.TYPE_SQL, pack.getName()+"_DataBase.sql");
 					zip.close();
@@ -99,6 +97,59 @@ public class ExportPackWizard extends Wizard {
 		job.setUser(true);
 		job.schedule();
 		return true;
+	}
+	
+	private String createRealseNote()
+	{
+		StringBuffer sb = new StringBuffer();
+		sb.append("************************************************************************\r\n");
+		sb.append("                       "+pack.getName()+"发布说明\r\n");
+		sb.append("    创建日期：  "+pack.getCreateTime()+"\r\n");
+		sb.append("    创建人员：  "+pack.getCreateMan()+"\r\n");
+		sb.append("    发布日期：  "+(new Date().toLocaleString())+"\r\n");
+		sb.append("    关键字：       "+pack.getKeyWord()+"\r\n");
+		sb.append("************************************************************************\r\n");
+		sb.append("\r\n");
+		sb.append("【更新范围】\r\n");
+		if(pack.getScopeFront())
+			sb.append("   前台");
+		if(pack.getScopeBack())
+			sb.append("   后台");
+		if(pack.getScopeDB())
+			sb.append("   数据库");
+		sb.append("\r\n");
+		sb.append("\r\n");
+		sb.append("【更新说明】\r\n");
+		sb.append("   "+pack.getReleaseNote()+"\r\n");
+		sb.append("\r\n");
+		sb.append("【手动配置说明】\r\n");
+		List<FileModel> conffiles = pack.getConfFiles();
+		for(int i=0;i<conffiles.size();i++)
+		{
+			sb.append("   "+(i+1)+"、"+"〖"+conffiles.get(i).getConftype()+"〗 路径为： " +conffiles.get(i).getFullPath()+"\r\n");
+			sb.append("       〖修改方法〗   "+conffiles.get(i).getContent()+"\r\n");
+		}
+		
+		sb.append("\r\n");
+		sb.append("【更新依赖】\r\n");
+		List<PackRelyModel> relys = pack.getPackRelys();
+		for(int i=0;i<relys.size();i++)
+		{
+			sb.append("   "+(i+1)+"、"+relys.get(i).toString()+"     发布日期："+relys.get(i).getPublishTime()+"\r\n");
+		}
+		
+		sb.append("\r\n");
+		sb.append("【修正问题单】\r\n");
+		List<WimsSingleIssueTracking> trackrelys = pack.getTrackRelys();
+		for(int i=0;i<trackrelys.size();i++)
+		{
+			sb.append("   "+(i+1)+"、 问题单号："+trackrelys.get(i).getLsh()+"     申请人："+trackrelys.get(i).getSqpersonid()
+					+"      所属项目："+trackrelys.get(i).getProid()+"\r\n");
+			sb.append("     问题单内容："+trackrelys.get(i).getContent()+"\r\n");
+		}
+		sb.append("\r\n");
+		
+		return sb.toString();
 	}
 
 }

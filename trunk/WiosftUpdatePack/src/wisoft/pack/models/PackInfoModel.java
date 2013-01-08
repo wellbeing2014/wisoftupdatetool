@@ -1,12 +1,16 @@
 package wisoft.pack.models;
 
 import java.io.File;
-import org.dom4j.Document;
+import java.util.ArrayList;
+import java.util.List;
+
 import org.dom4j.Element;
 import org.eclipse.ui.IEditorInput;
 
 import wisoft.pack.utils.UpdateInfo;
 import wisoft.pack.utils.XmlOperator;
+
+import com.wisoft.wims.WimsSingleIssueTracking;
 
 public class PackInfoModel extends Model {
 	
@@ -22,31 +26,8 @@ public class PackInfoModel extends Model {
 		return xmlo;
 	}
 
-	private String moduleName="";
-	private String moduleCode="";
-	private String version ="";
+	
 	private String savePath="";
-
-	
-	
-	public String getModuleName() {
-		return moduleName;
-	}
-	public void setModuleName(String moduleName) {
-		this.moduleName = moduleName;
-	}
-	public String getModuleCode() {
-		return moduleCode;
-	}
-	public void setModuleCode(String moduleCode) {
-		this.moduleCode = moduleCode;
-	}
-	public String getVersion() {
-		return version;
-	}
-	public void setVersion(String version) {
-		this.version = version;
-	}
 	public String getSavePath() {
 		return savePath;
 	}
@@ -54,12 +35,197 @@ public class PackInfoModel extends Model {
 		this.savePath = savePath;
 	}
 	
+//	private String moduleName="";
+//	private String moduleCode="";
+//	private String version ="";
 	
+	public String getModuleName() {
+		return xmlo.OnlyElementInRoot(UpdateInfo.ModuleName).getText();
+	}
+	public void setModuleName(String moduleName) {
+		xmlo.OnlyElementInRoot(UpdateInfo.ModuleName).setText(moduleName);
+		xmlo.save();
+	}
+	public String getModuleCode() {
+		return xmlo.OnlyElementInRoot(UpdateInfo.ModuleCode).getText();
+	}
+	public void setModuleCode(String moduleCode) {
+		xmlo.OnlyElementInRoot(UpdateInfo.ModuleCode).setText(moduleCode);
+		xmlo.save();
+	}
+	public String getVersion() {
+		return xmlo.OnlyElementInRoot(UpdateInfo.Version).getText();
+	}
+	public void setVersion(String version) {
+		xmlo.OnlyElementInRoot(UpdateInfo.Version).setText(version);
+		xmlo.save();
+	}
+	
+	public String getKeyWord() {
+		return xmlo.OnlyElementInRoot(UpdateInfo.KeyWord).getText();
+	}
+	public void setKeyWord(String KeyWord) {
+		xmlo.OnlyElementInRoot(UpdateInfo.KeyWord).setText(KeyWord);
+		xmlo.save();
+	}
+	
+	public String getCreateMan() {
+		return xmlo.OnlyElementInRoot(UpdateInfo.CreateMan).getText();
+	}
+	public void setCreateMan(String CreateMan) {
+		xmlo.OnlyElementInRoot(UpdateInfo.CreateMan).setText(CreateMan);
+		xmlo.save();
+	}
+	
+	public String getCreateTime() {
+		return xmlo.OnlyElementInRoot(UpdateInfo.CreateTime).getText();
+	}
+	public void setCreateTime(String CreateTime) {
+		xmlo.OnlyElementInRoot(UpdateInfo.CreateTime).setText(CreateTime);
+		xmlo.save();
+	}
+	
+	public String getReleaseNote() {
+		return xmlo.OnlyElementInRoot(UpdateInfo.ReleaseNote).getText();
+	}
+	public void setReleaseNote(String ReleaseNote) {
+		
+		Element rn =xmlo.OnlyElementInRoot(UpdateInfo.ReleaseNote);
+		 rn.clearContent(); 
+		 rn.addCDATA(ReleaseNote);
+		
+		xmlo.save();
+	}
+	
+	
+	public boolean getScopeBack() {
+		Element rn =xmlo.OnlyElementInRoot(UpdateInfo.Scope);
+		String isneed = rn.elementText(UpdateInfo.Scope_Back);
+		return Boolean.valueOf(isneed);
+	}
+	public void setScopeBack(boolean isneed) {
+		Element rn =xmlo.OnlyElementInRoot(UpdateInfo.Scope);
+		Element front = xmlo.OnlyElementInElemnt(rn, UpdateInfo.Scope_Back);
+		front.setText(Boolean.toString(isneed));
+		xmlo.save();
+	}
+	
+	public boolean getScopeDB() {
+		Element rn =xmlo.OnlyElementInRoot(UpdateInfo.Scope);
+		String isneed = rn.elementText(UpdateInfo.Scope_DB);
+		return Boolean.valueOf(isneed);
+	}
+	public void setScopeDB(boolean isneed) {
+		Element rn =xmlo.OnlyElementInRoot(UpdateInfo.Scope);
+		Element front = xmlo.OnlyElementInElemnt(rn, UpdateInfo.Scope_DB);
+		front.setText(Boolean.toString(isneed));
+		xmlo.save();
+	}
+	
+	public boolean getScopeFront() {
+		Element rn =xmlo.OnlyElementInRoot(UpdateInfo.Scope);
+		String isneed = rn.elementText(UpdateInfo.Scope_Front);
+		return Boolean.valueOf(isneed);
+	}
+	public void setScopeFront(boolean isneed) {
+		Element rn =xmlo.OnlyElementInRoot(UpdateInfo.Scope);
+		Element front = xmlo.OnlyElementInElemnt(rn, UpdateInfo.Scope_Front);
+		front.setText(Boolean.toString(isneed));
+		xmlo.save();
+	}
+	
+	
+	/** 获取更新包依赖数组
+	 * @return
+	 */
+	public List<PackRelyModel> getPackRelys()
+	{
+		List<PackRelyModel> relysret = new ArrayList<PackRelyModel>();
+		Element relys =xmlo.OnlyElementInRoot(UpdateInfo.PackRelys);
+		for(Element element:relys.elements(UpdateInfo.PackRely))
+		{
+			PackRelyModel prm = new PackRelyModel();
+			prm.setCode(element.attributeValue(UpdateInfo.PackRely_attr_code));
+			prm.setName(element.attributeValue(UpdateInfo.PackRely_attr_name));
+			prm.setVersion(element.attributeValue(UpdateInfo.PackRely_attr_ver));
+			prm.setPublishTime(element.attributeValue(UpdateInfo.PackRely_attr_time));
+			relysret.add(prm);
+		}
+		return relysret; 
+	}
+	
+	/** 加入 更新包依赖
+	 * @param prm
+	 */
+	public void addPackRely(PackRelyModel prm)
+	{
+		Element relys =xmlo.OnlyElementInRoot(UpdateInfo.PackRelys);
+		Element rely =xmlo.addElementInElement(relys, UpdateInfo.PackRely,UpdateInfo.PackRely_attr_name,prm.getName());
+		rely.addAttribute(UpdateInfo.PackRely_attr_code, prm.getCode());
+		rely.addAttribute(UpdateInfo.PackRely_attr_ver, prm.getVersion());
+		rely.addAttribute(UpdateInfo.PackRely_attr_time, prm.getPublishTime());
+		xmlo.save();
+	}
+	
+	/** 移除更新包依赖
+	 * @param prm
+	 */
+	public void removePackRely(PackRelyModel prm)
+	{
+		Element relys =xmlo.OnlyElementInRoot(UpdateInfo.PackRelys);
+		 xmlo.RemoveElementInElement(relys, UpdateInfo.PackRely, UpdateInfo.PackRely_attr_name, prm.getName());
+		xmlo.save();
+	}
+	
+	
+	
+	/** 获取更新包依赖数组
+	 * @return
+	 */
+	public List<WimsSingleIssueTracking> getTrackRelys()
+	{
+		List<WimsSingleIssueTracking> relysret = new ArrayList<WimsSingleIssueTracking>();
+		Element relys =xmlo.OnlyElementInRoot(UpdateInfo.TackRelys);
+		for(Element element:relys.elements(UpdateInfo.TackRely))
+		{
+			WimsSingleIssueTracking track = new WimsSingleIssueTracking();
+			track.setLsh(element.attributeValue(UpdateInfo.TackRely_attr_id));
+			track.setSqpersonid(element.attributeValue(UpdateInfo.TackRely_attr_personname));
+			track.setProid(element.attributeValue(UpdateInfo.TackRely_attr_proname));
+			track.setContent(element.elementText(UpdateInfo.TackRely_elem_content));
+			relysret.add(track);
+		}
+		return relysret; 
+	}
+	
+	/** 加入问题单
+	 * @param track
+	 */
+	public void addTrackRely(WimsSingleIssueTracking track )
+	{
+		Element relys =xmlo.OnlyElementInRoot(UpdateInfo.TackRelys);
+		Element rely =xmlo.addElementInElement(relys, UpdateInfo.TackRely,UpdateInfo.TackRely_attr_id,track.getLsh());
+		rely.addAttribute(UpdateInfo.TackRely_attr_personname,track.getSqpersonid());
+		rely.addAttribute(UpdateInfo.TackRely_attr_proname,track.getProid());
+		if(rely.element(UpdateInfo.TackRely_elem_content)!=null)
+			rely.remove(rely.element(UpdateInfo.TackRely_elem_content));
+		Element rely_content = rely.addElement(UpdateInfo.TackRely_elem_content);
+		rely_content.addCDATA(track.getContent());
+		xmlo.save();
+	}
+	
+	/** 移除 问题单关联
+	 ** @param trackid
+	 */
+	public void removeTrackRely(String trackid)
+	{
+		Element relys =xmlo.OnlyElementInRoot(UpdateInfo.TackRelys);
+		 xmlo.RemoveElementInElement(relys, UpdateInfo.TackRely,UpdateInfo.TackRely_attr_id,trackid);
+		xmlo.save();
+	}
 	
 	public void refresh() 
 	{
-//		Element modelname_el = xmlo.getRootElement().addElement("ModuleName");
-//		modelname_el.setText(moduleName);
 		
 	}
 
@@ -100,13 +266,10 @@ public class PackInfoModel extends Model {
 	public PackInfoModel(String name)
 	{
 		this.name =name;
-		//this.setSavePath(path);
 		this.addChild(overview);
 		this.addChild(selectFiles);
 		this.addChild(editConfs);
 		this.addChild(editSql);
-//		setSavePath(path);
-//		readFromXML();
 	}
 	
 	public void saveIntoXML()
@@ -116,13 +279,6 @@ public class PackInfoModel extends Model {
 		dir.mkdirs();
 		xmlo.setXmlfile(new File(savePath+"/"+UpdateInfo.FileName));
 		xmlo.initXml("root");
-		//Element root  = xmlo.getRootElement();
-		if(moduleName!=null)
-			xmlo.OnlyElementInRoot(UpdateInfo.ModuleName).setText(moduleName);
-		if(moduleCode!=null)
-			xmlo.OnlyElementInRoot(UpdateInfo.ModuleCode).setText(moduleCode);
-		if(version!=null)
-			xmlo.OnlyElementInRoot(UpdateInfo.Version).setText(version);
 		
 		Element scope =xmlo.OnlyElementInRoot(UpdateInfo.Scope);
 		xmlo.OnlyElementInElemnt(scope, UpdateInfo.Scope_Back).setText("false");
@@ -140,26 +296,29 @@ public class PackInfoModel extends Model {
 		dir.mkdirs();
 		xmlo.setXmlfile(new File(savePath+"/"+UpdateInfo.FileName));
 		xmlo.initXml("root");
-		try {
-			Document document =xmlo.getDocument();
-			//document = reader.read(xmlfile);
-			Element root = document.getRootElement();// 得到根节点
-			//String ModuleCode =null ;
-			if(root.element("ModuleCode")!=null)
-				moduleCode= root.element(UpdateInfo.ModuleCode).getText();
-			//String ModuleName = null;
-			if(root.element("ModuleName")!=null)
-				moduleName=root.element(UpdateInfo.ModuleName).getText();
-			//String version = null;
-			if(root.element("Version")!=null)
-				version =root.element(UpdateInfo.Version).getText();
-			setModuleCode(moduleCode);
-			setModuleName(moduleName);
-			setVersion(version);
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+	}
+	
+	/**获取需要配置的文件
+	 * @return
+	 */
+	public List<FileModel> getConfFiles()
+	{
+		List<FileModel> confiles = new ArrayList<FileModel>();
+		Element filelist =xmlo.OnlyElementInRoot(UpdateInfo.UpdateFileList);
+		FileModel fm =new FileModel(filelist);
+		getConfFiles(confiles,new FileModel[]{fm});
+		return confiles;
+	}
+	private void getConfFiles(List<FileModel> filelist,FileModel[] files)
+	{
+		for(FileModel fm :files)
+		{
+			if(fm.isConf()&&fm.getConftype()!=null)
+				filelist.add(fm);
+			if(fm.getChildren().size()>0)
+				getConfFiles(filelist,fm.getChildren().toArray(new FileModel[0]));
 		}
-
+			
+		//return confiles;
 	}
 }

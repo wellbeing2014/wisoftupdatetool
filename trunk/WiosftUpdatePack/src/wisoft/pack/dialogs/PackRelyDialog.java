@@ -20,9 +20,11 @@ public class PackRelyDialog extends Dialog {
 	public String name="";
 	public String code="";
 	public String version="";
+	public String publishTime="";
 	private Text text;
 	private Text text_1;
 	private Text text_2;
+	private Text text_3;
 
 	/**
 	 * Create the dialog.
@@ -49,9 +51,7 @@ public class PackRelyDialog extends Dialog {
 		GridLayout gridLayout = (GridLayout) container.getLayout();
 		gridLayout.numColumns = 3;
 		new Label(container, SWT.NONE);
-		new Label(container, SWT.NONE);
-		new Label(container, SWT.NONE);
-		new Label(container, SWT.NONE);
+		
 		
 		Label label = new Label(container, SWT.NONE);
 		label.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
@@ -81,6 +81,17 @@ public class PackRelyDialog extends Dialog {
 		
 		text_2 = new Text(container, SWT.BORDER);
 		text_2.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
+		new Label(container, SWT.NONE);
+		new Label(container, SWT.NONE);
+		new Label(container, SWT.NONE);
+		new Label(container, SWT.NONE);
+		
+		Label label_3 = new Label(container, SWT.NONE);
+		label_3.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
+		label_3.setText("\u53D1\u5E03\u65E5\u671F:");
+		
+		text_3 = new Text(container, SWT.BORDER);
+		text_3.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
 
 		return container;
 	}
@@ -110,6 +121,7 @@ public class PackRelyDialog extends Dialog {
 		name = text.getText();
 		code = text_1.getText();
 		version =text_2.getText();
+		publishTime = text_3.getText();
 		super.okPressed();
 	}
 }
