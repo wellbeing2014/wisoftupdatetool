@@ -103,9 +103,12 @@ public class ExportPackWizard extends Wizard {
 	{
 		StringBuffer sb = new StringBuffer();
 		sb.append("************************************************************************\r\n");
-		sb.append("                       "+pack.getName()+"发布说明\r\n");
+		sb.append("                           ★"+pack.getName()+"发布说明★\r\n");
+		sb.append("    平台名称：  "+pack.getModuleName()+"\r\n");
+		sb.append("    平台代码：  "+pack.getModuleCode()+"\r\n");
+		sb.append("    平台版本：  "+pack.getVersion()+"\r\n");
 		sb.append("    创建日期：  "+pack.getCreateTime()+"\r\n");
-		sb.append("    创建人员：  "+pack.getCreateMan()+"\r\n");
+		sb.append("    创建人：       "+pack.getCreateMan()+"\r\n");
 		sb.append("    发布日期：  "+(new Date().toLocaleString())+"\r\n");
 		sb.append("    关键字：       "+pack.getKeyWord()+"\r\n");
 		sb.append("************************************************************************\r\n");
