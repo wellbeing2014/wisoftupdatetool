@@ -144,7 +144,7 @@ public class BFormPage extends FormPage {
 	
 	private Section CreateRelySection(final IManagedForm managedForm)
 	{
-		Section section = managedForm.getToolkit().createSection(managedForm.getForm().getBody(), Section.TWISTIE | Section.TITLE_BAR);
+		Section section = managedForm.getToolkit().createSection(managedForm.getForm().getBody(), Section.TITLE_BAR);
 		managedForm.getToolkit().paintBordersFor(section);
 		section.setText("\u66F4\u65B0\u4F9D\u8D56");
 		section.setExpanded(true);
@@ -388,7 +388,7 @@ public class BFormPage extends FormPage {
 	
 	private Section CreateTrackingSection(final IManagedForm managedForm)
 	{
-		Section section = managedForm.getToolkit().createSection(managedForm.getForm().getBody(), Section.TWISTIE | Section.TITLE_BAR);
+		Section section = managedForm.getToolkit().createSection(managedForm.getForm().getBody(), Section.TITLE_BAR);
 		managedForm.getToolkit().paintBordersFor(section);
 		section.setText("\u4FEE\u8BA2\u7684\u95EE\u9898\u5355");
 		section.setExpanded(true);
