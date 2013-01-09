@@ -32,10 +32,8 @@
       </win>
    </launcher>
 
-
    <vm>
    </vm>
-
 
    <plugins>
       <plugin id="WiosftUpdatePack"/>
