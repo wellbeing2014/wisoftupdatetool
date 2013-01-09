@@ -21,8 +21,8 @@
 
    <splash
       location="WiosftUpdatePack"
-      startupProgressRect="5,128,283,15"
-      startupMessageRect="7,108,283,20"
+      startupProgressRect="5,247,539,15"
+      startupMessageRect="7,227,539,20"
       startupForegroundColor="FF0000" />
    <launcher name="wisoftpack">
       <solaris/>
