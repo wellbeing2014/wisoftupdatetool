@@ -1,6 +1,7 @@
 package wisoft.pack.edits;
 
 import java.io.File;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import org.dom4j.Attribute;
@@ -19,7 +20,6 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.swt.widgets.ToolItem;
@@ -62,7 +62,6 @@ public class DirectoryDetailPage implements IDetailsPage {
 	private ToolItem Item_del;
 	
 	private ModifyListener listener;
-	@SuppressWarnings("deprecation")
 	public void createContents(Composite parent) {
 	   //设置父类面板的布局
 	   TableWrapLayout layout = new TableWrapLayout();
@@ -99,7 +98,7 @@ public class DirectoryDetailPage implements IDetailsPage {
 	   gd_filePath.widthHint = 200;
 	   filePath.setLayoutData(gd_filePath);
 	   toolkit.createLabel( client , "最后修改:");
-	   lastModify = toolkit.createText( client , file!=null?new Date(file.lastModified()).toLocaleString():"");
+	   lastModify = toolkit.createText( client , file!=null?new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date(file.lastModified())):"");
 	   lastModify.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 2, 1));
 	   new Label(client, SWT.NONE);
 	   
@@ -276,7 +275,6 @@ public class DirectoryDetailPage implements IDetailsPage {
 	
 	}
 	//刷新值
-	@SuppressWarnings("deprecation")
 	public void update (){
 		if (file.exists())
 		{
@@ -286,7 +284,7 @@ public class DirectoryDetailPage implements IDetailsPage {
 		   String filefullpath = file.getAbsolutePath().replace("\\", "/");
 		   filePath.setText(filefullpath.replace(pack.getSavePath()+"/"+UpdateInfo.UpdateDirName, ""));
 		   //设置上次修改
-		   lastModify.setText(new Date(file.lastModified()).toLocaleString());
+		   lastModify.setText(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date(file.lastModified())));
 		}
 		else
 		{

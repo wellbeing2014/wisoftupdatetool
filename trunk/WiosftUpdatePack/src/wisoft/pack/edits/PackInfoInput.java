@@ -1,10 +1,7 @@
 package wisoft.pack.edits;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
 
-import org.dom4j.Element;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.resource.ImageDescriptor;
@@ -12,9 +9,6 @@ import org.eclipse.ui.IPathEditorInput;
 import org.eclipse.ui.IPersistableElement;
 
 import wisoft.pack.models.PackInfoModel;
-import wisoft.pack.models.PackRelyModel;
-import wisoft.pack.utils.UpdateInfo;
-import wisoft.pack.utils.XmlOperator;
 
 public class PackInfoInput implements IPathEditorInput {
 	//private IPath fPath;

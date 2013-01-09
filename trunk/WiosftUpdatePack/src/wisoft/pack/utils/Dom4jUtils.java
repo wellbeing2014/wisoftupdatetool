@@ -1,9 +1,21 @@
 package wisoft.pack.utils;
 
-import java.io.*;
-import java.util.*;
-import org.dom4j.*;
-import org.dom4j.io.*;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+
+import org.dom4j.Document;
+import org.dom4j.DocumentHelper;
+import org.dom4j.Element;
+import org.dom4j.Namespace;
+import org.dom4j.XPath;
+import org.dom4j.io.OutputFormat;
+import org.dom4j.io.SAXReader;
+import org.dom4j.io.XMLWriter;
 public class Dom4jUtils {
 	/** XML ‰»Î¡˜ */
 	private InputStream inputStream;

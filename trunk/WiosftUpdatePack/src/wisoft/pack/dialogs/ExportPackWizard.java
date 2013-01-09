@@ -1,6 +1,7 @@
 package wisoft.pack.dialogs;
 
 import java.io.File;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
@@ -10,8 +11,6 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.swt.widgets.Display;
-
-import com.wisoft.wims.WimsSingleIssueTracking;
 
 import wisoft.pack.edits.XmlSqlEditorInput;
 import wisoft.pack.events.ZipHandleEvent;
@@ -23,6 +22,8 @@ import wisoft.pack.utils.UpdateInfo;
 import wisoft.pack.utils.ZipUtil;
 import wisoft.pack.views.Console;
 import wisoft.pack.views.Console.ConsoleType;
+
+import com.wisoft.wims.WimsSingleIssueTracking;
 
 public class ExportPackWizard extends Wizard {
 	private PackInfoModel pack;
@@ -101,6 +102,7 @@ public class ExportPackWizard extends Wizard {
 	
 	private String createRealseNote()
 	{
+		SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		StringBuffer sb = new StringBuffer();
 		sb.append("************************************************************************\r\n");
 		sb.append("                           ★"+pack.getName()+"发布说明★\r\n");
@@ -109,7 +111,7 @@ public class ExportPackWizard extends Wizard {
 		sb.append("    平台版本：  "+pack.getVersion()+"\r\n");
 		sb.append("    创建日期：  "+pack.getCreateTime()+"\r\n");
 		sb.append("    创建人：       "+pack.getCreateMan()+"\r\n");
-		sb.append("    发布日期：  "+(new Date().toLocaleString())+"\r\n");
+		sb.append("    发布日期：  "+df.format(new Date())+"\r\n");
 		sb.append("    关键字：       "+pack.getKeyWord()+"\r\n");
 		sb.append("************************************************************************\r\n");
 		sb.append("\r\n");

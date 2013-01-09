@@ -1,6 +1,7 @@
 package wisoft.pack.dialogs;
 
 import java.io.File;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -83,7 +84,7 @@ public class NewPackWizard extends Wizard {
 					pack.setVersion(version);
 					pack.setKeyWord(keyword);
 					pack.setCreateMan(createMan);
-					pack.setCreateTime(new Date().toLocaleString());
+					pack.setCreateTime(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
 					pack.setReleaseNote(releasenot);
 					pack.saveIntoXML();
 					

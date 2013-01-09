@@ -6,7 +6,6 @@ import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.ui.IWorkbenchWindow;
 
 import wisoft.pack.dialogs.ExportPackWizard;
-import wisoft.pack.dialogs.NewPackWizard;
 import wisoft.pack.models.PackInfoModel;
 import wisoft.pack.views.NavigationView;
 

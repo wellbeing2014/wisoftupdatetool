@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?pde version="3.5"?>
 
-<product name="中科更新包管理工具" id="WiosftUpdatePack.product" application="WiosftUpdatePack.application" version="1.0.0.qualifier" useFeatures="false" includeLaunchers="true">
+<product name="中科更新包管理工具" uid="wisoftPack" id="WiosftUpdatePack.product" application="WiosftUpdatePack.application" version="1.0.0.qualifier" useFeatures="false" includeLaunchers="true">
 
    <aboutInfo>
       <image path="product_lg.gif"/>
@@ -19,6 +19,22 @@
 
    <windowImages i16="icons/wi_updatetool.ico"/>
 
+   <splash
+      location="WiosftUpdatePack"
+      startupProgressRect="5,275,445,15"
+      startupMessageRect="7,252,445,20"
+      startupForegroundColor="000000" />
+   <launcher name="WisoftPack">
+      <solaris/>
+      <win useIco="true">
+         <ico path="/WiosftUpdatePack/icons/wi_updatetool.ico"/>
+         <bmp/>
+      </win>
+   </launcher>
+
+   <vm>
+      <windows include="true">org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.6</windows>
+   </vm>
 
    <plugins>
       <plugin id="WiosftUpdatePack"/>
