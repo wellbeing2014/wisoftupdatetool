@@ -1,12 +1,10 @@
 package wisoft.pack.actions;
 
 import org.eclipse.jface.action.Action;
-import org.eclipse.jface.window.Window;
 import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.ui.IWorkbenchWindow;
 
 import wisoft.pack.dialogs.NewPackWizard;
-import wisoft.pack.models.PackInfoModel;
 import wisoft.pack.views.NavigationView;
 
 public class OpenNewPackDialogAction extends Action {

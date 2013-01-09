@@ -1,7 +1,5 @@
 package wisoft.pack.models;
 
-import java.util.Iterator;
-
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
 

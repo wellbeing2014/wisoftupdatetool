@@ -33,6 +33,8 @@ import com.wisoft.wims.ResultReturn;
 import com.wisoft.wims.TrackServicesIn;
 import com.wisoft.wims.TrankingManager;
 import com.wisoft.wims.WimsSingleIssueTracking;
+import org.eclipse.swt.events.KeyAdapter;
+import org.eclipse.swt.events.KeyEvent;
 
 public class TrackingListSelDialog extends Dialog {
 	private Text text;
@@ -72,6 +74,13 @@ public class TrackingListSelDialog extends Dialog {
 		gridLayout.numColumns = 2;
 		
 		text = new Text(container, SWT.BORDER);
+		text.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyPressed(KeyEvent e) {
+				if(e.keyCode== SWT.CR || e.keyCode== SWT.KEYPAD_CR)
+					queryWimsTrack();
+			}
+		});
 		text.setTabs(11);
 		text.addFocusListener(new FocusAdapter() {
 			@Override
@@ -104,25 +113,7 @@ public class TrackingListSelDialog extends Dialog {
 		btnNewButton.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				TrankingManager tm = new TrankingManager();
-				IWimsManagerWSPortType iww = tm.getTrackingManager();
-				TrackServicesIn trackparam = new TrackServicesIn();
-			    trackparam.setFpqk("all");
-			    trackparam.setState("1");
-			    trackparam.setZrpersonid("all");
-			    trackparam.setSearch(text.getText());
-			    ResultReturn rn =iww.findTrackByServicesInParames(trackparam, 0, 10);
-			    //System.out.println(((WimsSingleIssueTracking)rn.getLst().get(0)).getContent());
-				
-				
-		        table.removeAll();
-		        for(int i=0;i<rn.getLst().size();i++)
-		        {
-		        	WimsSingleIssueTracking single = (WimsSingleIssueTracking)rn.getLst().get(i);
-		        	TableItem item = new TableItem(table, SWT.NONE);
-		        	item.setText( new String[] { single.getLsh(), single.getProid(), single.getSqpersonid(),single.getContent(),single.getId()});
-		        	item.setData(single);
-		        }
+				queryWimsTrack();
 			}
 		});
 		btnNewButton.setText("\u67E5\u8BE2");
@@ -192,7 +183,7 @@ public class TrackingListSelDialog extends Dialog {
 	@Override
 	protected void createButtonsForButtonBar(Composite parent) {
 		createButton(parent, IDialogConstants.OK_ID, IDialogConstants.OK_LABEL,
-				true);
+				false);
 		createButton(parent, IDialogConstants.CANCEL_ID,
 				IDialogConstants.CANCEL_LABEL, false);
 	}
@@ -204,5 +195,27 @@ public class TrackingListSelDialog extends Dialog {
 	protected Point getInitialSize() {
 		return new Point(688, 485);
 	}
-
+	
+	private void queryWimsTrack()
+	{
+		TrankingManager tm = new TrankingManager();
+		IWimsManagerWSPortType iww = tm.getTrackingManager();
+		TrackServicesIn trackparam = new TrackServicesIn();
+	    trackparam.setFpqk("all");
+	    trackparam.setState("1");
+	    trackparam.setZrpersonid("all");
+	    trackparam.setSearch(text.getText());
+	    ResultReturn rn =iww.findTrackByServicesInParames(trackparam, 0, 10);
+	    //System.out.println(((WimsSingleIssueTracking)rn.getLst().get(0)).getContent());
+		
+		
+        table.removeAll();
+        for(int i=0;i<rn.getLst().size();i++)
+        {
+        	WimsSingleIssueTracking single = (WimsSingleIssueTracking)rn.getLst().get(i);
+        	TableItem item = new TableItem(table, SWT.NONE);
+        	item.setText( new String[] { single.getLsh(), single.getProid(), single.getSqpersonid(),single.getContent(),single.getId()});
+        	item.setData(single);
+        }
+	}
 }

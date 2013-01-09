@@ -107,6 +107,22 @@
                name="appName"
                value="中科更新包管理工具">
          </property>
+         <property
+               name="preferenceCustomization"
+               value="plugin_customization.ini">
+         </property>
+         <property
+               name="startupForegroundColor"
+               value="FF0000">
+         </property>
+         <property
+               name="startupMessageRect"
+               value="7,108,283,20">
+         </property>
+         <property
+               name="startupProgressRect"
+               value="5,128,283,15">
+         </property>
          
       </product>
    </extension>

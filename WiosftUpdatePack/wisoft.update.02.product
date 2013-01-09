@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?pde version="3.5"?>
 
-<product name="中科更新包管理工具" id="WiosftUpdatePack.product" application="WiosftUpdatePack.application" version="1.0.0.qualifier" useFeatures="false" includeLaunchers="true">
+<product name="中科更新包管理工具" uid="WisoftPack" id="WiosftUpdatePack.product" application="WiosftUpdatePack.application" version="1.0.0.qualifier" useFeatures="false" includeLaunchers="true">
 
    <aboutInfo>
       <image path="product_lg.gif"/>
@@ -18,6 +18,23 @@
    </launcherArgs>
 
    <windowImages i16="icons/wi_updatetool.ico"/>
+
+   <splash
+      location="WiosftUpdatePack"
+      startupProgressRect="5,128,283,15"
+      startupMessageRect="7,108,283,20"
+      startupForegroundColor="FF0000" />
+   <launcher name="wisoftpack">
+      <solaris/>
+      <win useIco="true">
+         <ico path="/WiosftUpdatePack/icons/wi_updatetool.ico"/>
+         <bmp/>
+      </win>
+   </launcher>
+
+
+   <vm>
+   </vm>
 
 
    <plugins>
