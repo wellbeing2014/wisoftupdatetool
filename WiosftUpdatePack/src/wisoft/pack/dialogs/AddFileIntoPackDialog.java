@@ -6,11 +6,12 @@ import java.util.List;
 
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.IDialogConstants;
-import org.eclipse.jface.viewers.TreeViewer;
+import org.eclipse.jface.viewers.CheckStateChangedEvent;
+import org.eclipse.jface.viewers.CheckboxTreeViewer;
+import org.eclipse.jface.viewers.ICheckStateListener;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -32,7 +33,7 @@ public class AddFileIntoPackDialog extends Dialog {
 	private Text text;
 	//private List<String> packPaths;
 	private String defaultpath;
-	TreeViewer tv ;
+	CheckboxTreeViewer  tv ;
 	Tree tree;
 	//public String packPath="";
 	public String filePath = "";
@@ -130,7 +131,8 @@ public class AddFileIntoPackDialog extends Dialog {
 		
 		tree = new Tree(container, SWT.BORDER | SWT.CHECK | SWT.MULTI);
 		tree.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 4, 1));
-		tree.addSelectionListener(new SelectionListener() {
+		/*
+		 * tree.addSelectionListener(new SelectionListener() {
 			
 			@Override
 			public void widgetSelected(SelectionEvent e) {
@@ -196,14 +198,71 @@ public class AddFileIntoPackDialog extends Dialog {
 			public void widgetDefaultSelected(SelectionEvent e) {
 				// TODO Auto-generated method stub
 			}
-		});
+		});*/
 		
-		tv = new TreeViewer(tree);
+		tv = new CheckboxTreeViewer(tree);
 		tv.setContentProvider(new MasterContentProvider());
 		//设置树的标签
 		
 		tv.setLabelProvider(new MasterLabelProvider(new MasterStyleLabelProviderC()));
 		//tv.setInput();
+		
+		tv.addCheckStateListener(new ICheckStateListener() {
+			
+			MasterContentProvider provider = (MasterContentProvider)tv.getContentProvider();
+			
+			private void setParentGray(Object element)
+			{
+				Object Parent_element =provider.getParent(element);
+				tv.setParentsGrayed(Parent_element, true);
+				setParentGray(Parent_element);
+			}
+			
+			private void setParentCheck(Object element)
+			{
+				//获取父对象
+				Object Parent_element =provider.getParent(element);
+				//获取所有兄弟对象
+				Object[] elements =provider.getChildren(Parent_element);
+				if(elements.length==1)
+				{
+					tv.setChecked(Parent_element, true);
+					setParentCheck(Parent_element);
+					return;
+				}
+				else
+				{
+					boolean haveHalfChecked = false;
+					for(Object zelement:elements)
+					{
+						if(zelement!=element)
+						{
+							//兄弟对象 没有设置 checked，父对象一定为 半选 状态
+							if(!tv.getChecked(zelement)||tv.getGrayed(zelement))
+							{
+								haveHalfChecked = true;
+								break;
+							}
+						}
+					}
+					if(haveHalfChecked)
+						setParentGray(Parent_element);
+					else
+						setParentCheck(Parent_element);
+				}
+			}
+			
+			@Override
+			public void checkStateChanged(CheckStateChangedEvent event) {
+				// TODO Auto-generated method stub
+				
+				Object element = event.getElement();
+				if (event.getChecked()) 
+		          tv.setSubtreeChecked(element, true);
+				else
+				  tv.setSubtreeChecked(element, false);
+			}
+		});
 		tv.expandToLevel(3);
 		
 		return container;
