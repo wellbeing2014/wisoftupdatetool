@@ -131,74 +131,6 @@ public class AddFileIntoPackDialog extends Dialog {
 		
 		tree = new Tree(container, SWT.BORDER | SWT.CHECK | SWT.MULTI);
 		tree.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 4, 1));
-		/*
-		 * tree.addSelectionListener(new SelectionListener() {
-			
-			@Override
-			public void widgetSelected(SelectionEvent e) {
-				// TODO Auto-generated method stub
-				if(e.detail==SWT.CHECK)
-				{
-					TreeItem tt = (TreeItem)(e.item);
-					if(tt.getGrayed())
-						tt.setGrayed(false);
-					setParentItem(tt);
-					setChildItem(tt);
-					//tv.refresh();
-				}
-			}
-			
-			void setParentItem(TreeItem ti)
-			{
-				TreeItem pti = ti.getParentItem();
-				if(pti!=null)
-				{
-				boolean haveChecked = false;
-				boolean haveUnChecked = false;
-				boolean haveHalfChecked = false;
-				for(int i=0;i<pti.getItems().length;i++)
-				{
-					if(pti.getItems()[i].getGrayed())
-					{
-						haveHalfChecked = true;
-						break;
-					}
-					if(pti.getItems()[i].getChecked())
-						haveChecked = true;
-					else
-						haveUnChecked = true;
-				}
-				if((haveChecked&&haveUnChecked)||haveHalfChecked)
-				{	
-					pti.setGrayed(true);
-					pti.setChecked(true);
-				}
-				else if(haveChecked&&!haveUnChecked)
-				{	
-					pti.setGrayed(false);
-					pti.setChecked(true);
-				}
-
-				setParentItem(pti);
-				}
-			}
-			
-			void setChildItem(TreeItem ti)
-			{
-				//
-				for(int i=0;i<ti.getItems().length;i++)
-				{
-					ti.getItems()[i].setChecked(ti.getChecked());
-					setChildItem(ti.getItems()[i]);
-				}
-				//ti.set
-				ti.setExpanded(true);
-			}
-			@Override
-			public void widgetDefaultSelected(SelectionEvent e) {
-				// TODO Auto-generated method stub
-			}
-		});*/
 		
 		tv = new CheckboxTreeViewer(tree);
 		tv.setContentProvider(new MasterContentProvider());
@@ -211,17 +143,17 @@ public class AddFileIntoPackDialog extends Dialog {
 			
 			MasterContentProvider provider = (MasterContentProvider)tv.getContentProvider();
 			
-			private void setParentGray(Object element)
-			{
-				Object Parent_element =provider.getParent(element);
-				tv.setParentsGrayed(Parent_element, true);
-				setParentGray(Parent_element);
-			}
+			
+			
+			
 			
 			private void setParentCheck(Object element)
 			{
 				//获取父对象
 				Object Parent_element =provider.getParent(element);
+				
+				if(Parent_element==null||tv.getInput().equals(Parent_element))
+					return ;
 				//获取所有兄弟对象
 				Object[] elements =provider.getChildren(Parent_element);
 				if(elements.length==1)
@@ -246,9 +178,11 @@ public class AddFileIntoPackDialog extends Dialog {
 						}
 					}
 					if(haveHalfChecked)
-						setParentGray(Parent_element);
+						tv.setParentsGrayed(element, true);
 					else
-						setParentCheck(Parent_element);
+					{
+						setParentCheck(element);
+					}
 				}
 			}
 			
@@ -261,6 +195,7 @@ public class AddFileIntoPackDialog extends Dialog {
 		          tv.setSubtreeChecked(element, true);
 				else
 				  tv.setSubtreeChecked(element, false);
+				setParentCheck(element);
 			}
 		});
 		tv.expandToLevel(3);
