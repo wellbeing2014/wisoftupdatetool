@@ -46,7 +46,10 @@ public class MasterContentProvider implements ITreeContentProvider {
 	}
 
 	public Object getParent(Object element) {
-	   return new File(((File) element).getParent());
+		if(((File) element).getParent()!=null)
+			return new File(((File) element).getParent());
+		else 
+			return null;
 	}
 
 	public void dispose() {
