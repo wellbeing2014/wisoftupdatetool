@@ -62,6 +62,7 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor {
         register(exitAction);
         
         aboutAction = ActionFactory.ABOUT.create(window);
+        aboutAction.setText("关于本系统……");
         register(aboutAction);
         
         savenAction =new  SavePackEditAction();
