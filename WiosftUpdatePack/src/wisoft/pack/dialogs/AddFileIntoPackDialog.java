@@ -25,6 +25,7 @@ import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeItem;
 
+import wisoft.pack.app.PackConfigs;
 import wisoft.pack.edits.MasterContentProvider;
 import wisoft.pack.edits.MasterLabelProvider;
 import wisoft.pack.edits.MasterStyleLabelProviderC;
@@ -113,7 +114,7 @@ public class AddFileIntoPackDialog extends Dialog {
 			public void widgetSelected(SelectionEvent e) {
 				DirectoryDialog dd = new DirectoryDialog(getParentShell());
 				dd.setText("选择文件夹");
-				//dd.setFilterPath()
+				dd.setFilterPath(PackConfigs.BuildPath);
 				String path =dd.open();
 				if(path!=null)
 				{
@@ -145,7 +146,15 @@ public class AddFileIntoPackDialog extends Dialog {
 			
 			
 			
-			
+			private void setParentGrayed(Object element)
+			{
+				Object Parent_element =provider.getParent(element);
+				if(Parent_element==null||tv.getInput().equals(Parent_element))
+					return ;
+				tv.setGrayChecked(Parent_element, true);
+				setParentGrayed(Parent_element);
+				
+			}
 			
 			private void setParentCheck(Object element)
 			{
@@ -170,7 +179,7 @@ public class AddFileIntoPackDialog extends Dialog {
 						if(zelement!=element)
 						{
 							//兄弟对象 没有设置 checked，父对象一定为 半选 状态
-							if(!tv.getChecked(zelement)||tv.getGrayed(zelement))
+							if(!tv.getChecked(zelement))
 							{
 								haveHalfChecked = true;
 								break;
@@ -178,11 +187,13 @@ public class AddFileIntoPackDialog extends Dialog {
 						}
 					}
 					if(haveHalfChecked)
-						tv.setParentsGrayed(element, true);
+						setParentGrayed(element);
 					else
 					{
-						setParentCheck(element);
+						tv.setGrayChecked(Parent_element, false);
+						tv.setChecked(Parent_element, true);
 					}
+					setParentCheck(Parent_element);
 				}
 			}
 			
@@ -191,10 +202,10 @@ public class AddFileIntoPackDialog extends Dialog {
 				// TODO Auto-generated method stub
 				
 				Object element = event.getElement();
-				if (event.getChecked()) 
-		          tv.setSubtreeChecked(element, true);
-				else
-				  tv.setSubtreeChecked(element, false);
+				
+				boolean checked = event.getChecked();
+		        tv.setSubtreeChecked(element, checked);
+		        tv.setGrayed(element, false);
 				setParentCheck(element);
 			}
 		});

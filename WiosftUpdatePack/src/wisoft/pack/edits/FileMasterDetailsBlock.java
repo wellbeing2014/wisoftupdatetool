@@ -322,6 +322,17 @@ public class FileMasterDetailsBlock extends MasterDetailsBlock {
 		//删除按钮
 		ToolItem tltmNew_2 = new ToolItem(toolBar, SWT.NONE);
 		tltmNew_2.addSelectionListener(new SelectionAdapter() {
+			
+			//日志写往控制台的方法
+			private void printlnToConsole(final String msg,final ConsoleType type)
+			{
+				Display.getDefault().asyncExec(new Runnable() {                        
+	    			public void run() {                                                                                    
+	    				Console.getInstance();
+	    				Console.print(msg, pi.getName(), type);
+	    			}});
+			}
+			
 			 private  void delFolder(String folderPath) {
 				  try {
 				        delAllFile(folderPath); //删除完里面所有内容
@@ -342,7 +353,8 @@ public class FileMasterDetailsBlock extends MasterDetailsBlock {
 			         return flag;
 			       }
 			       if (!file.isDirectory()) {
-			         return flag;
+			    	   file.delete();
+			         return true;
 			       }
 			       String[] tempList = file.list();
 			       File temp = null;
