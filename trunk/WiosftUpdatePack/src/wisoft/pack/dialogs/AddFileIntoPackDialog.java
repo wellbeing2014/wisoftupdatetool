@@ -114,7 +114,7 @@ public class AddFileIntoPackDialog extends Dialog {
 			public void widgetSelected(SelectionEvent e) {
 				DirectoryDialog dd = new DirectoryDialog(getParentShell());
 				dd.setText("Ñ¡ÔñÎÄ¼þ¼Ð");
-				dd.setFilterPath(PackConfigs.BuildPath);
+				dd.setFilterPath("C:\\");
 				String path =dd.open();
 				if(path!=null)
 				{
