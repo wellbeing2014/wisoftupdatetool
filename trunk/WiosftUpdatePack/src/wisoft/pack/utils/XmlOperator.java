@@ -66,7 +66,7 @@ public class XmlOperator {
 		read();
 	}
 	
-	private void read()
+	public void read()
 	{
 		if(exists())
 			try {

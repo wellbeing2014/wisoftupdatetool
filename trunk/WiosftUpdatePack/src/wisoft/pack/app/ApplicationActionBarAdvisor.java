@@ -19,7 +19,7 @@ import org.eclipse.ui.application.IActionBarConfigurer;
 import wisoft.pack.actions.DelPackInfoAction;
 import wisoft.pack.actions.OpenNewPackDialogAction;
 import wisoft.pack.actions.OpenPackEditAction;
-import wisoft.pack.actions.RefreshPackAction;
+import wisoft.pack.actions.PackConfigAction;
 import wisoft.pack.actions.SavePackEditAction;
 
 /**
@@ -44,8 +44,7 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor {
     private OpenNewPackDialogAction openNewPackDialogAction;
     private DelPackInfoAction removePackInfoAction;
     private OpenPackEditAction openPackAction;
-    private RefreshPackAction refreshPackAction;
-    
+    private PackConfigAction packConfigAction;
 
     public ApplicationActionBarAdvisor(IActionBarConfigurer configurer) {
         super(configurer);
@@ -71,9 +70,6 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor {
         refreshAction = ActionFactory.REFRESH.create(window);
         register(refreshAction);
         
-        refreshPackAction =new RefreshPackAction();
-        register(refreshPackAction);
-        
 //        newWindowAction = ActionFactory.OPEN_NEW_WINDOW.create(window);
 //        register(newWindowAction);
 //        
@@ -88,19 +84,23 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor {
         removePackInfoAction = new DelPackInfoAction(window, "删除更新包");
         register(removePackInfoAction);
         
-        openPackAction = new OpenPackEditAction(window);
+        
+        packConfigAction = new PackConfigAction(window, "配置选项");
+        register(packConfigAction);
+        openPackAction = new OpenPackEditAction(window,"导出更新包");
         register(openPackAction);
     }
     
     protected void fillMenuBar(IMenuManager menuBar) {
         MenuManager fileMenu = new MenuManager("&File", IWorkbenchActionConstants.M_FILE);
         MenuManager helpMenu = new MenuManager("&Help", IWorkbenchActionConstants.M_HELP);
+        MenuManager toolMenu = new MenuManager("&Properties", IWorkbenchActionConstants.PROPERTIES);
         
         menuBar.add(fileMenu);
         // Add a group marker indicating where action set menus will appear.
         menuBar.add(new GroupMarker(IWorkbenchActionConstants.MB_ADDITIONS));
         menuBar.add(helpMenu);
-        
+        menuBar.add(toolMenu);
         // File
 //        fileMenu.add(newWindowAction);
 //        fileMenu.add(new Separator());
@@ -111,6 +111,8 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor {
         
         // Help
         helpMenu.add(aboutAction);
+        
+        toolMenu.add(packConfigAction);
     }
     
     protected void fillCoolBar(ICoolBarManager coolBar) {
@@ -122,5 +124,6 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor {
         toolbar.add(removePackInfoAction);
         toolbar.add(openPackAction);
         toolbar.add(savenAction);
+        toolbar.add(packConfigAction);
     }
 }
