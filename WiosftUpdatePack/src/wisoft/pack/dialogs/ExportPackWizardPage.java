@@ -1,6 +1,5 @@
 package wisoft.pack.dialogs;
 
-import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -69,7 +68,6 @@ public class ExportPackWizardPage extends WizardPage {
 		
 		text = new Text(container, SWT.BORDER);
 		String path = PackConfigInfo.getInstance().getDefaultExportPath();
-		path=path.substring(path.indexOf("/")+1,path.length());
 		text.setText(path);
 		text.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
 		
