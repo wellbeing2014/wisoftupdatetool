@@ -44,46 +44,51 @@
             name="打开更新包">
       </command>
       <command
-            id="WiosftUpdatePack.refresh"
-            name="刷新更新包">
-      </command>
-      <command
             id="WiosftUpdatePack.save"
             name="保存更新包">
+      </command>
+      <command
+            id="WiosftUpdatePack.packconfig"
+            name="配置选项">
       </command>
    </extension>
    <extension
          point="org.eclipse.ui.bindings">
       <key
             commandId="WiosftUpdatePack.add"
-            schemeId="WiosftUpdatePack.myscheme"
-            sequence="CTRL+3">
+            schemeId="WiosftUpdatePack.scheme1"
+            sequence="CTRL+1">
       </key>
       <key
             commandId="org.eclipse.ui.file.exit"
-            schemeId="WiosftUpdatePack.myscheme"
+            schemeId="WiosftUpdatePack.scheme1"
             sequence="ALT+X">
       </key>
       <key
             commandId="WiosftUpdatePack.remove"
-            schemeId="WiosftUpdatePack.myscheme"
+            schemeId="WiosftUpdatePack.scheme1"
             sequence="CTRL+D">
       </key>
       <key
-            commandId="WiosftUpdatePack.refresh"
-            schemeId="WiosftUpdatePack.myscheme"
-            sequence="F5">
-      </key>
-      <key
             commandId="WiosftUpdatePack.save"
-            schemeId="WiosftUpdatePack.myscheme"
+            schemeId="WiosftUpdatePack.scheme1"
             sequence="CTRL+5">
       </key>
+      <key
+            commandId="WiosftUpdatePack.packconfig"
+            schemeId="WiosftUpdatePack.scheme1"
+            sequence="CTRL+P">
+      </key>
       <scheme
-            id="WiosftUpdatePack.myscheme"
-            name="myscheme"
+            id="WiosftUpdatePack.scheme1"
+            name="wisoftschema"
             parentId="org.eclipse.ui.defaultAcceleratorConfiguration">
       </scheme>
+      <key
+            commandId="WiosftUpdatePack.open"
+            schemeId="WiosftUpdatePack.scheme1"
+            sequence="CTRL+E">
+      </key>
    </extension>
    <extension
          id="product"
@@ -91,19 +96,27 @@
       <product
             application="WiosftUpdatePack.application"
             name="中科更新包管理工具">
-         <property
+ 		 <property
                name="aboutText"
                value="中科更新包管理工具 v1.0.3&#xA;更新记录:&#xA;
+               BUG:&#xA;
                1、修改选择文件的树项目无法一次选中的BUG&#xA;
-               2、增加自动生成版本语句&#xA;">
-         </property>
-         <property
-               name="windowImages"
-               value="icons/wi_updatetool.ico">
+               2、修改打包文件配置树中删除项后，实际文件未删除的BUG&#xA;
+               改进:&#xA;
+               1、增加自动生成版本语句&#xA;
+               2、增加环境配置选项&#xA;
+               3、增加快捷键操作&#xA;
+               4、增加更新说明&#xA;
+               5、修改选择构建服务目录的对话框，使其直接展示树&#xA;
+               ">
          </property>
          <property
                name="aboutImage"
                value="product_lg.bmp">
+         </property>
+         <property
+               name="windowImages"
+               value="icons/wi_updatetool.ico">
          </property>
          <property
                name="appName"
@@ -115,15 +128,15 @@
          </property>
          <property
                name="startupForegroundColor"
-               value="000000">
+               value="FF0000">
          </property>
          <property
                name="startupMessageRect"
-               value="7,252,445,20">
+               value="7,227,539,20">
          </property>
          <property
                name="startupProgressRect"
-               value="5,275,445,15">
+               value="5,247,539,15">
          </property>
          
       </product>

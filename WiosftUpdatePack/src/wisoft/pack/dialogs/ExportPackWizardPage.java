@@ -15,6 +15,7 @@ import org.eclipse.swt.widgets.Text;
 import org.eclipse.wb.swt.SWTResourceManager;
 
 import wisoft.pack.models.PackInfoModel;
+import wisoft.pack.utils.PackConfigInfo;
 import wisoft.pack.utils.UpdateInfo;
 
 public class ExportPackWizardPage extends WizardPage {
@@ -67,7 +68,7 @@ public class ExportPackWizardPage extends WizardPage {
 		label.setText("\u4FDD\u5B58\u8DEF\u5F84:");
 		
 		text = new Text(container, SWT.BORDER);
-		String path = Platform.getInstanceLocation().getURL().getPath();
+		String path = PackConfigInfo.getInstance().getDefaultExportPath();
 		path=path.substring(path.indexOf("/")+1,path.length());
 		text.setText(path);
 		text.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
@@ -77,10 +78,6 @@ public class ExportPackWizardPage extends WizardPage {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				DirectoryDialog dlg=new DirectoryDialog(getShell(),SWT.OPEN|SWT.CANCEL);
-                //初始的文件目录
-				String path = Platform.getInstanceLocation().getURL().getPath();
-				dlg.setFilterPath(path.substring(path.indexOf("/")+1,path.length()));
-				//dlg.open()返回的是一个你已经选好的文件的名称
 				text.setText(dlg.open());
 			}
 		});

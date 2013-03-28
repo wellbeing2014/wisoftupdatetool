@@ -1,6 +1,10 @@
 package wisoft.pack.app;
 
+import java.net.URL;
+
+import org.eclipse.core.runtime.adaptor.LocationManager;
 import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.osgi.service.datalocation.Location;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
 
@@ -24,6 +28,23 @@ public class Activator extends AbstractUIPlugin {
 
 	public void setCurrent_pack(PackInfoModel current_pack) {
 		this.current_pack = current_pack;
+	}
+	
+	public String getLocationPath()
+	{
+		Location installLoc = LocationManager.getInstallLocation(); 
+	    String path = null; 
+	    String installPath = null; 
+	    if (installLoc != null) 
+	    {  
+
+	    	URL installURL = installLoc.getURL(); 
+	        // assume install URL is file: based 
+	        path = installURL.getPath(); 
+	    } 
+
+	    installPath = path.substring(1, path.length()); 
+	    return installPath;
 	}
 
 	/**

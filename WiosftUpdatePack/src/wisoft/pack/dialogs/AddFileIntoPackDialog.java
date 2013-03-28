@@ -25,7 +25,6 @@ import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeItem;
 
-import wisoft.pack.app.PackConfigs;
 import wisoft.pack.edits.MasterContentProvider;
 import wisoft.pack.edits.MasterLabelProvider;
 import wisoft.pack.edits.MasterStyleLabelProviderC;
@@ -112,10 +111,10 @@ public class AddFileIntoPackDialog extends Dialog {
 		button_4.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				DirectoryDialog dd = new DirectoryDialog(getParentShell());
-				dd.setText("Ñ¡ÔñÎÄ¼þ¼Ð");
-				dd.setFilterPath("C:\\");
-				String path =dd.open();
+				String path=null;
+				ChooseBuildPathDialog dd = new ChooseBuildPathDialog(getParentShell());
+				if(IDialogConstants.OK_ID==dd.open())
+					path = dd.buildpath;
 				if(path!=null)
 				{
 				text.setText(path);
