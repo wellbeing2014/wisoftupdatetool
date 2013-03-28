@@ -45,6 +45,7 @@ public class PackConfigInfo {
 			xmlo = new XmlOperator();
 			xmlo.setXmlfile(config);
 		}
+		
 	}
 	
 	 public static synchronized PackConfigInfo getInstance() {
@@ -77,7 +78,7 @@ public class PackConfigInfo {
 		if(path.getTextTrim().isEmpty())
 		{	
 			setWimsTrackManagerPath("http://58.214.246.37:8120/wisoftintegrateframe/services/WimsManager?wsdl");
-			return getBuildServerPath();
+			return getWimsTrackManagerPath();
 		}
 		else
 			return path.getTextTrim();

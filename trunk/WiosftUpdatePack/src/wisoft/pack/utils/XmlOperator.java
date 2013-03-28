@@ -104,6 +104,7 @@ public class XmlOperator {
 		}
 		else
 			RootElement =this.document.addElement(root);
+		save();
 	}
 	
 	//public void 
