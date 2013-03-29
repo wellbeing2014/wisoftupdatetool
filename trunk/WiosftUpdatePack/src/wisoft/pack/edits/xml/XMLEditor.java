@@ -1,6 +1,7 @@
 package wisoft.pack.edits.xml;
 
 import org.eclipse.ui.texteditor.AbstractTextEditor;
+import org.eclipse.ui.texteditor.IDocumentProvider;
 import org.eclipse.ui.texteditor.ITextEditorExtension3;
 
 

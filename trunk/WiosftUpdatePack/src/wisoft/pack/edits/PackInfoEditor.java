@@ -58,6 +58,14 @@ public class PackInfoEditor extends FormEditor {
 				// TODO Auto-generated method stub
 				if(e.item.getData() instanceof XMLEditor)
 				{
+					XMLEditor xmleditor = (XMLEditor)e.item.getData();
+					try {
+						xmleditor.init(getEditorSite(), getEditorInput());
+					} catch (PartInitException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
+					
 				}
 			}
 			

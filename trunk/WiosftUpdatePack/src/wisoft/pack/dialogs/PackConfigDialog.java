@@ -26,6 +26,7 @@ public class PackConfigDialog extends TitleAreaDialog {
 	private Text text_1;
 	private Text text_2;
 	private Text text_3;
+	private Text text_4;
 
 	/**
 	 * Create the dialog.
@@ -81,6 +82,20 @@ public class PackConfigDialog extends TitleAreaDialog {
 		text_2.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 2, 1));
 		new Label(container, SWT.NONE);
 		
+		Label label_3 = new Label(container, SWT.NONE);
+		label_3.setText("\u66F4\u65B0\u5305\u53D1\u5E03\u5730\u5740");
+		
+		text_4 = new Text(container, SWT.BORDER);
+		text_4.setEditable(false);
+		text_4.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 2, 1));
+		new Label(container, SWT.NONE);
+		
+		Button btnwims = new Button(container, SWT.CHECK);
+		btnwims.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false, 2, 1));
+		btnwims.setText("\u5411WIMS\u540C\u6B65\u66F4\u65B0\u5305\u7248\u672C\u4FE1\u606F");
+		new Label(container, SWT.NONE);
+		new Label(container, SWT.NONE);
+		
 		Label label_1 = new Label(container, SWT.NONE);
 		label_1.setText("\u9ED8\u8BA4\u5BFC\u51FA\u5730\u5740");
 		
@@ -120,7 +135,7 @@ public class PackConfigDialog extends TitleAreaDialog {
 		button_1.setText("\u7BA1\u7406\u6784\u5EFA\u9879\u76EE");
 		
 		Label lblhudson = new Label(container, SWT.NONE);
-		lblhudson.setText("\u5B9E\u73B0hudson\u81EA\u52A8\u96C6\u6210\u6784\u5EFA\u7684\u63A5\u53E3");
+		lblhudson.setText("\u5B9E\u73B0hudson\u81EA\u52A8\u96C6\u6210\u6784\u5EFA\u7684\u63A5\u53E3,\u8FDB\u884C\u81EA\u52A8\u6784\u5EFA");
 		new Label(container, SWT.NONE);
 		new Label(container, SWT.NONE);
 		

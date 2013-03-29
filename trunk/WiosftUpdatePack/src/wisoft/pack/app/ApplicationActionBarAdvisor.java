@@ -92,22 +92,25 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor {
     }
     
     protected void fillMenuBar(IMenuManager menuBar) {
-        MenuManager fileMenu = new MenuManager("&File", IWorkbenchActionConstants.M_FILE);
-        MenuManager helpMenu = new MenuManager("&Help", IWorkbenchActionConstants.M_HELP);
+        MenuManager fileMenu = new MenuManager("&File", "wisoft.pack.file");
+        MenuManager ediltMenu = new MenuManager("&Edit", IWorkbenchActionConstants.M_EDIT);
         MenuManager toolMenu = new MenuManager("&Properties", IWorkbenchActionConstants.PROPERTIES);
+        MenuManager helpMenu = new MenuManager("&Help", IWorkbenchActionConstants.M_HELP);
         
         menuBar.add(fileMenu);
+        menuBar.add(ediltMenu);
         // Add a group marker indicating where action set menus will appear.
-        menuBar.add(new GroupMarker(IWorkbenchActionConstants.MB_ADDITIONS));
-        menuBar.add(helpMenu);
+        //menuBar.add(new GroupMarker(IWorkbenchActionConstants.MB_ADDITIONS));
         menuBar.add(toolMenu);
+        menuBar.add(helpMenu);
         // File
 //        fileMenu.add(newWindowAction);
 //        fileMenu.add(new Separator());
 //        fileMenu.add(messagePopupAction);
 //        fileMenu.add(openViewAction);
-        fileMenu.add(new Separator());
+        //fileMenu.add(new Separator());
         fileMenu.add(exitAction);
+        ediltMenu.add(exitAction);
         
         // Help
         helpMenu.add(aboutAction);
