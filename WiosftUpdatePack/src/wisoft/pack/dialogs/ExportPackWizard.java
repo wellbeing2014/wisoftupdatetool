@@ -1,6 +1,11 @@
 package wisoft.pack.dialogs;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.Reader;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
@@ -13,6 +18,7 @@ import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.swt.widgets.Display;
 
 import wisoft.pack.edits.XmlSqlEditorInput;
+import wisoft.pack.edits.sql.SQLDocumentProvider;
 import wisoft.pack.events.ZipHandleEvent;
 import wisoft.pack.events.ZipHandleEventListener;
 import wisoft.pack.models.FileModel;
@@ -83,6 +89,41 @@ public class ExportPackWizard extends Wizard {
 					
 					zip.appendText(pack.getName()+"_RealseNote.txt", createRealseNote());
 					zip.appendFile(pack.getSavePath()+File.separator+UpdateInfo.UpdateDirName,"");
+					File sqlfile = new File(pack.getSavePath()+File.separator+XmlSqlEditorInput.TYPE_SQL);
+					if(!sqlfile.exists())
+					{
+						Reader in= new BufferedReader(new InputStreamReader(SQLDocumentProvider.class.getResourceAsStream("sql_template.sql")));
+						FileWriter writer = new FileWriter(sqlfile);
+						try {
+							StringBuffer buffer= new StringBuffer(512);
+							char[] readBuffer= new char[512];
+							int n= in.read(readBuffer);
+							while (n > 0) {
+								buffer.append(readBuffer, 0, n);
+								n= in.read(readBuffer);
+							}
+							writer.write(buffer.toString());
+						} finally {
+							in.close();
+							writer.close();
+						}
+					}
+					try {
+			            //打开一个写文件器，构造函数中的第二个参数true表示以追加形式写文件
+			            FileWriter writer = new FileWriter(sqlfile, true);
+			            writer.write("\r\n insert into system_version_info (ID, MODULENAME, MODULECODE, VERSION, PUBLISH_DATE, UPDATE_DATE, REMARK)");
+			            writer.write("select '',");
+			            writer.write("'"+pack.getModuleName()+"',");
+			            writer.write("'"+pack.getModuleCode()+"',");
+			            writer.write("'"+pack.getVersion()+"',");
+			            writer.write("'"+pack.getCreateTime()+"',");
+			            writer.write("to_char(sysdate,'yyyy-mm-dd hh24:mi:ss'),");
+			            writer.write("'"+pack.getKeyWord()+"' from dual;");
+			            
+			            writer.close();
+			        } catch (IOException e) {
+			            e.printStackTrace();
+			        }
 					zip.appendFile(pack.getSavePath()+File.separator+XmlSqlEditorInput.TYPE_SQL, pack.getName()+"_DataBase.sql");
 					zip.close();
 					printlnToConsole("导出更新包完成！",ConsoleType.INFO);

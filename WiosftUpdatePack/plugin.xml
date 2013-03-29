@@ -102,17 +102,20 @@
                BUG:&#xA;
                1、修改选择文件的树项目无法一次选中的BUG&#xA;
                2、修改打包文件配置树中删除项后，实际文件未删除的BUG&#xA;
+               3、修改如果不编写SQL语句，直接导出更新包，报空指针的BUG&#xA;
+               4、修改updateinfo刷新不及时的BUG&#xA;
+               &#xA;
                改进:&#xA;
-               1、增加自动生成版本语句&#xA;
+               1、增加导出时自动生成版本语句&#xA;
                2、增加环境配置选项&#xA;
-               3、增加快捷键操作&#xA;
-               4、增加更新说明&#xA;
-               5、修改选择构建服务目录的对话框，使其直接展示树&#xA;
+               3、重新定义快捷键操作&#xA;
+               4、修改选择构建服务目录的对话框，使其直接展示树&#xA;
+               5、增加更新说明&#xA;
                ">
          </property>
          <property
                name="aboutImage"
-               value="product_lg.bmp">
+               value="product_lg_bak.bmp">
          </property>
          <property
                name="windowImages"

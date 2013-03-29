@@ -114,7 +114,6 @@ public class SQLDocumentProvider extends AbstractDocumentProvider {
 		return null; // FIXME return dummy file
 	}
 	
-	
 	@Override
 	protected void doSaveDocument(IProgressMonitor monitor, Object element,
 			IDocument document, boolean overwrite) throws CoreException {
@@ -123,7 +122,6 @@ public class SQLDocumentProvider extends AbstractDocumentProvider {
 			IPathEditorInput pei= (IPathEditorInput) element;
 			IPath path= pei.getPath();
 			File file= path.toFile();
-			
 			try {
 				file.createNewFile();
 
@@ -141,9 +139,7 @@ public class SQLDocumentProvider extends AbstractDocumentProvider {
 			} catch (IOException e) {
 				throw new CoreException(new Status(IStatus.ERROR, "org.eclipse.ui.examples.rcp.texteditor", IStatus.OK, "error when saving file", e)); //$NON-NLS-1$ //$NON-NLS-2$
 			}
-
 		}
-		
 	}
 	private void writeDocumentContent(IDocument document, Writer writer, IProgressMonitor monitor) throws IOException {
 		Writer out= new BufferedWriter(writer);
@@ -205,9 +201,4 @@ public class SQLDocumentProvider extends AbstractDocumentProvider {
 			return super.isDeleted(element);
 		return !file.exists();
 	}
-	
-	
-	
-	
-	
 }
