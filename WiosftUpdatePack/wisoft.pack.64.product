@@ -1,12 +1,25 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?pde version="3.5"?>
 
-<product name="中科更新包管理工具" uid="WisoftPack" id="WiosftUpdatePack.product" application="WiosftUpdatePack.application" version="1.0.0.qualifier" useFeatures="false" includeLaunchers="true">
+<product name="中科更新包管理工具" uid="wisoft.pack" id="WiosftUpdatePack.product" application="WiosftUpdatePack.application" version="1.0.3.qualifier" useFeatures="false" includeLaunchers="true">
 
    <aboutInfo>
-      <image path="product_lg.gif"/>
+      <image path="product_lg_bak.bmp"/>
       <text>
-         RCP Mail template created by PDE
+         中科更新包管理工具 v1.0.3
+更新记录:
+                BUG:
+                1、修改选择文件的树项目无法一次选中的BUG
+                2、修改打包文件配置树中删除项后，实际文件未删除的BUG
+                3、修改如果不编写SQL语句，直接导出更新包，报空指针的BUG
+                4、修改配置后，updateinfo.xml刷新不及时的BUG
+                
+                改进:
+                1、增加导出时自动生成版本语句
+                2、增加环境配置选项
+                3、重新定义快捷键操作
+                4、修改选择构建服务目录的对话框，使其直接展示树
+                5、增加更新说明
       </text>
    </aboutInfo>
 
@@ -20,20 +33,16 @@
    <windowImages i16="icons/wi_updatetool.ico"/>
 
    <splash
-      location="WiosftUpdatePack"
       startupProgressRect="5,247,539,15"
       startupMessageRect="7,227,539,20"
       startupForegroundColor="FF0000" />
-   <launcher name="wisoftpack">
-      <solaris/>
-      <win useIco="true">
-         <ico path="/WiosftUpdatePack/icons/wi_updatetool.ico"/>
-         <bmp/>
-      </win>
-   </launcher>
 
-   <vm>
-   </vm>
+   <license>
+        <url>http://www.wisoft.com.cn</url>
+        <text>
+   wisoft.com.cn
+         </text>
+   </license>
 
    <plugins>
       <plugin id="WiosftUpdatePack"/>

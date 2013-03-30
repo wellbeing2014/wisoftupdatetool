@@ -382,17 +382,26 @@ public class FileMasterDetailsBlock extends MasterDetailsBlock {
 				if(selection!=null&&selection.getFirstElement()!=null)
 				{
 					FileModel fm = (FileModel)selection.getFirstElement();
-					fm.remove();
-					tv.remove(fm);
-					if(!fm.isVirtual())
+					try
 					{
-						String filepath = pi.getSavePath()+"/"+UpdateInfo.UpdateDirName+fm.getFullPath();
-						if(fm.isDir())
-							delFolder(filepath);
-						else
-							delAllFile(filepath);
+						fm.remove();
+						tv.remove(fm);
+						if(!fm.isVirtual())
+						{
+							String filepath = pi.getSavePath()+"/"+UpdateInfo.UpdateDirName+fm.getFullPath();
+							if(fm.isDir())
+								delFolder(filepath);
+							else
+								delAllFile(filepath);
+						}
+						xmlo.save();
+						printlnToConsole("删除文件完成:"+fm.getName(),ConsoleType.INFO);
 					}
-					xmlo.save();
+					catch(Exception e1)
+					{
+						printlnToConsole("删除文件出错:"+fm.getName(),ConsoleType.INFO);
+					}
+					fm = null;
 				}
 				else
 				{
