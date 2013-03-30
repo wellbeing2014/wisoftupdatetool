@@ -97,21 +97,8 @@
             application="WiosftUpdatePack.application"
             name="中科更新包管理工具">
  		 <property
-               name="aboutText"
-               value="中科更新包管理工具 v1.0.3&#xA;更新记录:&#xA;
-               BUG:&#xA;
-               1、修改选择文件的树项目无法一次选中的BUG&#xA;
-               2、修改打包文件配置树中删除项后，实际文件未删除的BUG&#xA;
-               3、修改如果不编写SQL语句，直接导出更新包，报空指针的BUG&#xA;
-               4、修改配置后，updateinfo.xml刷新不及时的BUG&#xA;
-               &#xA;
-               改进:&#xA;
-               1、增加导出时自动生成版本语句&#xA;
-               2、增加环境配置选项&#xA;
-               3、重新定义快捷键操作&#xA;
-               4、修改选择构建服务目录的对话框，使其直接展示树&#xA;
-               5、增加更新说明&#xA;
-               ">
+          name="aboutText"
+          value="中科更新包管理工具 v1.0.3&#x0A;更新记录:&#x0A;                BUG:&#x0A;                1、修改选择文件的树项目无法一次选中的BUG&#x0A;                2、修改打包文件配置树中删除项后，实际文件未删除的BUG&#x0A;                3、修改如果不编写SQL语句，直接导出更新包，报空指针的BUG&#x0A;                4、修改配置后，updateinfo.xml刷新不及时的BUG&#x0A;                &#x0A;                改进:&#x0A;                1、增加导出时自动生成版本语句&#x0A;                2、增加环境配置选项&#x0A;                3、重新定义快捷键操作&#x0A;                4、修改选择构建服务目录的对话框，使其直接展示树&#x0A;                5、增加更新说明">
          </property>
          <property
                name="aboutImage"
