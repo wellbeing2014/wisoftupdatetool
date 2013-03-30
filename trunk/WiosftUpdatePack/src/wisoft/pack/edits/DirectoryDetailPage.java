@@ -9,6 +9,7 @@ import org.dom4j.Element;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
@@ -339,6 +340,8 @@ public class DirectoryDetailPage implements IDetailsPage {
 	   		Item_del.setEnabled(button_isconf.getSelection());
 		}
 	   tv.refresh(fm,true);
+	 //  tv.remove(fm);
+	  //tv.setSelection(new StructuredSelection(fm), true);
 	}
 
 	@Override
