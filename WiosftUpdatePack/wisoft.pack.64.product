@@ -36,6 +36,17 @@
       startupProgressRect="5,247,539,15"
       startupMessageRect="7,227,539,20"
       startupForegroundColor="FF0000" />
+   <launcher name="WisoftPack">
+      <solaris/>
+      <win useIco="true">
+         <ico path="/WiosftUpdatePack/icons/wi_updatetool.ico"/>
+         <bmp/>
+      </win>
+   </launcher>
+
+
+   <vm>
+   </vm>
 
    <license>
         <url>http://www.wisoft.com.cn</url>
