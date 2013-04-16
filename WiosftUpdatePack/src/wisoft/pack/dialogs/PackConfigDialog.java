@@ -20,6 +20,17 @@ import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.RowLayout;
 
 import wisoft.pack.utils.PackConfigInfo;
+import org.eclipse.swt.widgets.TabFolder;
+import org.eclipse.swt.widgets.TabItem;
+import org.eclipse.swt.layout.FillLayout;
+import org.eclipse.swt.widgets.Table;
+import org.eclipse.swt.widgets.CoolBar;
+import org.eclipse.swt.layout.FormLayout;
+import org.eclipse.swt.layout.FormData;
+import org.eclipse.swt.layout.FormAttachment;
+import org.eclipse.swt.widgets.ToolBar;
+import org.eclipse.swt.widgets.ToolItem;
+import org.eclipse.swt.widgets.TableColumn;
 
 public class PackConfigDialog extends TitleAreaDialog {
 	private Text text;
@@ -27,6 +38,9 @@ public class PackConfigDialog extends TitleAreaDialog {
 	private Text text_2;
 	private Text text_3;
 	private Text text_4;
+	private Table table;
+	private Text text_5;
+	private Text text_6;
 
 	/**
 	 * Create the dialog.
@@ -51,9 +65,17 @@ public class PackConfigDialog extends TitleAreaDialog {
 		setMessage("\u914D\u7F6E\u5DE5\u5177\u7684\u4E00\u7CFB\u5217\u73AF\u5883");
 		setTitle("\u5DE5\u5177\u9009\u9879");
 		Composite area = (Composite) super.createDialogArea(parent);
-		Composite container = new Composite(area, SWT.NONE);
+		area.setLayout(null);
+		
+		TabFolder tabFolder = new TabFolder(area, SWT.NONE);
+		tabFolder.setBounds(0, 0, 590, 356);
+		
+		TabItem tbtmNewItem = new TabItem(tabFolder, SWT.NONE);
+		tbtmNewItem.setText("\u6253\u5305\u914D\u7F6E");
+		
+		Composite container = new Composite(tabFolder, SWT.NONE);
+		tbtmNewItem.setControl(container);
 		container.setLayout(new GridLayout(4, false));
-		container.setLayoutData(new GridData(GridData.FILL_BOTH));
 		new Label(container, SWT.NONE);
 		
 		Button button = new Button(container, SWT.CHECK);
@@ -145,6 +167,99 @@ public class PackConfigDialog extends TitleAreaDialog {
 		Label label = new Label(container, SWT.NONE);
 		label.setText("\u5BF9\u65B0\u5EFA\u66F4\u65B0\u5305\u7684\u5FEB\u6377\u64CD\u4F5C\u7684\u6A21\u677F\u8FDB\u884C\u7EF4\u62A4");
 		new Label(container, SWT.NONE);
+		
+		TabItem tbtmNewItem_1 = new TabItem(tabFolder, SWT.NONE);
+		tbtmNewItem_1.setText("\u66F4\u65B0\u914D\u7F6E");
+		
+		TabItem tabItem = new TabItem(tabFolder, SWT.NONE);
+		tabItem.setText("New Item");
+		
+		Composite composite_1 = new Composite(tabFolder, SWT.NONE);
+		tabItem.setControl(composite_1);
+		composite_1.setEnabled(false);
+		composite_1.setLayout(new FormLayout());
+		
+		Composite composite_2 = new Composite(composite_1, SWT.NONE);
+		composite_2.setLayout(new FormLayout());
+		FormData fd_composite_2 = new FormData();
+		fd_composite_2.top = new FormAttachment(0);
+		fd_composite_2.left = new FormAttachment(0);
+		fd_composite_2.bottom = new FormAttachment(100, -199);
+		fd_composite_2.right = new FormAttachment(100, 0);
+		composite_2.setLayoutData(fd_composite_2);
+		
+		table = new Table(composite_2, SWT.BORDER | SWT.FULL_SELECTION | SWT.MULTI);
+		FormData fd_table = new FormData();
+		fd_table.right = new FormAttachment(100);
+		fd_table.bottom = new FormAttachment(100);
+		table.setLayoutData(fd_table);
+		table.setHeaderVisible(true);
+		table.setLinesVisible(true);
+		
+		ToolBar toolBar = new ToolBar(composite_2, SWT.FLAT | SWT.RIGHT);
+		fd_table.top = new FormAttachment(toolBar, 0);
+		fd_table.left = new FormAttachment(toolBar, 0, SWT.LEFT);
+		
+		TableColumn tableColumn = new TableColumn(table, SWT.NONE);
+		tableColumn.setWidth(104);
+		tableColumn.setText("\u670D\u52A1\u5668\u540D\u79F0");
+		
+		TableColumn tableColumn_1 = new TableColumn(table, SWT.NONE);
+		tableColumn_1.setWidth(171);
+		tableColumn_1.setText("\u5E94\u7528\u8BBF\u95EE\u5730\u5740");
+		
+		TableColumn tableColumn_2 = new TableColumn(table, SWT.NONE);
+		tableColumn_2.setWidth(131);
+		tableColumn_2.setText("\u6570\u636E\u5E93\u8BBF\u95EE");
+		
+		TableColumn tableColumn_3 = new TableColumn(table, SWT.NONE);
+		tableColumn_3.setWidth(167);
+		tableColumn_3.setText("\u6240\u5C5E\u9879\u76EE");
+		FormData fd_toolBar = new FormData();
+		fd_toolBar.left = new FormAttachment(0);
+		fd_toolBar.top = new FormAttachment(0);
+		toolBar.setLayoutData(fd_toolBar);
+		
+		ToolItem tltmNewItem = new ToolItem(toolBar, SWT.NONE);
+		tltmNewItem.setToolTipText("\u65B0\u589E");
+		tltmNewItem.setImage(ResourceManager.getPluginImage("WiosftUpdatePack", "icons/add.gif"));
+		
+		ToolItem tltmNewItem_1 = new ToolItem(toolBar, SWT.NONE);
+		tltmNewItem_1.setToolTipText("\u4FEE\u6539");
+		tltmNewItem_1.setImage(ResourceManager.getPluginImage("WiosftUpdatePack", "icons/properties.png"));
+		
+		ToolItem tltmNewItem_2 = new ToolItem(toolBar, SWT.NONE);
+		tltmNewItem_2.setImage(ResourceManager.getPluginImage("WiosftUpdatePack", "icons/del.png"));
+		
+		Composite composite_3 = new Composite(composite_1, SWT.NONE);
+		composite_3.setLayout(new GridLayout(3, false));
+		FormData fd_composite_3 = new FormData();
+		fd_composite_3.bottom = new FormAttachment(100);
+		fd_composite_3.right = new FormAttachment(100);
+		fd_composite_3.top = new FormAttachment(composite_2, 3);
+		fd_composite_3.left = new FormAttachment(0);
+		composite_3.setLayoutData(fd_composite_3);
+		new Label(composite_3, SWT.NONE);
+		new Label(composite_3, SWT.NONE);
+		new Label(composite_3, SWT.NONE);
+		
+		Label lblNewLabel = new Label(composite_3, SWT.NONE);
+		lblNewLabel.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
+		lblNewLabel.setText("FTP\u5730\u5740\uFF1A");
+		
+		text_5 = new Text(composite_3, SWT.BORDER);
+		text_5.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 2, 1));
+		
+		Label label_4 = new Label(composite_3, SWT.NONE);
+		label_4.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
+		label_4.setText("\u5907\u4EFD\u5730\u5740\uFF1A");
+		
+		text_6 = new Text(composite_3, SWT.BORDER);
+		text_6.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
+		
+		Button btnNewButton_1 = new Button(composite_3, SWT.NONE);
+		btnNewButton_1.setText("New Button");
+		
 
 		return area;
 	}
@@ -175,6 +290,6 @@ public class PackConfigDialog extends TitleAreaDialog {
 	 */
 	@Override
 	protected Point getInitialSize() {
-		return new Point(596, 497);
+		return new Point(596, 525);
 	}
 }

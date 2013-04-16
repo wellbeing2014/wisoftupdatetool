@@ -271,7 +271,6 @@ public class DirectoryDetailPage implements IDetailsPage {
 		   file = new File(filepath);
 	   }
 	   //如果选中的对象不为null,则刷新控件所显示的值
-	  
 	    update();
 	
 	}
