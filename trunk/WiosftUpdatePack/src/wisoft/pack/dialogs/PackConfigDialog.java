@@ -168,11 +168,8 @@ public class PackConfigDialog extends TitleAreaDialog {
 		label.setText("\u5BF9\u65B0\u5EFA\u66F4\u65B0\u5305\u7684\u5FEB\u6377\u64CD\u4F5C\u7684\u6A21\u677F\u8FDB\u884C\u7EF4\u62A4");
 		new Label(container, SWT.NONE);
 		
-		TabItem tbtmNewItem_1 = new TabItem(tabFolder, SWT.NONE);
-		tbtmNewItem_1.setText("\u66F4\u65B0\u914D\u7F6E");
-		
 		TabItem tabItem = new TabItem(tabFolder, SWT.NONE);
-		tabItem.setText("New Item");
+		tabItem.setText("\u66F4\u65B0\u914D\u7F6E");
 		
 		Composite composite_1 = new Composite(tabFolder, SWT.NONE);
 		tabItem.setControl(composite_1);
@@ -226,7 +223,7 @@ public class PackConfigDialog extends TitleAreaDialog {
 		
 		ToolItem tltmNewItem_1 = new ToolItem(toolBar, SWT.NONE);
 		tltmNewItem_1.setToolTipText("\u4FEE\u6539");
-		tltmNewItem_1.setImage(ResourceManager.getPluginImage("WiosftUpdatePack", "icons/properties.png"));
+		tltmNewItem_1.setImage(ResourceManager.getPluginImage("WiosftUpdatePack", "icons/edit.png"));
 		
 		ToolItem tltmNewItem_2 = new ToolItem(toolBar, SWT.NONE);
 		tltmNewItem_2.setImage(ResourceManager.getPluginImage("WiosftUpdatePack", "icons/del.png"));
