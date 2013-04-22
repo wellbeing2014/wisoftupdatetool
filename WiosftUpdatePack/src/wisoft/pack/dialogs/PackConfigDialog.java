@@ -75,105 +75,24 @@ public class PackConfigDialog extends TitleAreaDialog {
 		
 		Composite container = new Composite(tabFolder, SWT.NONE);
 		tbtmNewItem.setControl(container);
+		container.setEnabled(true);
 		container.setLayout(new GridLayout(4, false));
+		
+		
 		new Label(container, SWT.NONE);
 		
-		Button button = new Button(container, SWT.CHECK);
-		button.setText("\u81EA\u5B9A\u4E49\u6784\u5EFA\u8DEF\u5F84");
+		Label lblNewLabel_1 = new Label(container, SWT.NONE);
+		lblNewLabel_1.setText("New Label");
 		
-		text = new Text(container, SWT.BORDER);
-		text.setEditable(false);
-		text.setText(PackConfigInfo.getInstance().getBuildServerPath());
-		text.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 2, 1));
-		new Label(container, SWT.NONE);
 		
-		Label lblWims = new Label(container, SWT.NONE);
-		lblWims.setText("WIMS\u63A5\u53E3\u5730\u5740");
-		
-		text_1 = new Text(container, SWT.BORDER);
-		text_1.setText(PackConfigInfo.getInstance().getWimsTrackManagerPath());
-		text_1.setEditable(false);
-		text_1.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 2, 1));
-		new Label(container, SWT.NONE);
-		
-		Label lblTms = new Label(container, SWT.NONE);
-		lblTms.setText("TMS\u63A5\u53E3\u5730\u5740");
-		
-		text_2 = new Text(container, SWT.BORDER);
-		text_2.setEditable(false);
-		text_2.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 2, 1));
-		new Label(container, SWT.NONE);
-		
-		Label label_3 = new Label(container, SWT.NONE);
-		label_3.setText("\u66F4\u65B0\u5305\u53D1\u5E03\u5730\u5740");
-		
-		text_4 = new Text(container, SWT.BORDER);
-		text_4.setEditable(false);
-		text_4.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 2, 1));
-		new Label(container, SWT.NONE);
-		
-		Button btnwims = new Button(container, SWT.CHECK);
-		btnwims.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false, 2, 1));
-		btnwims.setText("\u5411WIMS\u540C\u6B65\u66F4\u65B0\u5305\u7248\u672C\u4FE1\u606F");
-		new Label(container, SWT.NONE);
-		new Label(container, SWT.NONE);
-		
-		Label label_1 = new Label(container, SWT.NONE);
-		label_1.setText("\u9ED8\u8BA4\u5BFC\u51FA\u5730\u5740");
-		
-		text_3 = new Text(container, SWT.BORDER);
-		text_3.setText(PackConfigInfo.getInstance().getDefaultExportPath());
-		text_3.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
-		
-		Button btnNewButton = new Button(container, SWT.NONE);
-		btnNewButton.addSelectionListener(new SelectionAdapter() {
-			@Override
-			public void widgetSelected(SelectionEvent e) {
-				DirectoryDialog dd = new DirectoryDialog(e.display.getActiveShell());
-				String path =dd.open();
-				if(path!=null)
-					text_3.setText(path);
-			}
-		});
-		btnNewButton.setText("\u6D4F\u89C8");
-		new Label(container, SWT.NONE);
-		
-		Label label_2 = new Label(container, SWT.NONE);
-		label_2.setText("\u9ED8\u8BA4\u540E\u7F00\u540D");
-		
-		Composite composite = new Composite(container, SWT.NONE);
-		composite.setLayout(new RowLayout(SWT.HORIZONTAL));
-		
-		Button btnRadioButton = new Button(composite, SWT.RADIO);
-		btnRadioButton.setText("wi");
-		btnRadioButton.setSelection(true);
-		
-		Button btnRadioButton_1 = new Button(composite, SWT.RADIO);
-		btnRadioButton_1.setText("rar");
-		new Label(container, SWT.NONE);
-		new Label(container, SWT.NONE);
-		
-		Button button_1 = new Button(container, SWT.NONE);
-		button_1.setText("\u7BA1\u7406\u6784\u5EFA\u9879\u76EE");
-		
-		Label lblhudson = new Label(container, SWT.NONE);
-		lblhudson.setText("\u5B9E\u73B0hudson\u81EA\u52A8\u96C6\u6210\u6784\u5EFA\u7684\u63A5\u53E3,\u8FDB\u884C\u81EA\u52A8\u6784\u5EFA");
-		new Label(container, SWT.NONE);
-		new Label(container, SWT.NONE);
-		
-		Button button_2 = new Button(container, SWT.NONE);
-		button_2.setText("\u7BA1\u7406\u6211\u7684\u6A21\u677F");
-		
-		Label label = new Label(container, SWT.NONE);
-		label.setText("\u5BF9\u65B0\u5EFA\u66F4\u65B0\u5305\u7684\u5FEB\u6377\u64CD\u4F5C\u7684\u6A21\u677F\u8FDB\u884C\u7EF4\u62A4");
-		new Label(container, SWT.NONE);
+		//------------------------------------------------------------
 		
 		TabItem tabItem = new TabItem(tabFolder, SWT.NONE);
 		tabItem.setText("\u66F4\u65B0\u914D\u7F6E");
 		
 		Composite composite_1 = new Composite(tabFolder, SWT.NONE);
 		tabItem.setControl(composite_1);
-		composite_1.setEnabled(false);
+		composite_1.setEnabled(true);
 		composite_1.setLayout(new FormLayout());
 		
 		Composite composite_2 = new Composite(composite_1, SWT.NONE);
