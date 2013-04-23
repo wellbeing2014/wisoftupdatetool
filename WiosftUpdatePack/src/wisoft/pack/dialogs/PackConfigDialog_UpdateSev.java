@@ -2,19 +2,23 @@ package wisoft.pack.dialogs;
 
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.IDialogConstants;
-import org.eclipse.swt.graphics.Point;
-import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Control;
-import org.eclipse.swt.widgets.Shell;
-import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.widgets.Text;
+import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Shell;
+import org.eclipse.swt.widgets.Text;
+
+import wisoft.pack.models.PackConfig_Server;
 
 public class PackConfigDialog_UpdateSev extends Dialog {
+	
+	public PackConfig_Server server ;
 	private Text text;
 	private Text text_1;
 	private Text text_2;
@@ -29,6 +33,7 @@ public class PackConfigDialog_UpdateSev extends Dialog {
 	 */
 	public PackConfigDialog_UpdateSev(Shell parentShell) {
 		super(parentShell);
+		server = new PackConfig_Server();
 	}
 	
 	@Override
@@ -36,6 +41,20 @@ public class PackConfigDialog_UpdateSev extends Dialog {
 		// TODO Auto-generated method stub
 		super.configureShell(newShell);
 		newShell.setText("增加服务器");
+	}
+	
+	@Override
+	protected void okPressed() {
+		// TODO Auto-generated method stub
+		server.setServerName(this.text.getText());
+		server.setDBPath(this.text_2.getText());
+		server.setServerPwd(this.text_6.getText());
+		server.setServerUser(this.text_5.getText());
+		server.setWebappPath(this.text_1.getText());
+		server.setWebPort(this.text_4.getText());
+		server.setWSMPath(this.text_3.getText());
+		super.okPressed();
+		
 	}
 
 	/**
