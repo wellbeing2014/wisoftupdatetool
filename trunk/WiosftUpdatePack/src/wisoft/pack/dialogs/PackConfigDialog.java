@@ -1,38 +1,44 @@
 package wisoft.pack.dialogs;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.dialogs.TitleAreaDialog;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.CTabFolder;
+import org.eclipse.swt.custom.CTabItem;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Point;
+import org.eclipse.swt.layout.FormAttachment;
+import org.eclipse.swt.layout.FormData;
+import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.layout.RowLayout;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.DirectoryDialog;
-import org.eclipse.swt.widgets.Shell;
-import org.eclipse.wb.swt.ResourceManager;
-import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.Text;
-import org.eclipse.swt.events.SelectionAdapter;
-import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.events.SelectionListener;
-import org.eclipse.swt.layout.RowLayout;
-
-import wisoft.pack.utils.PackConfigInfo;
-import org.eclipse.swt.widgets.TabFolder;
-import org.eclipse.swt.widgets.TabItem;
-import org.eclipse.swt.layout.FillLayout;
+import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Table;
-import org.eclipse.swt.widgets.CoolBar;
-import org.eclipse.swt.layout.FormLayout;
-import org.eclipse.swt.layout.FormData;
-import org.eclipse.swt.layout.FormAttachment;
+import org.eclipse.swt.widgets.TableColumn;
+import org.eclipse.swt.widgets.TableItem;
+import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.swt.widgets.ToolItem;
-import org.eclipse.swt.widgets.TableColumn;
+import org.eclipse.wb.swt.ResourceManager;
+
+import wisoft.pack.models.PackConfig_Server;
+import wisoft.pack.utils.PackConfigInfo;
 
 public class PackConfigDialog extends TitleAreaDialog {
+	
+	private List<PackConfig_Server> servers ;
+
 	private Text text;
 	private Text text_1;
 	private Text text_2;
@@ -41,13 +47,14 @@ public class PackConfigDialog extends TitleAreaDialog {
 	private Table table;
 	private Text text_5;
 	private Text text_6;
-
+	private Text text_7;
 	/**
 	 * Create the dialog.
 	 * @param parentShell
 	 */
 	public PackConfigDialog(Shell parentShell) {
 		super(parentShell);
+		servers = new ArrayList<PackConfig_Server>();
 	}
 	
 	@Override
@@ -67,32 +74,117 @@ public class PackConfigDialog extends TitleAreaDialog {
 		Composite area = (Composite) super.createDialogArea(parent);
 		area.setLayout(null);
 		
-		TabFolder tabFolder = new TabFolder(area, SWT.NONE);
-		tabFolder.setBounds(0, 0, 590, 356);
+		CTabFolder tabFolder = new CTabFolder(area, SWT.BORDER);
+		tabFolder.setBounds(0, 0, 619, 369);
+		tabFolder.setSelectionBackground(Display.getCurrent().getSystemColor(SWT.COLOR_TITLE_INACTIVE_BACKGROUND_GRADIENT));
 		
-		TabItem tbtmNewItem = new TabItem(tabFolder, SWT.NONE);
-		tbtmNewItem.setText("\u6253\u5305\u914D\u7F6E");
+		CTabItem tabItem = new CTabItem(tabFolder, SWT.NONE);
+		tabItem.setText("\u6253\u5305\u914D\u7F6E");
 		
-		Composite container = new Composite(tabFolder, SWT.NONE);
-		tbtmNewItem.setControl(container);
-		container.setEnabled(true);
-		container.setLayout(new GridLayout(4, false));
+		Composite composite = new Composite(tabFolder, SWT.NONE);
+		tabItem.setControl(composite);
+		composite.setLayout(new GridLayout(4, false));
+		new Label(composite, SWT.NONE);
+		
+		Button button = new Button(composite, SWT.CHECK);
+		button.setText("\u81EA\u5B9A\u4E49\u6784\u5EFA\u8DEF\u5F84");
+		
+		text = new Text(composite, SWT.BORDER);
+		text.setEditable(false);
+		text.setText(PackConfigInfo.getInstance().getBuildServerPath());
+		text.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 2, 1));
+		new Label(composite, SWT.NONE);
+		
+		Label lblWims = new Label(composite, SWT.NONE);
+		lblWims.setText("WIMS\u63A5\u53E3\u5730\u5740");
+		
+		text_1 = new Text(composite, SWT.BORDER);
+		text_1.setText(PackConfigInfo.getInstance().getWimsTrackManagerPath());
+		text_1.setEditable(false);
+		text_1.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 2, 1));
+		new Label(composite, SWT.NONE);
+		
+		Label lblTms = new Label(composite, SWT.NONE);
+		lblTms.setText("TMS\u63A5\u53E3\u5730\u5740");
+		
+		text_2 = new Text(composite, SWT.BORDER);
+		text_2.setEditable(false);
+		text_2.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 2, 1));
+		new Label(composite, SWT.NONE);
+		
+		Label label_3 = new Label(composite, SWT.NONE);
+		label_3.setText("\u66F4\u65B0\u5305\u53D1\u5E03\u5730\u5740");
+		
+		text_4 = new Text(composite, SWT.BORDER);
+		text_4.setEditable(false);
+		text_4.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 2, 1));
+		new Label(composite, SWT.NONE);
+		
+		Button btnwims = new Button(composite, SWT.CHECK);
+		btnwims.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false, 2, 1));
+		btnwims.setText("\u5411WIMS\u540C\u6B65\u66F4\u65B0\u5305\u7248\u672C\u4FE1\u606F");
+		new Label(composite, SWT.NONE);
+		new Label(composite, SWT.NONE);
+		
+		Label label_1 = new Label(composite, SWT.NONE);
+		label_1.setText("\u9ED8\u8BA4\u5BFC\u51FA\u5730\u5740");
+		
+		text_3 = new Text(composite, SWT.BORDER);
+		text_3.setText(PackConfigInfo.getInstance().getDefaultExportPath());
+		text_3.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
+		
+		Button btnNewButton = new Button(composite, SWT.NONE);
+		btnNewButton.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				DirectoryDialog dd = new DirectoryDialog(e.display.getActiveShell());
+				String path =dd.open();
+				if(path!=null)
+					text_3.setText(path);
+			}
+		});
+		btnNewButton.setText("\u6D4F\u89C8");
+		new Label(composite, SWT.NONE);
+		
+		Label label_2 = new Label(composite, SWT.NONE);
+		label_2.setText("\u9ED8\u8BA4\u540E\u7F00\u540D");
+		
+		Composite composite1 = new Composite(composite, SWT.NONE);
+		composite1.setLayout(new RowLayout(SWT.HORIZONTAL));
+		
+		Button btnRadioButton = new Button(composite1, SWT.RADIO);
+		btnRadioButton.setText("wi");
+		btnRadioButton.setSelection(true);
+		
+		Button btnRadioButton_1 = new Button(composite1, SWT.RADIO);
+		btnRadioButton_1.setText("rar");
+		new Label(composite, SWT.NONE);
+		new Label(composite, SWT.NONE);
+		
+		Button button_1 = new Button(composite, SWT.NONE);
+		button_1.setText("\u7BA1\u7406\u6784\u5EFA\u9879\u76EE");
+		
+		Label lblhudson = new Label(composite, SWT.NONE);
+		lblhudson.setText("\u5B9E\u73B0hudson\u81EA\u52A8\u96C6\u6210\u6784\u5EFA\u7684\u63A5\u53E3,\u8FDB\u884C\u81EA\u52A8\u6784\u5EFA");
+		new Label(composite, SWT.NONE);
+		new Label(composite, SWT.NONE);
+		
+		Button button_2 = new Button(composite, SWT.NONE);
+		button_2.setText("\u7BA1\u7406\u6211\u7684\u6A21\u677F");
+		
+		Label label = new Label(composite, SWT.NONE);
+		label.setText("\u5BF9\u65B0\u5EFA\u66F4\u65B0\u5305\u7684\u5FEB\u6377\u64CD\u4F5C\u7684\u6A21\u677F\u8FDB\u884C\u7EF4\u62A4");
+		new Label(composite, SWT.NONE);
 		
 		
-		new Label(container, SWT.NONE);
-		
-		Label lblNewLabel_1 = new Label(container, SWT.NONE);
-		lblNewLabel_1.setText("New Label");
 		
 		
-		//------------------------------------------------------------
-		
-		TabItem tabItem = new TabItem(tabFolder, SWT.NONE);
-		tabItem.setText("\u66F4\u65B0\u914D\u7F6E");
+		CTabItem tabItem_1 = new CTabItem(tabFolder, SWT.NONE);
+		tabItem_1.setText("\u89E3\u5305\u914D\u7F6E");
 		
 		Composite composite_1 = new Composite(tabFolder, SWT.NONE);
-		tabItem.setControl(composite_1);
-		composite_1.setEnabled(true);
+		tabItem_1.setControl(composite_1);
+		
 		composite_1.setLayout(new FormLayout());
 		
 		Composite composite_2 = new Composite(composite_1, SWT.NONE);
@@ -137,6 +229,17 @@ public class PackConfigDialog extends TitleAreaDialog {
 		toolBar.setLayoutData(fd_toolBar);
 		
 		ToolItem tltmNewItem = new ToolItem(toolBar, SWT.NONE);
+		tltmNewItem.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				PackConfigDialog_UpdateSev pu = new PackConfigDialog_UpdateSev(getParentShell());
+				if(IDialogConstants.OK_ID == pu.open())
+				{
+					servers.add(pu.server);
+					getTrackTableData();
+				}
+			}
+		});
 		tltmNewItem.setToolTipText("\u65B0\u589E");
 		tltmNewItem.setImage(ResourceManager.getPluginImage("WiosftUpdatePack", "icons/add.gif"));
 		
@@ -166,6 +269,11 @@ public class PackConfigDialog extends TitleAreaDialog {
 		text_5 = new Text(composite_3, SWT.BORDER);
 		text_5.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 2, 1));
 		
+		Button button_4 = new Button(composite_3, SWT.CHECK);
+		button_4.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false, 2, 1));
+		button_4.setText("\u81EA\u52A8\u5907\u4EFD");
+		new Label(composite_3, SWT.NONE);
+		
 		Label label_4 = new Label(composite_3, SWT.NONE);
 		label_4.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
 		label_4.setText("\u5907\u4EFD\u5730\u5740\uFF1A");
@@ -174,12 +282,33 @@ public class PackConfigDialog extends TitleAreaDialog {
 		text_6.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
 		
 		Button btnNewButton_1 = new Button(composite_3, SWT.NONE);
-		btnNewButton_1.setText("New Button");
+		btnNewButton_1.setText("\u6D4F\u89C8");
 		
+		Label label_5 = new Label(composite_3, SWT.NONE);
+		label_5.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
+		label_5.setText("\u6570\u636E\u5E93\u5907\u4EFD\uFF1A");
+		
+		text_7 = new Text(composite_3, SWT.BORDER);
+		text_7.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
+		
+		Button button_3 = new Button(composite_3, SWT.NONE);
+		button_3.setText("\u5F00\u59CB");
+		
+
 
 		return area;
 	}
 
+	private void getTrackTableData()
+	{
+		table.removeAll();
+		for(PackConfig_Server server :servers)
+		{
+			TableItem item  = new TableItem(table, SWT.NONE);
+			item.setText(new String[]{server.getServerName(),server.getWebappPath(),server.getDBPath(),"Пе"});
+		}
+	}
+	
 	@Override
 	protected void okPressed() {
 		// TODO Auto-generated method stub
@@ -206,6 +335,6 @@ public class PackConfigDialog extends TitleAreaDialog {
 	 */
 	@Override
 	protected Point getInitialSize() {
-		return new Point(596, 525);
+		return new Point(625, 538);
 	}
 }
