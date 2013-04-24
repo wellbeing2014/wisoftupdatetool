@@ -11,14 +11,20 @@ import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 
 import wisoft.pack.models.PackConfig_Server;
 
+import com.wisoft.wims.ResultReturnByArray;
+import com.wisoft.wims.TrankingManager;
+import com.wisoft.wims.WimsProInfo;
+
 public class PackConfigDialog_UpdateSev extends Dialog {
 	
 	public PackConfig_Server server ;
+	private boolean isEdit =false;
 	private Text text;
 	private Text text_1;
 	private Text text_2;
@@ -26,6 +32,7 @@ public class PackConfigDialog_UpdateSev extends Dialog {
 	private Text text_4;
 	private Text text_5;
 	private Text text_6;
+	private Combo combo;
 
 	/**
 	 * Create the dialog.
@@ -36,16 +43,60 @@ public class PackConfigDialog_UpdateSev extends Dialog {
 		server = new PackConfig_Server();
 	}
 	
+	public PackConfigDialog_UpdateSev(Shell parentShell,PackConfig_Server server) {
+		super(parentShell);
+		this.server = server;
+		this.isEdit = true;
+	}
+	
+	private void updateinit()
+	{
+		this.text.setText(this.server.getServerName());
+		this.text_1.setText(this.server.getWebappPath());
+		this.text_2.setText(this.server.getDBPath());
+		this.text_3.setText(this.server.getWSMPath());
+		this.text_4.setText(this.server.getWebPort());
+		this.text_5.setText(this.server.getServerUser());
+		this.text_6.setText(this.server.getServerPwd());
+		this.combo.setText(this.server.getProinfo().getProname());
+	}
+	
 	@Override
 	protected void configureShell(Shell newShell) {
 		// TODO Auto-generated method stub
 		super.configureShell(newShell);
-		newShell.setText("增加服务器");
+		if(isEdit)
+			newShell.setText("编辑服务器");
+		else
+			newShell.setText("增加服务器");
 	}
 	
 	@Override
 	protected void okPressed() {
 		// TODO Auto-generated method stub
+		MessageBox mb = new MessageBox(this.getParentShell());
+		mb.setText("提示");
+		if(this.text.getText().isEmpty())
+		{
+			mb.setMessage("服务名称不能为空");
+			mb.open();
+			return;
+		}
+		
+		if(this.text_2.getText().isEmpty())
+		{
+			mb.setMessage("数据库路径不能为空");
+			mb.open();
+			return;
+		}
+		
+		if(this.text_1.getText().isEmpty())
+		{
+			mb.setMessage("服务部署路径不能为空");
+			mb.open();
+			return;
+		}
+		
 		server.setServerName(this.text.getText());
 		server.setDBPath(this.text_2.getText());
 		server.setServerPwd(this.text_6.getText());
@@ -53,6 +104,21 @@ public class PackConfigDialog_UpdateSev extends Dialog {
 		server.setWebappPath(this.text_1.getText());
 		server.setWebPort(this.text_4.getText());
 		server.setWSMPath(this.text_3.getText());
+		String proname= this.combo.getText();
+		if(proname.isEmpty())
+		{
+			mb.setMessage("所属项目不能为空");
+			mb.open();
+			return;
+		}
+		WimsProInfo pro = (WimsProInfo)this.combo.getData(proname);
+		if(null==pro)
+		{
+			pro = new WimsProInfo();
+			pro.setProname(proname);
+		}
+		server.setProinfo(pro);
+		mb=null;
 		super.okPressed();
 		
 	}
@@ -104,8 +170,20 @@ public class PackConfigDialog_UpdateSev extends Dialog {
 		label_3.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
 		label_3.setText("\u6240\u5C5E\u9879\u76EE");
 		
-		Combo combo = new Combo(container, SWT.NONE);
+		combo = new Combo(container, SWT.NONE);
 		combo.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 3, 1));
+		TrankingManager tm = new TrankingManager();
+		ResultReturnByArray rr = tm.getTrackingManager().findAllWimsProInfo();
+		WimsProInfo[] pros = rr.getArrayobj().toArray(new WimsProInfo[0]);
+		
+		int key =0;
+		for(WimsProInfo pro: pros)
+		{
+			combo.add(pro.getProname());
+			combo.setData(pro.getProname(), pro);
+			key++;
+		}
+		
 		new Label(container, SWT.NONE);
 		new Label(container, SWT.NONE);
 		
@@ -141,7 +219,8 @@ public class PackConfigDialog_UpdateSev extends Dialog {
 		text_6 = new Text(container, SWT.BORDER);
 		text_6.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
 		new Label(container, SWT.NONE);
-
+		if(isEdit)
+			updateinit();
 		return container;
 	}
 

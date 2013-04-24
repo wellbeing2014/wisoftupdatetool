@@ -208,7 +208,6 @@ public class TrackingListSelDialog extends Dialog {
 	    ResultReturn rn =iww.findTrackByServicesInParames(trackparam, 0, 10);
 	    //System.out.println(((WimsSingleIssueTracking)rn.getLst().get(0)).getContent());
 		
-		
         table.removeAll();
         for(int i=0;i<rn.getLst().size();i++)
         {
