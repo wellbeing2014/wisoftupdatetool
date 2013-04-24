@@ -23,6 +23,7 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.DirectoryDialog;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
@@ -236,7 +237,7 @@ public class PackConfigDialog extends TitleAreaDialog {
 				if(IDialogConstants.OK_ID == pu.open())
 				{
 					servers.add(pu.server);
-					getTrackTableData();
+					getProInfoTableData();
 				}
 			}
 		});
@@ -244,6 +245,28 @@ public class PackConfigDialog extends TitleAreaDialog {
 		tltmNewItem.setImage(ResourceManager.getPluginImage("WiosftUpdatePack", "icons/add.gif"));
 		
 		ToolItem tltmNewItem_1 = new ToolItem(toolBar, SWT.NONE);
+		tltmNewItem_1.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				TableItem[] items = table.getSelection();
+				if(items.length<=0)
+				{
+					MessageBox mb = new MessageBox(getParentShell());
+					mb.setText("提示");
+					mb.setMessage("请选择要编辑的服务器项目");
+					return ;
+				}
+				PackConfig_Server server =(PackConfig_Server)items[0].getData();
+				int key = servers.indexOf(server);
+				PackConfigDialog_UpdateSev pu = new PackConfigDialog_UpdateSev(getParentShell(),server);
+				if(IDialogConstants.OK_ID == pu.open())
+				{
+					servers.remove(key);
+					servers.add(key, pu.server);
+					getProInfoTableData();
+				}
+			}
+		});
 		tltmNewItem_1.setToolTipText("\u4FEE\u6539");
 		tltmNewItem_1.setImage(ResourceManager.getPluginImage("WiosftUpdatePack", "icons/edit.png"));
 		
@@ -299,13 +322,14 @@ public class PackConfigDialog extends TitleAreaDialog {
 		return area;
 	}
 
-	private void getTrackTableData()
+	private void getProInfoTableData()
 	{
 		table.removeAll();
 		for(PackConfig_Server server :servers)
 		{
 			TableItem item  = new TableItem(table, SWT.NONE);
-			item.setText(new String[]{server.getServerName(),server.getWebappPath(),server.getDBPath(),"空"});
+			item.setText(new String[]{server.getServerName(),server.getWebappPath(),server.getDBPath(),server.getProinfo().getProname()});
+			item.setData(server);
 		}
 	}
 	

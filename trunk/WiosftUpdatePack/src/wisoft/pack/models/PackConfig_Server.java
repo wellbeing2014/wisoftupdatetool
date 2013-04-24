@@ -1,5 +1,7 @@
 package wisoft.pack.models;
 
+import com.wisoft.wims.WimsProInfo;
+
 public class PackConfig_Server {
 	private String ServerName;
 	private String WebappPath;
@@ -7,7 +9,14 @@ public class PackConfig_Server {
 	private String WSMPath;
 	private String WebPort;
 	private String ServerUser;
+	private WimsProInfo proinfo;
 	
+	public WimsProInfo getProinfo() {
+		return proinfo;
+	}
+	public void setProinfo(WimsProInfo proinfo) {
+		this.proinfo = proinfo;
+	}
 	public String getServerName() {
 		return ServerName;
 	}
