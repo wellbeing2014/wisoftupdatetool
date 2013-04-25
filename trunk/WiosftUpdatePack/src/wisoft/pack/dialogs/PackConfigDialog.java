@@ -38,7 +38,7 @@ import wisoft.pack.utils.PackConfigInfo;
 
 public class PackConfigDialog extends TitleAreaDialog {
 	
-	private List<PackConfig_Server> servers ;
+	private List<PackConfig_Server> servers  = new ArrayList<PackConfig_Server>() ;
 
 	private Text text;
 	private Text text_1;
@@ -55,7 +55,15 @@ public class PackConfigDialog extends TitleAreaDialog {
 	 */
 	public PackConfigDialog(Shell parentShell) {
 		super(parentShell);
-		servers = new ArrayList<PackConfig_Server>();
+		PackConfig_Server[] pss = PackConfigInfo.getInstance().getUnPackProInfos();
+		for(PackConfig_Server ps:pss)
+		{
+			servers.add(ps);
+		}
+//		if(gets.size()>0)
+//		{
+//			servers = gets;
+//		}
 	}
 	
 	@Override
@@ -254,6 +262,7 @@ public class PackConfigDialog extends TitleAreaDialog {
 					MessageBox mb = new MessageBox(getParentShell());
 					mb.setText("提示");
 					mb.setMessage("请选择要编辑的服务器项目");
+					mb.open();
 					return ;
 				}
 				PackConfig_Server server =(PackConfig_Server)items[0].getData();
@@ -271,6 +280,28 @@ public class PackConfigDialog extends TitleAreaDialog {
 		tltmNewItem_1.setImage(ResourceManager.getPluginImage("WiosftUpdatePack", "icons/edit.png"));
 		
 		ToolItem tltmNewItem_2 = new ToolItem(toolBar, SWT.NONE);
+		tltmNewItem_2.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				
+				TableItem[] items = table.getSelection();
+				if(items.length>0)
+				{
+					MessageBox mb = new MessageBox(getParentShell(),SWT.OK|SWT.CANCEL);
+					mb.setText("提示");
+					mb.setMessage("确定要删除这"+items.length+"个服务器配置吗?");
+					if(SWT.OK==mb.open())
+					{
+						for(TableItem ti:items)
+						{
+							servers.remove((PackConfig_Server)ti.getData());
+						}
+						getProInfoTableData();
+					}
+					return ;
+				}
+			}
+		});
 		tltmNewItem_2.setImage(ResourceManager.getPluginImage("WiosftUpdatePack", "icons/del.png"));
 		
 		Composite composite_3 = new Composite(composite_1, SWT.NONE);
@@ -318,7 +349,7 @@ public class PackConfigDialog extends TitleAreaDialog {
 		button_3.setText("\u5F00\u59CB");
 		
 
-
+		getProInfoTableData();
 		return area;
 	}
 
@@ -339,7 +370,7 @@ public class PackConfigDialog extends TitleAreaDialog {
 		//PackConfigInfo.getInstance().setBuildServerPath(text.getText());
 		//PackConfigInfo.getInstance().setWimsTrackManagerPath(text_1.getText());
 		PackConfigInfo.getInstance().setDefaultExportPath(text_3.getText());
-		
+		PackConfigInfo.getInstance().setUnPackProInfos(servers.toArray(new PackConfig_Server[0]));
 		super.okPressed();
 	}
 	/**

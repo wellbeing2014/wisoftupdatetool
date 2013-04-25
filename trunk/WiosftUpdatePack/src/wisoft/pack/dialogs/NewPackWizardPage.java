@@ -1,6 +1,5 @@
 package wisoft.pack.dialogs;
 
-import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.dialogs.IMessageProvider;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
@@ -13,6 +12,8 @@ import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
+
+import wisoft.pack.app.Activator;
 
 public class NewPackWizardPage extends WizardPage implements ModifyListener {
 	public Text text;
@@ -29,7 +30,7 @@ public class NewPackWizardPage extends WizardPage implements ModifyListener {
 		super("wizardPage");
 		setTitle("\u521B\u5EFA\u4E00\u4E2A\u65B0\u7684\u66F4\u65B0\u5305\u5DE5\u7A0B");
 		setDescription("\u6B22\u8FCE\u4F7F\u7528\u5411\u5BFC");
-		path = Platform.getInstanceLocation().getURL().getPath();
+		path = Activator.getDefault().getWorkSpacePath();
 		path=path.substring(path.indexOf("/")+1,path.length());
 	}
 

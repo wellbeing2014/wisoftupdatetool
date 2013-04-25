@@ -2,6 +2,7 @@ package wisoft.pack.app;
 
 import java.net.URL;
 
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.adaptor.LocationManager;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osgi.service.datalocation.Location;
@@ -47,6 +48,10 @@ public class Activator extends AbstractUIPlugin {
 	    return installPath;
 	}
 
+	public String getWorkSpacePath()
+	{
+		return Platform.getInstanceLocation().getURL().getPath();
+	}
 	/**
 	 * The constructor
 	 */

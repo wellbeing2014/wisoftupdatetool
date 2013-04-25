@@ -1,30 +1,15 @@
 package wisoft.pack.utils;
 
 import java.io.File;
-import java.io.IOException;
-import java.io.Writer;
-import java.util.Iterator;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
-import org.dom4j.Attribute;
-import org.dom4j.Branch;
-import org.dom4j.CDATA;
-import org.dom4j.Comment;
-import org.dom4j.Document;
 import org.dom4j.Element;
-import org.dom4j.Entity;
-import org.dom4j.InvalidXPathException;
-import org.dom4j.Namespace;
-import org.dom4j.Node;
-import org.dom4j.NodeType;
-import org.dom4j.ProcessingInstruction;
-import org.dom4j.QName;
-import org.dom4j.Text;
-import org.dom4j.Visitor;
-import org.dom4j.XPath;
 
 import wisoft.pack.app.Activator;
+import wisoft.pack.models.PackConfig_Server;
+
+import com.wisoft.wims.WimsProInfo;
 
 
 public class PackConfigInfo {
@@ -107,5 +92,51 @@ public class PackConfigInfo {
 		path.setText(defaultExportPath);
 		xmlo.save();
 	}
-
+	
+	public PackConfig_Server[] getUnPackProInfos(){
+		xmlo.read();
+		Element path =xmlo.OnlyElementInRoot("UnPackServers");
+		List<Element> servers = path.elements("Server");
+		List<PackConfig_Server> serverlist = new ArrayList<PackConfig_Server>();
+		for(Element ele:servers)
+		{
+			PackConfig_Server ps = new PackConfig_Server();
+			Element ele_pro = ele.element("ProInfo");
+			String id = ele_pro.attributeValue("id");
+			String name = ele_pro.attributeValue("proname");
+			WimsProInfo pro = new WimsProInfo();
+			pro.setId(id);
+			pro.setProname(name);
+			ps.setProinfo(pro);
+			ps.setServerName(ele.attributeValue("name"));
+			ps.setDBPath(ele.elementText("DBpath"));
+			ps.setServerPwd(ele.elementText("ServerPwd"));
+			ps.setServerUser(ele.elementText("ServerUser"));
+			ps.setWebappPath(ele.elementText("WebappPath"));
+			ps.setWebPort(ele.elementText("WebPort"));
+			ps.setWSMPath(ele.elementText("WSMPath"));
+			serverlist.add(ps);
+		}
+		return serverlist.toArray(new PackConfig_Server[0]);
+	}
+	
+	public void setUnPackProInfos(PackConfig_Server[] servers)
+	{
+		Element path =xmlo.OnlyElementInRoot("UnPackServers");
+		xmlo.getRootElement().remove(path);
+		Element path1 =xmlo.OnlyElementInRoot("UnPackServers");
+		for(PackConfig_Server server:servers)
+		{
+			Element ele =xmlo.addElementInElement(path1, "Server", "name", server.getServerName());
+			Element ele_pro =xmlo.addElementInElement(ele, "ProInfo", "id", server.getProinfo().getId());
+			ele_pro.addAttribute("proname", server.getProinfo().getProname());
+			ele.addElement("DBpath").addText(server.getDBPath());
+			ele.addElement("ServerPwd").addText(server.getServerPwd());
+			ele.addElement("ServerUser").addText(server.getServerUser());
+			ele.addElement("WebappPath").addText(server.getWebappPath());
+			ele.addElement("WebPort").addText(server.getWebPort());
+			ele.addElement("WSMPath").addText(server.getWSMPath());
+		}
+		xmlo.save();
+	}
 }

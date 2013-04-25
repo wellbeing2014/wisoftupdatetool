@@ -1,6 +1,7 @@
 package wisoft.pack.app;
 
 import org.eclipse.jface.action.GroupMarker;
+import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.ICoolBarManager;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.IToolBarManager;
@@ -12,13 +13,15 @@ import org.eclipse.swt.SWT;
 import org.eclipse.ui.IWorkbenchActionConstants;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.actions.ActionFactory;
+import org.eclipse.ui.actions.ContributionItemFactory;
 import org.eclipse.ui.actions.ActionFactory.IWorkbenchAction;
 import org.eclipse.ui.application.ActionBarAdvisor;
 import org.eclipse.ui.application.IActionBarConfigurer;
 
 import wisoft.pack.actions.DelPackInfoAction;
 import wisoft.pack.actions.OpenNewPackDialogAction;
-import wisoft.pack.actions.OpenPackEditAction;
+import wisoft.pack.actions.ExportPackEditAction;
+import wisoft.pack.actions.OpenPackAction;
 import wisoft.pack.actions.PackConfigAction;
 import wisoft.pack.actions.SavePackEditAction;
 
@@ -34,99 +37,76 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor {
     // when fillActionBars is called with FILL_PROXY.
     private IWorkbenchAction exitAction;
     private IWorkbenchAction aboutAction;
-    
-    private SavePackEditAction savenAction;
     private IWorkbenchAction refreshAction;
-    //private IWorkbenchAction newWindowAction;
-   // private OpenViewAction openViewAction;
-    //private Action messagePopupAction;
-    
+
+    private SavePackEditAction savenAction;
     private OpenNewPackDialogAction openNewPackDialogAction;
     private DelPackInfoAction removePackInfoAction;
-    private OpenPackEditAction openPackAction;
+    private ExportPackEditAction exportPackAction;
     private PackConfigAction packConfigAction;
+    private OpenPackAction openPackAction;
 
     public ApplicationActionBarAdvisor(IActionBarConfigurer configurer) {
         super(configurer);
     }
     
     protected void makeActions(final IWorkbenchWindow window) {
-        // Creates the actions and registers them.
-        // Registering is needed to ensure that key bindings work.
-        // The corresponding commands keybindings are defined in the plugin.xml file.
-        // Registering also provides automatic disposal of the actions when
-        // the window is closed.
 
         exitAction = ActionFactory.QUIT.create(window);
         register(exitAction);
-        
         aboutAction = ActionFactory.ABOUT.create(window);
         aboutAction.setText("关于本系统……");
         register(aboutAction);
+        refreshAction = ActionFactory.REFRESH.create(window);
+        register(refreshAction);
+        
         
         savenAction =new  SavePackEditAction();
         register(savenAction);
         
-        refreshAction = ActionFactory.REFRESH.create(window);
-        register(refreshAction);
-        
-//        newWindowAction = ActionFactory.OPEN_NEW_WINDOW.create(window);
-//        register(newWindowAction);
-//        
-//        openViewAction = new OpenViewAction(window, "Open Another Message View", View.ID);
-//        register(openViewAction);
-//        
-//        messagePopupAction = new MessagePopupAction("Open Message", window);
-//        register(messagePopupAction);
-        
         openNewPackDialogAction = new OpenNewPackDialogAction(window,"新建更新包");
         register(openNewPackDialogAction);
+        
         removePackInfoAction = new DelPackInfoAction(window, "删除更新包");
         register(removePackInfoAction);
         
         
         packConfigAction = new PackConfigAction(window, "配置选项");
         register(packConfigAction);
-        openPackAction = new OpenPackEditAction(window,"导出更新包");
-        register(openPackAction);
+        
+        exportPackAction = new ExportPackEditAction(window,"导出更新包");
+        register(exportPackAction);
+        
+        openPackAction = new OpenPackAction(window, "打开更新包");
+        register(exportPackAction);
+
     }
-    
     protected void fillMenuBar(IMenuManager menuBar) {
         MenuManager fileMenu = new MenuManager("&File", "wisoft.pack.file");
         MenuManager ediltMenu = new MenuManager("&Edit", IWorkbenchActionConstants.M_EDIT);
         MenuManager toolMenu = new MenuManager("&Properties", IWorkbenchActionConstants.PROPERTIES);
         MenuManager helpMenu = new MenuManager("&Help", IWorkbenchActionConstants.M_HELP);
         
+        ediltMenu.add(exitAction);
+        toolMenu.add(packConfigAction);
+        helpMenu.add(aboutAction);
+        fileMenu.add(exitAction);
         menuBar.add(fileMenu);
         menuBar.add(ediltMenu);
-        // Add a group marker indicating where action set menus will appear.
-        //menuBar.add(new GroupMarker(IWorkbenchActionConstants.MB_ADDITIONS));
         menuBar.add(toolMenu);
         menuBar.add(helpMenu);
-        // File
-//        fileMenu.add(newWindowAction);
-//        fileMenu.add(new Separator());
-//        fileMenu.add(messagePopupAction);
-//        fileMenu.add(openViewAction);
-        //fileMenu.add(new Separator());
-        fileMenu.add(exitAction);
-        ediltMenu.add(exitAction);
         
-        // Help
-        helpMenu.add(aboutAction);
-        
-        toolMenu.add(packConfigAction);
     }
     
     protected void fillCoolBar(ICoolBarManager coolBar) {
         IToolBarManager toolbar = new ToolBarManager(SWT.FLAT | SWT.RIGHT);
         coolBar.add(new ToolBarContributionItem(toolbar, "main"));   
-//        toolbar.add(openViewAction);
-//        toolbar.add(messagePopupAction);
+        toolbar.add(openPackAction);
         toolbar.add(openNewPackDialogAction);
         toolbar.add(removePackInfoAction);
-        toolbar.add(openPackAction);
+        toolbar.add(exportPackAction);
         toolbar.add(savenAction);
         toolbar.add(packConfigAction);
     }
+    
 }

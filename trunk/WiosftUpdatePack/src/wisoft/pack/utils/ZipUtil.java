@@ -177,11 +177,11 @@ public class ZipUtil {
              if(zipEntry.isDirectory()) {     
                  String name = zipEntry.getName();     
                  name = name.substring(0,name.length()-1);     
-                 File f = new File(dest + name);     
+                 File f = new File(dest +File.separator+ name);     
                  f.mkdirs();     
              } else {     
 
-                 File f = new File(dest + zipEntry.getName());     
+                 File f = new File(dest +File.separator+ zipEntry.getName());     
                  f.getParentFile().mkdirs();     
                  f.createNewFile();     
                  InputStream is = zipFile.getInputStream(zipEntry);     

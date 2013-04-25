@@ -10,18 +10,18 @@ import wisoft.pack.models.PackInfoModel;
 import wisoft.pack.views.NavigationView;
 
 
-public class OpenPackEditAction extends Action {
-	private final String ID=ICommandIds.PACKINFO_OPEN;
+public class ExportPackEditAction extends Action {
+	private final String ID=ICommandIds.PACKINFO_EXPORT;
 	private IWorkbenchWindow window;
-	public OpenPackEditAction(IWorkbenchWindow window,String label)
+	public ExportPackEditAction(IWorkbenchWindow window,String label)
 	{
 		this.window =window;
         // The id is used to refer to the action in a menu or toolbar
-		setId(ICommandIds.PACKINFO_OPEN);
+		setId(ICommandIds.PACKINFO_EXPORT);
 		setText(label);
         // Associate the action with a pre-defined command, to allow key bindings.
-		setActionDefinitionId(ICommandIds.PACKINFO_OPEN);
-		setImageDescriptor(wisoft.pack.app.Activator.getImageDescriptor("/icons/open.gif"));
+		setActionDefinitionId(ICommandIds.PACKINFO_EXPORT);
+		setImageDescriptor(wisoft.pack.app.Activator.getImageDescriptor("/icons/export.png"));
 	}
 	
 	@Override
