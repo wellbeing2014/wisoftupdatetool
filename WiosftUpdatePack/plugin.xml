@@ -40,8 +40,8 @@
             name="删除更新包">
       </command>
       <command
-            id="WiosftUpdatePack.open"
-            name="打开更新包">
+            id="WiosftUpdatePack.export"
+            name="导出更新包">
       </command>
       <command
             id="WiosftUpdatePack.save"
@@ -50,6 +50,10 @@
       <command
             id="WiosftUpdatePack.packconfig"
             name="配置选项">
+      </command>
+      <command
+            id="WiosftUpdatePack.open"
+            name="打开更新包">
       </command>
    </extension>
    <extension
@@ -85,9 +89,14 @@
             parentId="org.eclipse.ui.defaultAcceleratorConfiguration">
       </scheme>
       <key
-            commandId="WiosftUpdatePack.open"
+            commandId="WiosftUpdatePack.export"
             schemeId="WiosftUpdatePack.scheme1"
             sequence="CTRL+E">
+      </key>
+      <key
+            commandId="WiosftUpdatePack.open"
+            schemeId="WiosftUpdatePack.scheme1"
+            sequence="CTRL+O">
       </key>
    </extension>
    <extension
