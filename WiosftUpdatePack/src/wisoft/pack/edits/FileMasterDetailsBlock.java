@@ -39,6 +39,7 @@ import wisoft.pack.dialogs.AddConfIntoPackDialog;
 import wisoft.pack.dialogs.AddFileIntoPackDialog;
 import wisoft.pack.models.FileModel;
 import wisoft.pack.models.PackInfoModel;
+import wisoft.pack.utils.FileUtil;
 import wisoft.pack.utils.UpdateInfo;
 import wisoft.pack.utils.XmlOperator;
 import wisoft.pack.views.Console;
@@ -333,48 +334,7 @@ public class FileMasterDetailsBlock extends MasterDetailsBlock {
 	    			}});
 			}
 			
-			 private  void delFolder(String folderPath) {
-				  try {
-				        delAllFile(folderPath); //删除完里面所有内容
-				        String filePath = folderPath;
-				        filePath = filePath.toString();
-				        java.io.File myFilePath = new java.io.File(filePath);
-				        myFilePath.delete(); //删除空文件夹
-				     } catch (Exception e) {
-				       e.printStackTrace(); 
-				     }
-			 }
-			 
-			 private  boolean  delAllFile(String path)
-			 {
-				   boolean flag = false;
-			       File file = new File(path);
-			       if (!file.exists()) {
-			         return flag;
-			       }
-			       if (!file.isDirectory()) {
-			    	   file.delete();
-			         return true;
-			       }
-			       String[] tempList = file.list();
-			       File temp = null;
-			       for (int i = 0; i < tempList.length; i++) {
-			          if (path.endsWith(File.separator)) {
-			             temp = new File(path + tempList[i]);
-			          } else {
-			              temp = new File(path + File.separator + tempList[i]);
-			          }
-			          if (temp.isFile()) {
-			             temp.delete();
-			          }
-			          if (temp.isDirectory()) {
-			             delAllFile(path + "/" + tempList[i]);//先删除文件夹里面的文件
-			             delFolder(path + "/" + tempList[i]);//再删除空文件夹
-			             flag = true;
-			          }
-			       }
-			       return flag;
-			 }
+		
 			 
 			@Override
 			public void widgetSelected(SelectionEvent e) {
@@ -390,9 +350,9 @@ public class FileMasterDetailsBlock extends MasterDetailsBlock {
 						{
 							String filepath = pi.getSavePath()+"/"+UpdateInfo.UpdateDirName+fm.getFullPath();
 							if(fm.isDir())
-								delFolder(filepath);
+								FileUtil.delFolder(filepath);
 							else
-								delAllFile(filepath);
+								FileUtil.delAllFile(filepath);
 						}
 						xmlo.save();
 						printlnToConsole("删除文件完成:"+fm.getName(),ConsoleType.INFO);

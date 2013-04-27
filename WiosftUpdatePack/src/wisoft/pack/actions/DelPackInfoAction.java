@@ -35,6 +35,7 @@ public class DelPackInfoAction extends Action {
 		}
 		else
 		{
+			
 			mb= new MessageBox(window.getShell());
 			mb.setMessage("请选择一个更新包工程。");
 			mb.setText("提示");

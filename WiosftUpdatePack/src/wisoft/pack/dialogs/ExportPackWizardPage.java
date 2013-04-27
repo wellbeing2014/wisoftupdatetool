@@ -16,6 +16,7 @@ import org.eclipse.wb.swt.SWTResourceManager;
 import wisoft.pack.models.PackInfoModel;
 import wisoft.pack.utils.PackConfigInfo;
 import wisoft.pack.utils.UpdateInfo;
+import org.eclipse.swt.layout.RowLayout;
 
 public class ExportPackWizardPage extends WizardPage {
 	public Text text;
@@ -23,6 +24,9 @@ public class ExportPackWizardPage extends WizardPage {
 	public Text text_1;
 	private Label label_1;
 	private Button button_1;
+	private Composite composite;
+	public Button button_2;
+	public Button btnRadioButton ;
 	/**
 	 * Create the wizard.
 	 */
@@ -104,6 +108,18 @@ public class ExportPackWizardPage extends WizardPage {
 		GridData gd_text_1 = new GridData(SWT.LEFT, SWT.CENTER, true, false, 1, 1);
 		gd_text_1.minimumWidth = 200;
 		text_1.setLayoutData(gd_text_1);
+		new Label(container, SWT.NONE);
+		
+		composite = new Composite(container, SWT.NONE);
+		composite.setLayout(new RowLayout(SWT.HORIZONTAL));
+		composite.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false, 2, 1));
+		
+		button_2 = new Button(composite, SWT.RADIO);
+		button_2.setText("\u4F20\u7EDF\u7ED3\u6784");
+		button_2.setSelection(true);
+		
+		btnRadioButton = new Button(composite, SWT.RADIO);
+		btnRadioButton.setText("WI\u7ED3\u6784");
 		new Label(container, SWT.NONE);
 	}
 }

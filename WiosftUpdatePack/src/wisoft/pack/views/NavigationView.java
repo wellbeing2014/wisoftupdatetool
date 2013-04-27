@@ -18,6 +18,7 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.TreeItem;
 import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.IEditorPart;
@@ -37,6 +38,7 @@ import wisoft.pack.models.PackInfoContentProvider;
 import wisoft.pack.models.PackInfoLabelProvider;
 import wisoft.pack.models.PackInfoModel;
 import wisoft.pack.models.RootModel;
+import wisoft.pack.utils.FileUtil;
 import wisoft.pack.utils.Navinfo;
 import wisoft.pack.utils.XmlOperator;
 
@@ -105,9 +107,17 @@ public class NavigationView extends ViewPart {
 	
 	public void removePackInfo(PackInfoModel[] packlist)
 	{
+		boolean isdeldir = false;
+		MessageBox mb = new MessageBox(this.getSite().getShell(),SWT.OK|SWT.CANCEL);
+		mb.setMessage("是否删除工程文件?");
+		mb.setText("提示");
+		if(SWT.OK==mb.open())
+			isdeldir =true;
 		for(int i=0;i<packlist.length;i++)
 		{
 			this.root.removePackInfo(packlist[i]);
+			if(isdeldir)
+				FileUtil.delFolder(packlist[i].getSavePath());
 		}
 		this.viewer.refresh();
 	}

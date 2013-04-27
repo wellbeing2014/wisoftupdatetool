@@ -50,6 +50,7 @@ public class ExportPackWizard extends Wizard {
 		
 		
 		final String exportpath  = this.page.text.getText()+"/"+this.page.text_1.getText();
+		final boolean isClassic = this.page.button_2.getSelection();
 		if(exportpath.trim().isEmpty())
 		{
 			page.setErrorMessage("请选择一个路径来保存导出的更新包"); 
@@ -87,8 +88,6 @@ public class ExportPackWizard extends Wizard {
 				});
 				try {
 					
-					zip.appendText(pack.getName()+"_RealseNote.txt", createRealseNote());
-					zip.appendFile(pack.getSavePath()+File.separator+UpdateInfo.UpdateDirName,"");
 					File sqlfile = new File(pack.getSavePath()+File.separator+XmlSqlEditorInput.TYPE_SQL);
 					if(!sqlfile.exists())
 					{
@@ -124,7 +123,16 @@ public class ExportPackWizard extends Wizard {
 			        } catch (IOException e) {
 			            e.printStackTrace();
 			        }
-					zip.appendFile(pack.getSavePath()+File.separator+XmlSqlEditorInput.TYPE_SQL, pack.getName()+"_DataBase.sql");
+			        if(isClassic)
+			        {	
+			        	zip.appendText(pack.getName()+"_RealseNote.txt", createRealseNote());
+			        	zip.appendFile(pack.getSavePath()+File.separator+UpdateInfo.UpdateDirName,"");
+			        	zip.appendFile(pack.getSavePath()+File.separator+XmlSqlEditorInput.TYPE_SQL, pack.getName()+"_DataBase.sql");
+			        }
+			        else
+			        {
+			        	zip.appendFile(pack.getSavePath(),"");
+			        }
 					zip.close();
 					printlnToConsole("导出更新包完成！",ConsoleType.INFO);
 					monitor.done();

@@ -5,11 +5,14 @@ import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.DirectoryDialog;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 
@@ -38,7 +41,7 @@ public class NewPackWizardPage extends WizardPage implements ModifyListener {
 	 * Create contents of the wizard.
 	 * @param parent
 	 */
-	public void createControl(Composite parent) {
+	public void createControl(final Composite parent) {
 		Composite container = new Composite(parent, SWT.NULL);
 
 		setControl(container);
@@ -113,6 +116,21 @@ public class NewPackWizardPage extends WizardPage implements ModifyListener {
 		text_2.setText(path);
 		
 		Button button_1 = new Button(container, SWT.NONE);
+		button_1.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				DirectoryDialog  fd = new DirectoryDialog (parent.getShell());
+				fd.setText("Ñ¡Ôñ±£´æÂ·¾¶");
+				fd.setFilterPath(path);
+				String selpath = fd.open();
+				if(selpath!=null&&!selpath.isEmpty())
+				{
+					path = selpath.replace("\\", "/")+"/";
+				}
+				text_2.setText(path+combo.getText().trim()+"("+text.getText().trim()+")"+text_1.getText().trim());
+				
+			}
+		});
 		button_1.setText("\u6D4F\u89C8");
 	}
 
