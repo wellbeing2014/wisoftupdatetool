@@ -9,6 +9,7 @@ import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.ui.IWorkbenchWindow;
 
 import wisoft.pack.app.Activator;
+import wisoft.pack.utils.FileUtil;
 import wisoft.pack.utils.UpdateInfo;
 import wisoft.pack.utils.ZipUtil;
 import wisoft.pack.views.NavigationView;
@@ -35,23 +36,32 @@ public class OpenPackAction extends Action {
 		FileDialog dialog = new FileDialog(window.getShell(),SWT.OPEN);
 		dialog.setFilterExtensions(new String[]{"*.rar","*.zip","*.wi","*.*"});
 		String fileSelected = dialog.open();
+		if(fileSelected==null)
+			return;
 		System.out.println(fileSelected);
 		File packfile = new File(fileSelected);
+		String destFolder = Activator.getDefault().getWorkSpacePath()+File.separator+packfile.getName();
+		int dot = destFolder.lastIndexOf('.'); 
+		if ((dot >-1) && (dot < (destFolder.length()))) 
+			destFolder = destFolder.substring(0, dot);
 		ZipUtil zip = new ZipUtil();
 		try {
-			zip.unZip(fileSelected, Activator.getDefault().getWorkSpacePath()+File.separator+packfile.getName(), false);
+			zip.unZip(fileSelected,destFolder , false);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
-			mb.setMessage(e.toString());
+			if(-1!=e.toString().indexOf("not a ZIP"))
+				mb.setMessage("亲，这个包不适合用来更新哦。");
+			else
+				mb.setMessage(e.toString());
 			mb.open();
+			return;
 		}
-		File updateinfoxml = new File(Activator.getDefault().getWorkSpacePath()+File.separator+packfile.getName()+File.separator+UpdateInfo.FileName);
+		File updateinfoxml = new File(destFolder+File.separator+UpdateInfo.FileName);
 		if(!updateinfoxml.exists())
 		{
-			
-			mb.setMessage("该文件不是一个有效的更新包");
+			FileUtil.delFolder(destFolder);
+			mb.setMessage("亲，这个更新包是不标准的，不能更新，\n劳驾您手动更新吧。");
 			mb.open();
-			
 		}
 		NavigationView nv = (NavigationView)window.getActivePage().findView(NavigationView.ID);
 	}

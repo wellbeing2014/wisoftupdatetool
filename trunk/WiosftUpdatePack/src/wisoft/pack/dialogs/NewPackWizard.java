@@ -9,7 +9,9 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.wizard.Wizard;
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.MessageBox;
 
 import wisoft.pack.models.PackInfoModel;
 import wisoft.pack.utils.UpdateInfo;
@@ -38,7 +40,7 @@ public class NewPackWizard extends Wizard {
 
 	@Override
 	public boolean performFinish() {
-		final String savePath = this.page1.text_2.getText().trim();
+		String savePath1 = this.page1.text_2.getText().trim();
 		final String ModuleName = this.page1.combo.getText().trim();
 		final String ModuleCode = this.page1.text.getText().trim();
 		final String version = this.page1.text_1.getText().trim();
@@ -47,6 +49,17 @@ public class NewPackWizard extends Wizard {
 		final String releasenot = this.page2.text.getText().trim();
 		final String keyword = this.page2.text_1.getText().trim();
 		final String packname = ModuleName+"("+ModuleCode+")"+version;
+		File savpathdir = new File(savePath1.substring(0, savePath1.lastIndexOf("/"))); 
+		final String savePath = savePath1;
+		if(!savpathdir.exists())
+		{
+			MessageBox mb = new MessageBox(this.getShell(),SWT.ERROR);
+			mb.setMessage("更新包保存路径不存在");
+			mb.setText("提示");
+			mb.open();
+			return false;
+		}
+			
 		final PackInfoModel pack  = new PackInfoModel(packname,savePath);
 		Console.getInstance().print("创建更新包开始……", packname, Console.ConsoleType.INFO);	
 		
