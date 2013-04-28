@@ -9,6 +9,7 @@ import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.ui.IWorkbenchWindow;
 
 import wisoft.pack.app.Activator;
+import wisoft.pack.models.PackInfoModel;
 import wisoft.pack.utils.FileUtil;
 import wisoft.pack.utils.UpdateInfo;
 import wisoft.pack.utils.ZipUtil;
@@ -64,6 +65,11 @@ public class OpenPackAction extends Action {
 			mb.open();
 		}
 		NavigationView nv = (NavigationView)window.getActivePage().findView(NavigationView.ID);
+		PackInfoModel pim = new PackInfoModel();
+		pim.setSavePath(destFolder);
+		pim.readFromXML();
+		pim.setName(pim.getModuleName()+"("+pim.getModuleCode()+")"+pim.getVersion());
+		nv.addPackInfo(pim);
 	}
 
 }
