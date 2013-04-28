@@ -38,6 +38,21 @@ public class PackInfoModel extends Model {
 //	private String moduleName="";
 //	private String moduleCode="";
 //	private String version ="";
+	@Override
+	public String getName()
+	{
+		if(!getModuleName().isEmpty()&&!getModuleCode().isEmpty()&&!getVersion().isEmpty())
+			return getModuleName()+"("+getModuleCode()+")"+getVersion();
+		else
+			return super.getName();
+	}
+	@Override
+	public void setName(String name) {
+		if(!getModuleName().isEmpty()&&!getModuleCode().isEmpty()&&!getVersion().isEmpty())
+			this.name = getModuleName()+"("+getModuleCode()+")"+getVersion();
+		else
+			this.name=name;
+	};
 	
 	public String getModuleName() {
 		return xmlo.OnlyElementInRoot(UpdateInfo.ModuleName).getText();
@@ -263,6 +278,15 @@ public class PackInfoModel extends Model {
 		readFromXML();
 	}
 	
+	public PackInfoModel()
+	{
+		this.addChild(overview);
+		this.addChild(selectFiles);
+		this.addChild(editConfs);
+		this.addChild(editSql);
+	}
+	
+	
 	public PackInfoModel(String name)
 	{
 		this.name =name;
@@ -297,6 +321,7 @@ public class PackInfoModel extends Model {
 		xmlo.setXmlfile(new File(savePath+"/"+UpdateInfo.FileName));
 		xmlo.initXml("root");
 	}
+	
 	
 	/**获取需要配置的文件
 	 * @return
