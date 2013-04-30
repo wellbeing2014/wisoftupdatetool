@@ -19,6 +19,7 @@ import org.eclipse.ui.application.ActionBarAdvisor;
 import org.eclipse.ui.application.IActionBarConfigurer;
 
 import wisoft.pack.actions.DelPackInfoAction;
+import wisoft.pack.actions.DeployPackToServerAction;
 import wisoft.pack.actions.OpenNewPackDialogAction;
 import wisoft.pack.actions.ExportPackEditAction;
 import wisoft.pack.actions.OpenPackAction;
@@ -45,6 +46,7 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor {
     private ExportPackEditAction exportPackAction;
     private PackConfigAction packConfigAction;
     private OpenPackAction openPackAction;
+    private DeployPackToServerAction deployPackAction;
 
     public ApplicationActionBarAdvisor(IActionBarConfigurer configurer) {
         super(configurer);
@@ -78,7 +80,10 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor {
         register(exportPackAction);
         
         openPackAction = new OpenPackAction(window, "打开更新包");
-        register(exportPackAction);
+        register(openPackAction);
+        
+        deployPackAction = new DeployPackToServerAction(window, "部署更新包");
+        register(deployPackAction);
 
     }
     protected void fillMenuBar(IMenuManager menuBar) {
@@ -107,6 +112,7 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor {
         toolbar.add(exportPackAction);
         toolbar.add(savenAction);
         toolbar.add(packConfigAction);
+        toolbar.add(deployPackAction);
     }
     
 }
