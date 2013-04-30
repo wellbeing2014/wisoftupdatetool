@@ -55,6 +55,10 @@
             id="WiosftUpdatePack.open"
             name="打开更新包">
       </command>
+      <command
+            id="WiosftUpdatePack.deploy"
+            name="部署更新包">
+      </command>
    </extension>
    <extension
          point="org.eclipse.ui.bindings">
@@ -97,6 +101,11 @@
             commandId="WiosftUpdatePack.open"
             schemeId="WiosftUpdatePack.scheme1"
             sequence="CTRL+O">
+      </key>
+      <key
+            commandId="WiosftUpdatePack.deploy"
+            schemeId="WiosftUpdatePack.scheme1"
+            sequence="CTRL+U">
       </key>
    </extension>
    <extension

@@ -14,6 +14,7 @@ public interface ICommandIds {
     public static final String PACKINFO_OPEN="WiosftUpdatePack.open";
     public static final String PACKINFO_EXPORT="WiosftUpdatePack.export";
     public static final String PACKINFO_SAVE="WiosftUpdatePack.save";
+    public static final String PACKINFO_DEPLOY="WiosftUpdatePack.deploy";
     public static final String PACKCONFIG_OPEN="WiosftUpdatePack.packconfig";
     
     
