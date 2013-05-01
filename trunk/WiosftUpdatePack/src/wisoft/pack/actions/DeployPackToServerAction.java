@@ -27,7 +27,7 @@ public class DeployPackToServerAction extends Action {
 		NavigationView nv = (NavigationView)window.getActivePage().findView(NavigationView.ID);
 		PackInfoModel[] nm = nv.getSelectPackInfo();
 		MessageBox mb;
-		if(nm.length!=0)
+		if(nm.length!=1)
 		{
 			mb= new MessageBox(window.getShell());
 			mb.setMessage("请选择一个更新包工程。");
@@ -36,7 +36,7 @@ public class DeployPackToServerAction extends Action {
 			return ;
 		}
 		
-		UpdateServerDialog usd = new UpdateServerDialog(window.getShell(), 0);
+		UpdateServerDialog usd = new UpdateServerDialog(window.getShell(), nm[0]);
 		usd.open();
 		
 	}
