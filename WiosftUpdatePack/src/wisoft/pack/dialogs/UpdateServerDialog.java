@@ -1,5 +1,8 @@
 package wisoft.pack.dialogs;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.ComboViewer;
 import org.eclipse.jface.viewers.LabelProvider;
@@ -15,6 +18,7 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.DateTime;
 import org.eclipse.swt.widgets.Dialog;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
@@ -166,18 +170,15 @@ public class UpdateServerDialog extends Dialog {
 	
 	private void doStart()
 	{
-		for(int i=0;i<1000;i++)
-		{
-			
-			print("正在检查-------"+i);
-		}
+			print("正在检查更新包完整性----"+pm.getName(),true );
 	}
 	
 	/**
 	 * 显示数据到text控件，为了防止界面假死，必须另起线程，异步调度执行线程
 	 * */
-	private void print(final String str)
+	private void print(final String str,final boolean isShowTime)
 	{
+		final SimpleDateFormat sf =  new  SimpleDateFormat("yyyy-MM-dd HH:mm:ss:SSS");
 		Display.getDefault().asyncExec(new Runnable() {   
 			//这个线程是调用UI线程控件
 			public void run() {   
@@ -187,7 +188,10 @@ public class UpdateServerDialog extends Dialog {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
-				text_1.append(str+"\n");
+				if(isShowTime)
+					text_1.append(sf.format(new Date())+": "+str+"\n");
+				else
+					text_1.append(str+"\n");
 			}   
 		});   
 	}
