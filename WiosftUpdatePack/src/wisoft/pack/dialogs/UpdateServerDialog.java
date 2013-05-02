@@ -2,12 +2,15 @@ package wisoft.pack.dialogs;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.ComboViewer;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.FormAttachment;
@@ -18,7 +21,6 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.DateTime;
 import org.eclipse.swt.widgets.Dialog;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
@@ -27,11 +29,11 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 
+import wisoft.pack.models.FileModel;
 import wisoft.pack.models.PackConfig_Server;
 import wisoft.pack.models.PackInfoModel;
+import wisoft.pack.models.PackRelyModel;
 import wisoft.pack.utils.PackConfigInfo;
-import org.eclipse.swt.events.SelectionAdapter;
-import org.eclipse.swt.events.SelectionEvent;
 
 public class UpdateServerDialog extends Dialog {
 
@@ -171,8 +173,24 @@ public class UpdateServerDialog extends Dialog {
 	private void doStart()
 	{
 			print("正在检查更新包完整性----"+pm.getName(),true );
+			print("正在检查更新包依赖----",true );
+			List<PackRelyModel> packrelys = pm.getPackRelys();
+			if(packrelys.size()>0)
+			{
+				for(PackRelyModel prm:packrelys)
+				{	
+					print("检查到更新包依赖 --- "+prm.getName()+" 发布时间："+prm.getPublishTime(),false );
+				}
+			}
+			copyFile();
 	}
 	
+	
+	private void copyFile()
+	{
+		FileModel file =pm.getUpdateFileRoot();
+		file.getChildren();
+	}
 	/**
 	 * 显示数据到text控件，为了防止界面假死，必须另起线程，异步调度执行线程
 	 * */
