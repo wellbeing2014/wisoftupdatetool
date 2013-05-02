@@ -343,7 +343,13 @@ public class PackInfoModel extends Model {
 			if(fm.getChildren().size()>0)
 				getConfFiles(filelist,fm.getChildren().toArray(new FileModel[0]));
 		}
-			
 		//return confiles;
+	}
+	
+	public FileModel getUpdateFileRoot()
+	{
+		Element filelist =xmlo.OnlyElementInRoot(UpdateInfo.UpdateFileList);
+		FileModel fm =new FileModel(filelist);
+		return fm;
 	}
 }
