@@ -152,25 +152,6 @@ public class FileMasterDetailsBlock extends MasterDetailsBlock {
 				    			}});
 						}
 						
-						//复制文件方法
-						private void copyFile(File f1,File f2) throws Exception{   
-							int length=2097152;   
-							FileInputStream in=new FileInputStream(f1);   
-							FileOutputStream out=new FileOutputStream(f2);   
-							byte[] buffer=new byte[length];   
-							while(true){   
-								int ins=in.read(buffer);   
-								if(ins==-1){   
-									in.close();   
-									out.flush();   
-									out.close();   
-									return;   
-								}
-								else  
-									out.write(buffer,0,ins);   
-						   }   
-						}  
-						
 						//写入文件结构到XML中，以便展示文件树
 						private void recordFileToXml(File file)
 						{
@@ -233,7 +214,7 @@ public class FileMasterDetailsBlock extends MasterDetailsBlock {
 								else
 								{
 									try{
-										copyFile(filelist[i],file2);
+										FileUtil.copyFile(filelist[i],file2);
 										printlnToConsole("复制文件完成:"+tempfilename,ConsoleType.INFO);
 										recordFileToXml(file2);
 										monitor.worked(i);

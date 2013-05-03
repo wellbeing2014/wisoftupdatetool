@@ -1,6 +1,8 @@
 package wisoft.pack.utils;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 
 public class FileUtil {
 
@@ -46,4 +48,22 @@ public class FileUtil {
 	       }
 	       return flag;
 	 }
+	 
+	 public static void copyFile(File f1,File f2) throws Exception{   
+			int length=2097152;   
+			FileInputStream in=new FileInputStream(f1);   
+			FileOutputStream out=new FileOutputStream(f2);   
+			byte[] buffer=new byte[length];   
+			while(true){   
+				int ins=in.read(buffer);   
+				if(ins==-1){   
+					in.close();   
+					out.flush();   
+					out.close();   
+					return;   
+				}
+				else  
+					out.write(buffer,0,ins);   
+		   }   
+	} 
 }
