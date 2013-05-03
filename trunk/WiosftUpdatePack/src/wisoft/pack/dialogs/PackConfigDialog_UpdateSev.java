@@ -1,8 +1,14 @@
 package wisoft.pack.dialogs;
 
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.IDialogConstants;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -10,6 +16,7 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Shell;
@@ -37,6 +44,7 @@ public class PackConfigDialog_UpdateSev extends Dialog {
 	/**
 	 * Create the dialog.
 	 * @param parentShell
+	 * @wbp.parser.constructor
 	 */
 	public PackConfigDialog_UpdateSev(Shell parentShell) {
 		super(parentShell);
@@ -163,6 +171,72 @@ public class PackConfigDialog_UpdateSev extends Dialog {
 		text_2.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 3, 1));
 		
 		Button button = new Button(container, SWT.NONE);
+		button.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				String dbconStr =text_2.getText().trim();
+				if(dbconStr.isEmpty())
+					MessageDialog.openError(getParentShell(), "错误", "请输入数据库连接字符串，如user/pwd@ip/orcl");
+				else
+				{
+			        String sql = "SQLPLUS "+dbconStr;
+			        try {
+			        	final Process proc =Runtime.getRuntime().exec(sql);
+			        	
+			        	//读取打印数据流
+			        	proc.getOutputStream().close();
+            			final BufferedReader pin = new BufferedReader(
+            		              new InputStreamReader(proc.getInputStream()));
+            		    Thread errReadThread = new Thread() {
+            	            public void run() {
+            	              try {
+            	            	   String errorstr1="";
+            	                String line=null;
+            	                while ( (line=pin.readLine()) != null) {
+            	                	System.out.println(line);
+            	                	errorstr1+=line;
+            	                }
+            	                
+            	                int i =errorstr1.indexOf("ERROR:");
+            	                if(i!=-1)
+            	                {
+            	                	errorstr1=errorstr1.substring(i);
+            	                }
+            	                
+            	                int j =errorstr1.indexOf(";");
+            	                if(j!=-1)
+            	                {
+            	                	errorstr1=errorstr1.substring(0,j+1);
+            	                }
+            	                
+            	                final String errorstr=errorstr1;
+            	                Display.getDefault().asyncExec(new Runnable() {   
+            	        			//这个线程是调用UI线程控件
+            	        			public void run() {   
+            	        				if(errorstr.contains("ERROR:"))
+            	        					MessageDialog.openError(getParentShell(), "错误", errorstr);
+            	        				if(errorstr.contains("连接到:")||errorstr.contains("SQL>"))
+            	        					MessageDialog.openInformation(getParentShell(), "成功", "测试成功！");
+            	        			}   
+            	        		});
+            	                proc.waitFor();
+            	                pin.close();
+            	              }
+            	              catch (Exception ex) {
+            	                ex.printStackTrace();
+            	              }
+            	            }
+            	          };
+            	          
+            	          errReadThread.start();
+            	          
+            		    
+			        } catch (Exception e1) {
+			            e1.printStackTrace();
+			        }
+				}
+			}
+		});
 		button.setText("\u6D4B\u8BD5");
 		new Label(container, SWT.NONE);
 		

@@ -1,10 +1,13 @@
 package wisoft.pack.dialogs;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.InputStreamReader;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.ComboViewer;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -32,11 +35,13 @@ import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 
 import wisoft.pack.models.FileModel;
+import wisoft.pack.models.Model;
 import wisoft.pack.models.PackConfig_Server;
 import wisoft.pack.models.PackInfoModel;
 import wisoft.pack.models.PackRelyModel;
 import wisoft.pack.utils.FileUtil;
 import wisoft.pack.utils.PackConfigInfo;
+import wisoft.pack.utils.UpdateInfo;
 
 public class UpdateServerDialog extends Dialog {
 
@@ -46,8 +51,9 @@ public class UpdateServerDialog extends Dialog {
 	private final FormToolkit formToolkit = new FormToolkit(Display.getDefault());
 	private Text text;
 	private Text text_1;
-	private String ServerPath;
+	private PackConfig_Server selSever;
 	private ComboViewer comboViewer;
+	private ProgressBar progressBar;
 
 	/**
 	 * Create the dialog.
@@ -150,7 +156,7 @@ public class UpdateServerDialog extends Dialog {
 		label_1.setText("\u66F4\u65B0\u8FDB\u5EA6\uFF1A");
 
 		
-		ProgressBar progressBar = new ProgressBar(composite_1, SWT.NONE);
+		progressBar = new ProgressBar(composite_1, SWT.NONE);
 		//gd_progressBar.widthHint = 239;
 		progressBar.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
 		Button button = formToolkit.createButton(composite_1, "\u5F00\u59CB/\u6682\u505C", SWT.NONE);
@@ -160,6 +166,7 @@ public class UpdateServerDialog extends Dialog {
 				doStart();
 			}
 		});
+		progressBar.setMinimum(0);
 		button.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
 		
 		Button button_1 = formToolkit.createButton(composite_1, "\u53D6\u6D88", SWT.NONE);
@@ -177,19 +184,22 @@ public class UpdateServerDialog extends Dialog {
 	
 	private void doStart()
 	{
-			print("正在检查更新包完整性----"+pm.getName(),true );
-			
-			print("正在服务文件夹是否存在----"+pm.getName(),true );
+			print("【检查】更新包完整性----"+pm.getName(),true );
+			num=0;
+			countFile(pm.getUpdateFileRoot());
+			progressBar.setMaximum(num);
+			print("   需要更新"+num+"个文件",false);
 			IStructuredSelection selection = (IStructuredSelection)comboViewer.getSelection();
 			PackConfig_Server ps= new PackConfig_Server();
 			if(selection!=null&&selection.getFirstElement()!=null)
 			{
 				ps = (PackConfig_Server)selection.getFirstElement();
-				ServerPath = ps.getWebappPath();
+				selSever = ps;
 			}
+			print("【检查】服务文件夹是否存在----"+selSever.getWebappPath(),true );
 			try
 			{
-				File server = new File(ServerPath);
+				File server = new File(selSever.getWebappPath());
 				if(!server.exists()&&!server.isDirectory())
 				{
 					print("【错误】：更新指向的服务器WEBAPP文件夹不存在！来自服务："+ps.getServerName(),true );
@@ -203,54 +213,140 @@ public class UpdateServerDialog extends Dialog {
 			}
 			print("检查通过服务器WEBAPP地址："+ps.getWebappPath(),false);
 			
-			print("正在检查更新包依赖----",true );
+			print("【检查】更新包依赖----",true );
 			List<PackRelyModel> packrelys = pm.getPackRelys();
 			if(packrelys.size()>0)
 			{
 				for(PackRelyModel prm:packrelys)
 				{	
-					print("检查到更新包依赖 --- "+prm.getName()+" 发布时间："+prm.getPublishTime(),false );
+					print("[更新包依赖 ]--- "+prm.getName()+" 发布时间："+prm.getPublishTime(),false );
+					boolean b = MessageDialog.openQuestion(this.shell,"注意有更新包依赖","此更新包，需要先更新  "+prm.getName()+"\n发布时间："+prm.getPublishTime()+"\n确定继续更新？");
+					if(b)
+						continue;
+					else
+						print("【中断】：用户已取消！",true);
 				}
 			}
-			copyFile();
+			
+			boolean b = MessageDialog.openQuestion(this.shell,"开始更新？","所有检查完毕，确定启动更新程序？");
+			if(b)
+				copyFile();
+			else
+				print("【中断】：用户已取消！",true);
+			print("文件更新完毕:",true);
+			print("【执行SQL】:开始",true);
+			doSqlFile();
 	}
 	
-	
+	private int num;
+	private void countFile(FileModel file)
+	{
+		num++;
+		for(Model zfile:file.getChildren())
+		{
+			countFile((FileModel)zfile);
+		}
+	}
 	private void copyFile()
 	{
 		FileModel file =pm.getUpdateFileRoot();
-		file.getChildren();
+		copyCircle(file);
 	}
 	
 	
-	private void copyCircle(FileModel file,String serverDeepin)
+	private void copyCircle(FileModel file )
 	{
-		File serverfile = new File(serverDeepin+file.getFullPath());
-		if(file.isConf())
+		File serverfile = new File(selSever.getWebappPath()+file.getFullPath());
+		if(file.isDir())
 		{
-			
-		}
-		else if(file.isDir())
-		{
-			if(serverfile.exists())
-				print("【合并文件夹】："+serverfile.getAbsolutePath(),false);
-			else
-				print("【创建文件夹】："+serverfile.getAbsolutePath(),false);
-			serverfile.mkdirs();
+			if(!file.isVirtual())
+			{
+				if(serverfile.exists())
+					print("【合并文件夹】："+serverfile.getAbsolutePath(),false);
+				else
+					print("【创建文件夹】："+serverfile.getAbsolutePath(),false);
+				serverfile.mkdirs();
+			}
+			if(file.isConf())
+			{
+				print("【文件夹配置】："+serverfile.getAbsolutePath()+"\n[配置说明]"+file.getContent(),false);
+			}
 		}
 		else
 		{
 			try
 			{
-				File packfile = new File(pm.getSavePath()+file.getFullPath());
-				FileUtil.copyFile(packfile, serverfile);
+				File packfile = new File(pm.getSavePath()+File.separator+UpdateInfo.UpdateDirName+file.getFullPath());
+				if(packfile.exists())
+				{
+					FileUtil.copyFile(packfile, serverfile);
+					print("【复制文件】："+file.getFullPath(),false);
+				}
+				if(file.isConf())
+				{
+					print("【手动配置】："+serverfile.getAbsolutePath()+"\n[配置说明]"+file.getContent()+"\n[配置类型]"+file.getConftype(),false);
+					if(UpdateInfo.FileOpr_Del.equals(file.getConftype()))
+						serverfile.delete();
+				}
 			}
 			catch(Exception e)
 			{
-				
+				print("【错误】：更新文件"+file.getFullPath()+"出错。来自："+e.getStackTrace().toString(),true );
 			}
 		}
+		
+		
+		for(Model zfile:file.getChildren())
+		{
+			copyCircle((FileModel)zfile);
+		}
+		Display.getDefault().asyncExec(new Runnable() {   
+			//这个线程是调用UI线程控件
+			public void run() {   
+				 if (progressBar.isDisposed())
+			         return;
+			        progressBar.setSelection(progressBar.getSelection() + 1);
+			}
+		});
 	}
+	
+	private void doSqlFile()
+	{
+		String sql = "SQLPLUS "+selSever.getDBPath()+" @"+pm.getSavePath()+File.separator+UpdateInfo.SqlFileName;
+        try {
+        	final Process proc =Runtime.getRuntime().exec(sql);
+        	
+        	//读取打印数据流
+        	proc.getOutputStream().close();
+			final BufferedReader pin = new BufferedReader(
+		              new InputStreamReader(proc.getInputStream()));
+		    Thread errReadThread = new Thread() {
+	            public void run() {
+	              try {
+	                String line=null;
+	                while ( (line=pin.readLine()) != null) {
+	                	System.out.println(line);
+	                	
+	                	print(line,false);
+	                }
+	                
+	                proc.waitFor();
+	                pin.close();
+	              }
+	              catch (Exception ex) {
+	                ex.printStackTrace();
+	              }
+	            }
+	          };
+	          
+	          errReadThread.start();
+	          
+		    
+        } catch (Exception e1) {
+            e1.printStackTrace();
+        }
+	}
+	
 	/**
 	 * 显示数据到text控件，为了防止界面假死，必须另起线程，异步调度执行线程
 	 * */

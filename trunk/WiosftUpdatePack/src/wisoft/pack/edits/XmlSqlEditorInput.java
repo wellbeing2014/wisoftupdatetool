@@ -7,11 +7,12 @@ import org.eclipse.ui.IPathEditorInput;
 import org.eclipse.ui.IPersistableElement;
 
 import wisoft.pack.models.PackInfoModel;
+import wisoft.pack.utils.UpdateInfo;
 
 public class XmlSqlEditorInput implements IPathEditorInput {
 
-	public static final String TYPE_SQL = "databaseupdate.sql";
-	public static final String TYPE_XML = "updateinfo.xml";
+	public static final String TYPE_SQL = UpdateInfo.SqlFileName;
+	public static final String TYPE_XML = UpdateInfo.FileName;
 	
 	private String type ;
 	private PackInfoModel packinfo;
@@ -60,9 +61,9 @@ public class XmlSqlEditorInput implements IPathEditorInput {
 	public IPath getPath() {
 		// TODO Auto-generated method stub
 		if(type.equals(XmlSqlEditorInput.TYPE_XML))
-			return new Path(this.packinfo.getSavePath()+"/updateinfo.xml");
+			return new Path(this.packinfo.getSavePath()+"/"+UpdateInfo.FileName);
 		if(type.equals(XmlSqlEditorInput.TYPE_SQL))
-			return new Path(this.packinfo.getSavePath()+"/databaseupdate.sql");
+			return new Path(this.packinfo.getSavePath()+"/"+UpdateInfo.SqlFileName);
 		return null;
 	}
 
