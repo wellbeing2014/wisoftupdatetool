@@ -1,11 +1,13 @@
 package wisoft.pack.dialogs;
 
+import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.ComboViewer;
+import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.swt.SWT;
@@ -33,6 +35,7 @@ import wisoft.pack.models.FileModel;
 import wisoft.pack.models.PackConfig_Server;
 import wisoft.pack.models.PackInfoModel;
 import wisoft.pack.models.PackRelyModel;
+import wisoft.pack.utils.FileUtil;
 import wisoft.pack.utils.PackConfigInfo;
 
 public class UpdateServerDialog extends Dialog {
@@ -43,6 +46,8 @@ public class UpdateServerDialog extends Dialog {
 	private final FormToolkit formToolkit = new FormToolkit(Display.getDefault());
 	private Text text;
 	private Text text_1;
+	private String ServerPath;
+	private ComboViewer comboViewer;
 
 	/**
 	 * Create the dialog.
@@ -121,7 +126,7 @@ public class UpdateServerDialog extends Dialog {
 		label.setText("\u9009\u62E9\u670D\u52A1\u5668\uFF1A");
 		
 		
-		ComboViewer comboViewer = new ComboViewer(composite_1, SWT.READ_ONLY);
+		comboViewer = new ComboViewer(composite_1, SWT.READ_ONLY);
 		comboViewer.setContentProvider(ArrayContentProvider.getInstance());
 		comboViewer.setLabelProvider(new LabelProvider(){
 			@Override
@@ -173,6 +178,31 @@ public class UpdateServerDialog extends Dialog {
 	private void doStart()
 	{
 			print("正在检查更新包完整性----"+pm.getName(),true );
+			
+			print("正在服务文件夹是否存在----"+pm.getName(),true );
+			IStructuredSelection selection = (IStructuredSelection)comboViewer.getSelection();
+			PackConfig_Server ps= new PackConfig_Server();
+			if(selection!=null&&selection.getFirstElement()!=null)
+			{
+				ps = (PackConfig_Server)selection.getFirstElement();
+				ServerPath = ps.getWebappPath();
+			}
+			try
+			{
+				File server = new File(ServerPath);
+				if(!server.exists()&&!server.isDirectory())
+				{
+					print("【错误】：更新指向的服务器WEBAPP文件夹不存在！来自服务："+ps.getServerName(),true );
+					return;
+				}
+			}
+			catch(Exception e)
+			{
+				print("【错误】：检查服务器发生问题！来自："+e.getStackTrace().toString(),true );
+				return;
+			}
+			print("检查通过服务器WEBAPP地址："+ps.getWebappPath(),false);
+			
 			print("正在检查更新包依赖----",true );
 			List<PackRelyModel> packrelys = pm.getPackRelys();
 			if(packrelys.size()>0)
@@ -190,6 +220,36 @@ public class UpdateServerDialog extends Dialog {
 	{
 		FileModel file =pm.getUpdateFileRoot();
 		file.getChildren();
+	}
+	
+	
+	private void copyCircle(FileModel file,String serverDeepin)
+	{
+		File serverfile = new File(serverDeepin+file.getFullPath());
+		if(file.isConf())
+		{
+			
+		}
+		else if(file.isDir())
+		{
+			if(serverfile.exists())
+				print("【合并文件夹】："+serverfile.getAbsolutePath(),false);
+			else
+				print("【创建文件夹】："+serverfile.getAbsolutePath(),false);
+			serverfile.mkdirs();
+		}
+		else
+		{
+			try
+			{
+				File packfile = new File(pm.getSavePath()+file.getFullPath());
+				FileUtil.copyFile(packfile, serverfile);
+			}
+			catch(Exception e)
+			{
+				
+			}
+		}
 	}
 	/**
 	 * 显示数据到text控件，为了防止界面假死，必须另起线程，异步调度执行线程
