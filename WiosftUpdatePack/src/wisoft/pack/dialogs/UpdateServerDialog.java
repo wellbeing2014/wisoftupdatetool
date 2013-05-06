@@ -215,49 +215,28 @@ public class UpdateServerDialog extends Dialog {
 		
 	}
 	
-	private List<FileModel> tabledata = new ArrayList<FileModel>();
-	private void addTableData(FileModel fm)
+	private void addTableData()
 	{
-		 table.clearAll();
-		 tabledata.add(fm);
-		 
+		List<FileModel> tabledata = pm.getConfFiles();
+		 table.removeAll();
 	     for (int i = 0;i<tabledata.size();i++) {
-	      TableItem item =new TableItem(table, SWT.NONE);
+	    	 TableItem item =new TableItem(table, SWT.NONE);
+	      item.setText(0, String.valueOf(i+1));
+	      item.setText(1, tabledata.get(i).getFullPath());
+	      item.setText(2, tabledata.get(i).getConftype());
+	      item.setText(3, tabledata.get(i).getFullPath());
 	      TableEditor editor = new TableEditor(table);
-	      Text text = new Text(table, SWT.NONE);
-	      text.setText(String.valueOf(i));
-	      editor.grabHorizontal = true;
-	      editor.setEditor(text, item, 0);
-	      
-	      //配置项
-	      editor = new TableEditor(table);
-	      Text text_1 = new Text(table, SWT.NONE);
-	      text_1.setText(fm.getFullPath());
-	      editor.grabHorizontal = true;
-	      editor.setEditor(text_1, item, 1);
-	      
-	      //配置类型
-	      editor = new TableEditor(table);
-	      Text text_2 = new Text(table, SWT.NONE);
-	      text_1.setText(fm.getConftype());
-	      editor.grabHorizontal = true;
-	      editor.setEditor(text_2, item, 2);
-	      
-	    //配置类型
-	      editor = new TableEditor(table);
-	      Text text_3 = new Text(table, SWT.NONE);
-	      text_1.setText(fm.getConftype());
-	      editor.grabHorizontal = true;
-	      editor.setEditor(text_3, item, 3);
-	      
-	      editor = new TableEditor(table);
 	      Button button = new Button(table, SWT.NONE);
+	      if(UpdateInfo.FileOpr_Del.equals(tabledata.get(i).getConftype()))
+	    	  button.setText("删除");
+	      if(UpdateInfo.FileOpr_Mod.equals(tabledata.get(i).getConftype()))
+	    	  button.setText("修改");
 	      button.pack();
 	      editor.minimumWidth = button.getSize().x;
 	      editor.horizontalAlignment = SWT.LEFT;
 	      editor.setEditor(button, item, 4);
 	      
-	      table.setData(fm);
+	      table.setData(tabledata.get(i));
 	    }
 	}
 	
@@ -270,6 +249,7 @@ public class UpdateServerDialog extends Dialog {
 			print("   需要更新"+num+"个文件",false);
 			int confnum = pm.getConfFiles().size();
 			print("   需要配置"+confnum+"个文件",false);
+			addTableData();
 			IStructuredSelection selection = (IStructuredSelection)comboViewer.getSelection();
 			PackConfig_Server ps= new PackConfig_Server();
 			if(selection!=null&&selection.getFirstElement()!=null)
@@ -352,7 +332,6 @@ public class UpdateServerDialog extends Dialog {
 			if(file.isConf()&&file.getConftype()!=null)
 			{
 				print("【文件夹配置】："+serverfile.getAbsolutePath()+"\n[配置类型]"+file.getConftype()+"\n[配置说明]"+file.getContent(),false);
-				addTableData(file);
 			}
 		}
 		else
@@ -368,7 +347,6 @@ public class UpdateServerDialog extends Dialog {
 				if(file.isConf())
 				{
 					print("【手动配置】："+serverfile.getAbsolutePath()+"\n[配置说明]"+file.getContent()+"\n[配置类型]"+file.getConftype(),false);
-					addTableData(file);
 				}
 			}
 			catch(Exception e)
