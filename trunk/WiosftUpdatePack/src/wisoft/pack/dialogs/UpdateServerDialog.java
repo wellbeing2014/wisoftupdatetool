@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.InputStreamReader;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -14,6 +15,8 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.CCombo;
+import org.eclipse.swt.custom.TableEditor;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Rectangle;
@@ -31,6 +34,9 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.ProgressBar;
 import org.eclipse.swt.widgets.Shell;
+import org.eclipse.swt.widgets.Table;
+import org.eclipse.swt.widgets.TableColumn;
+import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 
@@ -92,7 +98,7 @@ public class UpdateServerDialog extends Dialog {
 	 */
 	private void createContents() {
 		shell = new Shell(getParent(), SWT.DIALOG_TRIM | SWT.MAX | SWT.RESIZE);
-		shell.setSize(454, 485);
+		shell.setSize(507, 497);
 		shell.setText("\u66F4\u65B0\u5DE5\u4F5C\u53F0");
 		shell.setLayout(new FillLayout(SWT.HORIZONTAL));
 		
@@ -105,7 +111,7 @@ public class UpdateServerDialog extends Dialog {
 		Composite composite_1 = new Composite(composite, SWT.NONE);
 		composite_1.setLayout(new GridLayout(4, false));
 		FormData fd_composite_1 = new FormData();
-		fd_composite_1.bottom = new FormAttachment(0, 100);
+		fd_composite_1.bottom = new FormAttachment(0, 200);
 		fd_composite_1.right = new FormAttachment(100);
 		fd_composite_1.top = new FormAttachment(0);
 		fd_composite_1.left = new FormAttachment(0);
@@ -114,6 +120,7 @@ public class UpdateServerDialog extends Dialog {
 		Composite composite_2 = new Composite(composite, SWT.NONE);
 		FormData fd_composite_2 = new FormData();
 		fd_composite_2.top = new FormAttachment(composite_1);
+		fd_composite_2.bottom = new FormAttachment(100);
 		
 		Label label_2 = new Label(composite_1, SWT.NONE);
 		label_2.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
@@ -171,8 +178,34 @@ public class UpdateServerDialog extends Dialog {
 		
 		Button button_1 = formToolkit.createButton(composite_1, "\u53D6\u6D88", SWT.NONE);
 		button_1.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
+		
+		table = new Table(composite_1, SWT.BORDER | SWT.FULL_SELECTION);
+		table.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 4, 1));
+		formToolkit.adapt(table);
+		formToolkit.paintBordersFor(table);
+		table.setHeaderVisible(true);
+		table.setLinesVisible(true);
+		
+		TableColumn tableColumn = new TableColumn(table, SWT.NONE);
+		tableColumn.setText("\u5E8F\u53F7");
+		tableColumn.setWidth(41);
+		
+		TableColumn tableColumn_1 = new TableColumn(table, SWT.NONE);
+		tableColumn_1.setWidth(269);
+		tableColumn_1.setText("\u914D\u7F6E\u9879");
+		
+		TableColumn tableColumn_2 = new TableColumn(table, SWT.NONE);
+		tableColumn_2.setWidth(62);
+		tableColumn_2.setText("\u914D\u7F6E\u7C7B\u578B");
+		
+		TableColumn tableColumn_3 = new TableColumn(table, SWT.NONE);
+		tableColumn_3.setWidth(59);
+		tableColumn_3.setText("\u72B6\u6001");
+		
+		TableColumn tableColumn_4 = new TableColumn(table, SWT.NONE);
+		tableColumn_4.setWidth(40);
+		tableColumn_4.setText("\u64CD\u4F5C");
 		composite_2.setLayout(new FillLayout(SWT.HORIZONTAL));
-		fd_composite_2.bottom = new FormAttachment(100);
 		fd_composite_2.right = new FormAttachment(100);
 		fd_composite_2.left = new FormAttachment(0);
 		composite_2.setLayoutData(fd_composite_2);
@@ -182,6 +215,52 @@ public class UpdateServerDialog extends Dialog {
 		
 	}
 	
+	private List<FileModel> tabledata = new ArrayList<FileModel>();
+	private void addTableData(FileModel fm)
+	{
+		 table.clearAll();
+		 tabledata.add(fm);
+		 
+	     for (int i = 0;i<tabledata.size();i++) {
+	      TableItem item =new TableItem(table, SWT.NONE);
+	      TableEditor editor = new TableEditor(table);
+	      Text text = new Text(table, SWT.NONE);
+	      text.setText(String.valueOf(i));
+	      editor.grabHorizontal = true;
+	      editor.setEditor(text, item, 0);
+	      
+	      //配置项
+	      editor = new TableEditor(table);
+	      Text text_1 = new Text(table, SWT.NONE);
+	      text_1.setText(fm.getFullPath());
+	      editor.grabHorizontal = true;
+	      editor.setEditor(text_1, item, 1);
+	      
+	      //配置类型
+	      editor = new TableEditor(table);
+	      Text text_2 = new Text(table, SWT.NONE);
+	      text_1.setText(fm.getConftype());
+	      editor.grabHorizontal = true;
+	      editor.setEditor(text_2, item, 2);
+	      
+	    //配置类型
+	      editor = new TableEditor(table);
+	      Text text_3 = new Text(table, SWT.NONE);
+	      text_1.setText(fm.getConftype());
+	      editor.grabHorizontal = true;
+	      editor.setEditor(text_3, item, 3);
+	      
+	      editor = new TableEditor(table);
+	      Button button = new Button(table, SWT.NONE);
+	      button.pack();
+	      editor.minimumWidth = button.getSize().x;
+	      editor.horizontalAlignment = SWT.LEFT;
+	      editor.setEditor(button, item, 4);
+	      
+	      table.setData(fm);
+	    }
+	}
+	
 	private void doStart()
 	{
 			print("【检查】更新包完整性----"+pm.getName(),true );
@@ -189,6 +268,8 @@ public class UpdateServerDialog extends Dialog {
 			countFile(pm.getUpdateFileRoot());
 			progressBar.setMaximum(num);
 			print("   需要更新"+num+"个文件",false);
+			int confnum = pm.getConfFiles().size();
+			print("   需要配置"+confnum+"个文件",false);
 			IStructuredSelection selection = (IStructuredSelection)comboViewer.getSelection();
 			PackConfig_Server ps= new PackConfig_Server();
 			if(selection!=null&&selection.getFirstElement()!=null)
@@ -239,6 +320,7 @@ public class UpdateServerDialog extends Dialog {
 	}
 	
 	private int num;
+	private Table table;
 	private void countFile(FileModel file)
 	{
 		num++;
@@ -267,9 +349,10 @@ public class UpdateServerDialog extends Dialog {
 					print("【创建文件夹】："+serverfile.getAbsolutePath(),false);
 				serverfile.mkdirs();
 			}
-			if(file.isConf())
+			if(file.isConf()&&file.getConftype()!=null)
 			{
-				print("【文件夹配置】："+serverfile.getAbsolutePath()+"\n[配置说明]"+file.getContent(),false);
+				print("【文件夹配置】："+serverfile.getAbsolutePath()+"\n[配置类型]"+file.getConftype()+"\n[配置说明]"+file.getContent(),false);
+				addTableData(file);
 			}
 		}
 		else
@@ -285,8 +368,7 @@ public class UpdateServerDialog extends Dialog {
 				if(file.isConf())
 				{
 					print("【手动配置】："+serverfile.getAbsolutePath()+"\n[配置说明]"+file.getContent()+"\n[配置类型]"+file.getConftype(),false);
-					if(UpdateInfo.FileOpr_Del.equals(file.getConftype()))
-						serverfile.delete();
+					addTableData(file);
 				}
 			}
 			catch(Exception e)
