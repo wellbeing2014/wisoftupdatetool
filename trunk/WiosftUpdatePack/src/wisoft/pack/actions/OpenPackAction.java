@@ -42,7 +42,7 @@ public class OpenPackAction extends Action {
 		System.out.println(fileSelected);
 		File packfile = new File(fileSelected);
 		String destFolder = Activator.getDefault().getWorkSpacePath()+File.separator+packfile.getName();
-		destFolder=destFolder.substring(0, destFolder.lastIndexOf("/"));
+		destFolder=destFolder.substring(destFolder.indexOf("/")+1,destFolder.length());
 		int dot = destFolder.lastIndexOf('.'); 
 		if ((dot >-1) && (dot < (destFolder.length()))) 
 			destFolder = destFolder.substring(0, dot);
