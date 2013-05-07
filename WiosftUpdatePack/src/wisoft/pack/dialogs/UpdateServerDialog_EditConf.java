@@ -1,99 +1,68 @@
 package wisoft.pack.dialogs;
 
-import org.eclipse.jface.action.StatusLineManager;
-import org.eclipse.jface.action.ToolBarManager;
-import org.eclipse.jface.window.ApplicationWindow;
-import org.eclipse.swt.SWT;
+import org.eclipse.jface.dialogs.Dialog;
+import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
-import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
+import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.layout.FormLayout;
+import org.eclipse.swt.custom.SashForm;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.layout.FormData;
+import org.eclipse.swt.layout.FormAttachment;
 
-public class UpdateServerDialog_EditConf extends ApplicationWindow {
+public class UpdateServerDialog_EditConf extends Dialog {
 
 	/**
-	 * Create the application window.
+	 * Create the dialog.
+	 * @param parentShell
 	 */
-	public UpdateServerDialog_EditConf() {
-		super(null);
-		createActions();
-		addToolBar(SWT.FLAT | SWT.WRAP);
-		addMenuBar();
-		addStatusLine();
+	public UpdateServerDialog_EditConf(Shell parentShell) {
+		super(parentShell);
 	}
 
 	/**
-	 * Create contents of the application window.
+	 * Create contents of the dialog.
 	 * @param parent
 	 */
 	@Override
-	protected Control createContents(Composite parent) {
-		Composite container = new Composite(parent, SWT.NONE);
+	protected Control createDialogArea(Composite parent) {
+		Composite container = (Composite) super.createDialogArea(parent);
+		container.setLayout(new FormLayout());
+		
+		SashForm sashForm = new SashForm(container, SWT.NONE);
+		FormData fd_sashForm = new FormData();
+		fd_sashForm.bottom = new FormAttachment(0, 387);
+		fd_sashForm.right = new FormAttachment(100, -5);
+		fd_sashForm.top = new FormAttachment(0, 10);
+		fd_sashForm.left = new FormAttachment(0, 5);
+		sashForm.setLayoutData(fd_sashForm);
 
 		return container;
 	}
 
 	/**
-	 * Create the actions.
-	 */
-	private void createActions() {
-		// Create the actions
-	}
-
-	
-
-	/**
-	 * Create the toolbar manager.
-	 * @return the toolbar manager
+	 * Create contents of the button bar.
+	 * @param parent
 	 */
 	@Override
-	protected ToolBarManager createToolBarManager(int style) {
-		ToolBarManager toolBarManager = new ToolBarManager(style);
-		return toolBarManager;
+	protected void createButtonsForButtonBar(Composite parent) {
+		Button button = createButton(parent, IDialogConstants.OK_ID, IDialogConstants.OK_LABEL,
+				true);
+		button.setText("\u4FDD\u5B58");
+		Button button_1 = createButton(parent, IDialogConstants.CANCEL_ID,
+				IDialogConstants.CANCEL_LABEL, false);
+		button_1.setText("\u53D6\u6D88");
 	}
 
 	/**
-	 * Create the status line manager.
-	 * @return the status line manager
-	 */
-	@Override
-	protected StatusLineManager createStatusLineManager() {
-		StatusLineManager statusLineManager = new StatusLineManager();
-		return statusLineManager;
-	}
-
-	/**
-	 * Launch the application.
-	 * @param args
-	 */
-	public static void main(String args[]) {
-		try {
-			UpdateServerDialog_EditConf window = new UpdateServerDialog_EditConf();
-			window.setBlockOnOpen(true);
-			window.open();
-			Display.getCurrent().dispose();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
-
-	/**
-	 * Configure the shell.
-	 * @param newShell
-	 */
-	@Override
-	protected void configureShell(Shell newShell) {
-		super.configureShell(newShell);
-		newShell.setText("New Application");
-	}
-
-	/**
-	 * Return the initial size of the window.
+	 * Return the initial size of the dialog.
 	 */
 	@Override
 	protected Point getInitialSize() {
-		return new Point(605, 433);
+		return new Point(627, 482);
 	}
 
 }

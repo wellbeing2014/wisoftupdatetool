@@ -19,6 +19,7 @@ import org.eclipse.swt.custom.CCombo;
 import org.eclipse.swt.custom.TableEditor;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.FormAttachment;
@@ -48,6 +49,7 @@ import wisoft.pack.models.PackRelyModel;
 import wisoft.pack.utils.FileUtil;
 import wisoft.pack.utils.PackConfigInfo;
 import wisoft.pack.utils.UpdateInfo;
+import org.eclipse.swt.custom.SashForm;
 
 public class UpdateServerDialog extends Dialog {
 
@@ -111,7 +113,7 @@ public class UpdateServerDialog extends Dialog {
 		Composite composite_1 = new Composite(composite, SWT.NONE);
 		composite_1.setLayout(new GridLayout(4, false));
 		FormData fd_composite_1 = new FormData();
-		fd_composite_1.bottom = new FormAttachment(0, 200);
+		fd_composite_1.bottom = new FormAttachment(0, 100);
 		fd_composite_1.right = new FormAttachment(100);
 		fd_composite_1.top = new FormAttachment(0);
 		fd_composite_1.left = new FormAttachment(0);
@@ -178,9 +180,23 @@ public class UpdateServerDialog extends Dialog {
 		
 		Button button_1 = formToolkit.createButton(composite_1, "\u53D6\u6D88", SWT.NONE);
 		button_1.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
+		composite_2.setLayout(new FormLayout());
+		fd_composite_2.right = new FormAttachment(100);
+		fd_composite_2.left = new FormAttachment(0);
+		composite_2.setLayoutData(fd_composite_2);
 		
-		table = new Table(composite_1, SWT.BORDER | SWT.FULL_SELECTION);
-		table.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 4, 1));
+		SashForm sashForm = new SashForm(composite_2, SWT.SMOOTH);
+		sashForm.setOrientation(SWT.VERTICAL);
+		FormData fd_sashForm = new FormData();
+		fd_sashForm.top = new FormAttachment(0);
+		fd_sashForm.bottom = new FormAttachment(100);
+		fd_sashForm.right = new FormAttachment(100, -5);
+		fd_sashForm.left = new FormAttachment(0, 5);
+		sashForm.setLayoutData(fd_sashForm);
+		formToolkit.adapt(sashForm);
+		formToolkit.paintBordersFor(sashForm);
+		
+		table = new Table(sashForm, SWT.BORDER | SWT.FULL_SELECTION);
 		formToolkit.adapt(table);
 		formToolkit.paintBordersFor(table);
 		table.setHeaderVisible(true);
@@ -205,32 +221,40 @@ public class UpdateServerDialog extends Dialog {
 		TableColumn tableColumn_4 = new TableColumn(table, SWT.NONE);
 		tableColumn_4.setWidth(40);
 		tableColumn_4.setText("\u64CD\u4F5C");
-		composite_2.setLayout(new FillLayout(SWT.HORIZONTAL));
-		fd_composite_2.right = new FormAttachment(100);
-		fd_composite_2.left = new FormAttachment(0);
-		composite_2.setLayoutData(fd_composite_2);
 		
-		text_1 = new Text(composite_2, SWT.BORDER | SWT.H_SCROLL | SWT.V_SCROLL | SWT.CANCEL | SWT.MULTI);
+		text_1 = new Text(sashForm, SWT.BORDER | SWT.H_SCROLL | SWT.V_SCROLL | SWT.CANCEL | SWT.MULTI);
 		formToolkit.adapt(text_1, true, true);
+		sashForm.setWeights(new int[] {110, 246});
 		
 	}
 	
 	private void addTableData()
 	{
-		List<FileModel> tabledata = pm.getConfFiles();
+		 List<FileModel> tabledata = pm.getConfFiles();
 		 table.removeAll();
 	     for (int i = 0;i<tabledata.size();i++) {
+	    	 final FileModel dataitem = tabledata.get(i);
 	    	 TableItem item =new TableItem(table, SWT.NONE);
 	      item.setText(0, String.valueOf(i+1));
-	      item.setText(1, tabledata.get(i).getFullPath());
-	      item.setText(2, tabledata.get(i).getConftype());
-	      item.setText(3, tabledata.get(i).getFullPath());
+	      item.setText(1, dataitem.getFullPath());
+	      item.setText(2, dataitem.getConftype());
+	      item.setText(3, dataitem.getFullPath());
 	      TableEditor editor = new TableEditor(table);
 	      Button button = new Button(table, SWT.NONE);
-	      if(UpdateInfo.FileOpr_Del.equals(tabledata.get(i).getConftype()))
+	      if(UpdateInfo.FileOpr_Del.equals(dataitem.getConftype()))
 	    	  button.setText("删除");
-	      if(UpdateInfo.FileOpr_Mod.equals(tabledata.get(i).getConftype()))
+	      if(UpdateInfo.FileOpr_Mod.equals(dataitem.getConftype()))
 	    	  button.setText("修改");
+	      
+	      button.addSelectionListener(new SelectionAdapter() {
+				@Override
+				public void widgetSelected(SelectionEvent e) {
+					if(UpdateInfo.FileOpr_Del.equals(dataitem.getConftype()))
+				    	  MessageDialog.openConfirm(shell, "提示", "该配置需要删除"+selSever.getWebappPath()+dataitem.getFullPath()+"确定删除该文件吗？");
+				    if(UpdateInfo.FileOpr_Mod.equals(dataitem.getConftype()))
+				    	  MessageDialog.openInformation(shell, "提示", selSever.getWebappPath()+dataitem.getFullPath());
+				}
+	      });
 	      button.pack();
 	      editor.minimumWidth = button.getSize().x;
 	      editor.horizontalAlignment = SWT.LEFT;
