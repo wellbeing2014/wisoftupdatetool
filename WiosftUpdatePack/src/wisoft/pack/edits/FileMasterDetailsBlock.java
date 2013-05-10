@@ -160,7 +160,9 @@ public class FileMasterDetailsBlock extends MasterDetailsBlock {
 							//子文件的绝对路径
 							String fileabpath = file.getAbsolutePath().replace("\\", "/");
 							//子文件的相对路径
-							String childElementPath =fileabpath.replace(rootPath+parentElementPath, "");
+							String childElementPath =fileabpath.replace(pi.getSavePath()+"/"+UpdateInfo.UpdateDirName+parentElementPath, "");
+							System.out.println(pi.getSavePath()+"/"+UpdateInfo.UpdateDirName);
+							System.out.println(rootPath);
 							//子文件目录结构数组
 							String[] children = childElementPath.split("/");
 							FileModel relative_parent =  parent_fm;
