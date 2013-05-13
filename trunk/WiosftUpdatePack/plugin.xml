@@ -24,9 +24,14 @@
       <view
             name="MyPackInfoTree"
             allowMultiple="true"
-            icon="icons/sample3.gif"
+            icon="icons/wi_updatetool.ico"
             class="wisoft.pack.views.NavigationView"
             id="WiosftUpdatePack.navigationView">
+      </view>
+      <view
+            class="wisoft.pack.views.UnPackNavigation"
+            id="wisoft.pack.views.UnPackNavigation"
+            name="更新包列表">
       </view>
    </extension>
    <extension
