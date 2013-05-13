@@ -125,7 +125,9 @@ public class FileMasterDetailsBlock extends MasterDetailsBlock {
 				
 				if(IDialogConstants.OK_ID==ap.open())
 				{
-					final String rootPath = (pi.getSavePath()+"/"+UpdateInfo.UpdateDirName).replace("\\", "/");
+					
+					File file = new File(pi.getSavePath()+"/"+UpdateInfo.UpdateDirName);
+					final String rootPath = file.getAbsolutePath().replace("\\", "/");
 					final String toPath = rootPath+defaultPath;
 					final String fromPath = ap.filePath;
 					final File[] filelist = ap.filelist.toArray(new File[0]);
@@ -159,8 +161,6 @@ public class FileMasterDetailsBlock extends MasterDetailsBlock {
 							String fileabpath = file.getAbsolutePath().replace("\\", "/");
 							//子文件的相对路径
 							String childElementPath =fileabpath.replace(rootPath+parentElementPath, "");
-							//System.out.println(pi.getSavePath()+"/"+UpdateInfo.UpdateDirName);
-							//System.out.println(rootPath);
 							//子文件目录结构数组
 							String[] children = childElementPath.split("/");
 							FileModel relative_parent =  parent_fm;
