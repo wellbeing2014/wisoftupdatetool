@@ -1,5 +1,6 @@
 package wisoft.pack.app;
 
+import org.eclipse.core.runtime.IExtension;
 import org.eclipse.jface.action.ICoolBarManager;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.IToolBarManager;
@@ -13,6 +14,9 @@ import org.eclipse.ui.actions.ActionFactory;
 import org.eclipse.ui.actions.ActionFactory.IWorkbenchAction;
 import org.eclipse.ui.application.ActionBarAdvisor;
 import org.eclipse.ui.application.IActionBarConfigurer;
+import org.eclipse.ui.internal.WorkbenchPlugin;
+import org.eclipse.ui.internal.registry.ActionSetRegistry;
+import org.eclipse.ui.internal.registry.IActionSetDescriptor;
 
 import wisoft.pack.actions.DelPackInfoAction;
 import wisoft.pack.actions.DeployPackToServerAction;
@@ -27,6 +31,7 @@ import wisoft.pack.actions.SavePackEditAction;
  * actions added to a workbench window. Each window will be populated with
  * new actions.
  */
+@SuppressWarnings("restriction")
 public class ApplicationActionBarAdvisor extends ActionBarAdvisor {
 
     // Actions - important to allocate these only in makeActions, and then use them
@@ -46,6 +51,7 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor {
 
     public ApplicationActionBarAdvisor(IActionBarConfigurer configurer) {
         super(configurer);
+        removeDuplicateAction();
     }
     
     protected void makeActions(final IWorkbenchWindow window) {
@@ -110,5 +116,36 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor {
         toolbar.add(packConfigAction);
         toolbar.add(deployPackAction);
     }
+    
+    @SuppressWarnings("restriction")   
+    public void removeDuplicateAction()   
+    {   
+    	ActionSetRegistry reg = WorkbenchPlugin.getDefault().getActionSetRegistry();
+        IActionSetDescriptor[] actionSets = reg.getActionSets();
+        // removing annoying gotoLastPosition Message.
+        String actionSetId = "org.eclipse.ui.edit.text.actionSet.navigation"; //$NON-NLS-1$
+        for (int i = 0; i <actionSets.length; i++)
+        {
+            if (!actionSets[i].getId().equals(actionSetId))    continue;
+            IExtension ext = actionSets[i].getConfigurationElement()
+                .getDeclaringExtension();
+            reg.removeExtension(ext, new Object[] { actionSets[i] });
+        }
+        // Removing convert line delimiters menu.
+        actionSetId = "org.eclipse.ui.edit.text.actionSet.annotationNavigation"; //$NON-NLS-1$
+        for (int i = 0; i <actionSets.length; i++)
+        {
+            if (!actionSets[i].getId().equals(actionSetId))
+                continue;
+            IExtension ext = actionSets[i].getConfigurationElement()
+                .getDeclaringExtension();
+            reg.removeExtension(ext, new Object[] { actionSets[i] });
+        }
+    }  
+    
+    
+    
+    
+    
     
 }

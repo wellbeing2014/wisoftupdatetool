@@ -7,7 +7,9 @@ import org.eclipse.ui.application.IActionBarConfigurer;
 import org.eclipse.ui.application.IWorkbenchWindowConfigurer;
 import org.eclipse.ui.application.WorkbenchWindowAdvisor;
 
+import wisoft.pack.utils.Navinfo;
 import wisoft.pack.views.NavigationView;
+import wisoft.pack.views.UnPackNavigation;
 
 public class ApplicationWorkbenchWindowAdvisor extends WorkbenchWindowAdvisor {
 
@@ -24,6 +26,8 @@ public class ApplicationWorkbenchWindowAdvisor extends WorkbenchWindowAdvisor {
         configurer.setInitialSize(new Point(800, 600));
         configurer.setShowCoolBar(true);
         configurer.setShowStatusLine(false);
+        
+      
     }
 //    @SuppressWarnings("restriction")
 //    @Override
@@ -35,8 +39,16 @@ public class ApplicationWorkbenchWindowAdvisor extends WorkbenchWindowAdvisor {
     @Override
     public boolean preWindowShellClose() {
     	// TODO Auto-generated method stub
-    	NavigationView nv =(NavigationView) PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().findView(NavigationView.ID);
-    	nv.SaveNavInfo();
+    	if(Navinfo.selOperate())
+    	{	
+    		NavigationView nv =(NavigationView) PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().findView(NavigationView.ID);
+    		nv.SaveNavInfo();
+    	}
+    	else
+    	{
+    		UnPackNavigation unv =(UnPackNavigation) PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().findView(UnPackNavigation.ID);
+    		unv.SaveNavInfo();
+    	}
     	return super.preWindowShellClose();
     }
 }

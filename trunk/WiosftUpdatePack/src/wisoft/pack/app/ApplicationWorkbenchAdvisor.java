@@ -24,11 +24,10 @@ public class ApplicationWorkbenchAdvisor extends WorkbenchAdvisor {
 	@Override
 	public void initialize(IWorkbenchConfigurer configurer) {
 	    super.initialize(configurer);
-	 
 	    //设置标签页弧线型外观
 	    PlatformUI.getPreferenceStore().setValue(IWorkbenchPreferenceConstants.SHOW_TRADITIONAL_STYLE_TABS, false);
-	    
 	}
-	//@Override
+	
+	
 	
 }

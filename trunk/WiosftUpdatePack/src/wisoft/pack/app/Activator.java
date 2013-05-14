@@ -14,6 +14,7 @@ import wisoft.pack.models.PackInfoModel;
 /**
  * The activator class controls the plug-in life cycle
  */
+@SuppressWarnings("restriction")
 public class Activator extends AbstractUIPlugin {
 
 	// The plug-in ID
