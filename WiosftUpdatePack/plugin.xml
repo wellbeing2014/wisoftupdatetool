@@ -24,7 +24,6 @@
       <view
             name="MyPackInfoTree"
             allowMultiple="true"
-            icon="icons/wi_updatetool.ico"
             class="wisoft.pack.views.NavigationView"
             id="WiosftUpdatePack.navigationView">
       </view>

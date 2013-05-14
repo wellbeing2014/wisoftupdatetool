@@ -74,22 +74,23 @@ public class NavigationView extends ViewPart {
 		readNavInfo();
 		//System.out.println(dir.getAbsolutePath());
 		hookDoubleClickAction();
+		   
 		//去掉console 工具栏上的 多余按钮		
-		IWorkbenchPage page = PlatformUI.getWorkbench().getWorkbenchWindows()[0].getPages()[0];  
+		IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage(); 
 		IViewPart viewpart = page.findView(IConsoleConstants.ID_CONSOLE_VIEW);  
 		IActionBars actionBar = viewpart.getViewSite().getActionBars();  
 		IToolBarManager toolbarMgr = actionBar.getToolBarManager();  
 		IContributionItem[] items = toolbarMgr.getItems();  
 		for  (IContributionItem item : items) {  
-		    if  (item instanceof ActionContributionItem) {  
-		        IAction action = ((ActionContributionItem) item).getAction();  
-		        String text = action.getText();  
-		        if  (text.equals( "Open Console" )) {  
-		            toolbarMgr.remove(item);  
-		        }  
-		    }  
+			if  (item instanceof ActionContributionItem) {  
+				IAction action = ((ActionContributionItem) item).getAction();  
+				String text = action.getText();  
+				if  (text.equals( "Open Console" )) {  
+					toolbarMgr.remove(item);  
+				}  
+			}  
 		}  
-		actionBar.updateActionBars();  
+		actionBar.updateActionBars(); 
 	}
 
 	/**
@@ -212,54 +213,16 @@ public class NavigationView extends ViewPart {
 	
 	private void readNavInfo()
 	{
-		try 
-		{ //读取保存的更新包列表
-		File file = new File(Navinfo.getFileName());
-		if(!file.exists())
+		List<PackInfoModel> packs =Navinfo.getInstance().readPackNavInfo();
+		for(PackInfoModel pack :packs)
 		{
-			SaveNavInfo();
-			return;
+			addPackInfo(pack);
 		}
-			
-		SAXReader reader = new SAXReader(); 
-		reader.setEncoding("UTF-8");
-		Document doc = reader.read(file); 
-		// 读取XML文件
-        Element root = doc.getRootElement();// 得到根节点
-        for (Iterator i = root.elementIterator(Navinfo.getPackName()); i.hasNext();) {
-            Element packinfo = (Element) i.next();
-            String name = packinfo.attributeValue(Navinfo.getAttriPackName());
-            String path = packinfo.attributeValue(Navinfo.getAttriPackPath());
-            PackInfoModel  pack = new PackInfoModel(name,path);
-            addPackInfo(pack);
-        }
-		}
-		catch (Exception e) { 
-			e.printStackTrace();
-			return;
-		} 
-		
 	}
 	public void SaveNavInfo()
 	{
 		PackInfoModel[] pack = getAllPackInfo();
-		XmlOperator xmlo = new XmlOperator(Navinfo.getFileName());
-		xmlo.initXml(Navinfo.getRootName());
-		Element root =xmlo.getRootElement();
-		List<Element> haveele = root.elements();
-		for(int j=0;j<haveele.size();j++)
-		{			
-			xmlo.getRootElement().remove(haveele.get(j));
-		}
-		for(int i=0;i<pack.length;i++)
-		{
-			Element packxml =xmlo.addElementInRoot(Navinfo.getPackName(), Navinfo.getAttriPackName(), pack[i].getName());
-			if(!xmlo.isEqualByAttribute(packxml, Navinfo.getAttriPackPath(), pack[i].getSavePath()))
-			packxml.addAttribute(Navinfo.getAttriPackPath(), pack[i].getSavePath());
-			//packxml.addAttribute("name", pack[i].getName());
-		}
-		xmlo.save();
-		xmlo.close();
+		Navinfo.getInstance().SaveNavInfo(pack);
 	}
 	
 }
