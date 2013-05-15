@@ -69,9 +69,11 @@ public class Navinfo {
 	
 	public static void SaveNavInfo(PackInfoModel[] pack)
 	{
-		xmlo.initXml(Navinfo.getRootName());
+		System.out.println("¿ªÊ¼±£´æ");
 		Element root =xmlo.getRootElement();
-		List<Element> haveele = root.elements();
+		if(root==null)
+			xmlo.initXml(Navinfo.getRootName());
+		List<Element> haveele = root.elements(Navinfo.getPackName());
 		for(int j=0;j<haveele.size();j++)
 		{			
 			xmlo.getRootElement().remove(haveele.get(j));
@@ -91,6 +93,7 @@ public class Navinfo {
 	public static boolean setedOperate()
 	{
 		Element operate =xmlo.OnlyElementInRoot(getOperate());
+		System.out.println("---"+operate.getText());
 		return !operate.getText().isEmpty();
 	}
 	

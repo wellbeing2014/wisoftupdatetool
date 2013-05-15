@@ -20,11 +20,12 @@ import org.eclipse.ui.console.IConsoleConstants;
 import org.eclipse.ui.part.DrillDownAdapter;
 import org.eclipse.ui.part.ViewPart;
 
+import wisoft.pack.interfaces.IPackNavigation;
 import wisoft.pack.models.PackInfoModel;
 import wisoft.pack.models.RootModel;
 import wisoft.pack.utils.Navinfo;
 
-public class UnPackNavigation extends ViewPart {
+public class UnPackNavigation extends ViewPart implements IPackNavigation {
 
 	public static final String ID = "wisoft.pack.views.UnPackNavigation"; //$NON-NLS-1$
 	private TreeViewer viewer; // Ê÷²é¿´Æ÷
