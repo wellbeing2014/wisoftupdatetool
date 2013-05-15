@@ -14,10 +14,10 @@ import com.wisoft.wims.WimsSingleIssueTracking;
 
 public class PackInfoModel extends Model {
 	
-	protected PackInfoOfOverview overview = new PackInfoOfOverview(this);
-	protected PackInfoOfSelectFiles selectFiles = new PackInfoOfSelectFiles(this);
-	protected PackInfoOfEditConfs editConfs =new PackInfoOfEditConfs(this);
-	protected PackInfoOfEditSql editSql = new PackInfoOfEditSql(this);
+//	protected PackInfoOfOverview overview = new PackInfoOfOverview(this);
+//	protected PackInfoOfSelectFiles selectFiles = new PackInfoOfSelectFiles(this);
+//	protected PackInfoOfEditConfs editConfs =new PackInfoOfEditConfs(this);
+//	protected PackInfoOfEditSql editSql = new PackInfoOfEditSql(this);
 	
 	private  IEditorInput editInput;
 	private XmlOperator xmlo = new XmlOperator();
@@ -251,49 +251,49 @@ public class PackInfoModel extends Model {
 		this.editInput = editInput;
 	}
 
-	public PackInfoOfEditConfs getEditConfs() {
-		return editConfs;
-	}
-	
-	public PackInfoOfEditSql getEditSql() {
-		return editSql;
-	}
-	
-	public PackInfoOfSelectFiles getSelectFiles() {
-		return selectFiles;
-	}
-	
-	public PackInfoOfOverview getOverview() {
-		return overview;
-	}
+//	public PackInfoOfEditConfs getEditConfs() {
+//		return editConfs;
+//	}
+//	
+//	public PackInfoOfEditSql getEditSql() {
+//		return editSql;
+//	}
+//	
+//	public PackInfoOfSelectFiles getSelectFiles() {
+//		return selectFiles;
+//	}
+//	
+//	public PackInfoOfOverview getOverview() {
+//		return overview;
+//	}
 	
 	public PackInfoModel(String name,String path)
 	{
 		this.name =name;
-		this.addChild(overview);
-		this.addChild(selectFiles);
-		this.addChild(editConfs);
-		this.addChild(editSql);
+//		this.addChild(overview);
+//		this.addChild(selectFiles);
+//		this.addChild(editConfs);
+//		this.addChild(editSql);
 		setSavePath(path);
 		readFromXML();
 	}
 	
 	public PackInfoModel()
 	{
-		this.addChild(overview);
-		this.addChild(selectFiles);
-		this.addChild(editConfs);
-		this.addChild(editSql);
+//		this.addChild(overview);
+//		this.addChild(selectFiles);
+//		this.addChild(editConfs);
+//		this.addChild(editSql);
 	}
 	
 	
 	public PackInfoModel(String name)
 	{
 		this.name =name;
-		this.addChild(overview);
-		this.addChild(selectFiles);
-		this.addChild(editConfs);
-		this.addChild(editSql);
+//		this.addChild(overview);
+//		this.addChild(selectFiles);
+//		this.addChild(editConfs);
+//		this.addChild(editSql);
 	}
 	
 	public void saveIntoXML()

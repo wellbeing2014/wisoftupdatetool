@@ -1,13 +1,8 @@
 package wisoft.pack.views;
 
-import java.io.File;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
-import org.dom4j.Document;
-import org.dom4j.Element;
-import org.dom4j.io.SAXReader;
 import org.eclipse.jface.action.ActionContributionItem;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.IContributionItem;
@@ -33,6 +28,7 @@ import org.eclipse.ui.part.ViewPart;
 import wisoft.pack.app.Activator;
 import wisoft.pack.edits.PackInfoEditor;
 import wisoft.pack.edits.PackInfoInput;
+import wisoft.pack.interfaces.IPackNavigation;
 import wisoft.pack.models.Model;
 import wisoft.pack.models.PackInfoContentProvider;
 import wisoft.pack.models.PackInfoLabelProvider;
@@ -40,11 +36,10 @@ import wisoft.pack.models.PackInfoModel;
 import wisoft.pack.models.RootModel;
 import wisoft.pack.utils.FileUtil;
 import wisoft.pack.utils.Navinfo;
-import wisoft.pack.utils.XmlOperator;
 
 
 
-public class NavigationView extends ViewPart {
+public class NavigationView extends ViewPart implements IPackNavigation {
 	public NavigationView() {
 	}
 	public static final String ID = "WiosftUpdatePack.navigationView";
