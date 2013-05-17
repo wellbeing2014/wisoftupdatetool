@@ -5,8 +5,6 @@ import java.net.URL;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
-import org.eclipse.core.resources.IWorkspace;
-import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IPluginDescriptor;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
@@ -43,9 +41,9 @@ public class TreeViewerPlugin extends AbstractUIPlugin {
 	/**
 	 * Returns the workspace instance.
 	 */
-	public static IWorkspace getWorkspace() {
-		return ResourcesPlugin.getWorkspace();
-	}
+//	public static IWorkspace getWorkspace() {
+//		return ResourcesPlugin.getWorkspace();
+//	}
 
 	/**
 	 * Returns the string from the plugin's resource bundle,

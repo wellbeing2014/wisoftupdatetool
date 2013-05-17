@@ -3,28 +3,26 @@ package wisoft.pack.models;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.swt.graphics.Image;
 
+import wisoft.pack.app.Activator;
+
 public class PackInfoLabelProvider extends LabelProvider {
 	@Override
 	public String getText(Object element) {
 		// TODO Auto-generated method stub
 		//return super.getText(element);
-		if(element instanceof PackInfoModel)
-			return ((Model)element).getName();
-		else if(element instanceof PackInfoOfOverview)
-			return "更新包概览";
-		else if(element instanceof PackInfoOfSelectFiles)
-			return "添加更新文件";
-		else if(element instanceof PackInfoOfEditConfs)
-			return "编辑配置文件";
-		else if(element instanceof PackInfoOfEditSql)
-			return "编辑数据脚本";
-		else
-			return null;
+		return ((Model)element).getName();
+		
 			
 	}
 	@Override
 	public Image getImage(Object element) {
 		// TODO Auto-generated method stub
-		return super.getImage(element);
+		if(element instanceof PackFolderModel)
+			return Activator.getImageDescriptor("/icons/open.png").createImage();
+		else if(element instanceof PackInfoModel)
+			return Activator.getImageDescriptor("/icons/wi_updatetool.ico").createImage();
+		else
+			return super.getImage(element);
+		
 	}
 }

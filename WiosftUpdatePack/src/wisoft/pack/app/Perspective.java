@@ -26,6 +26,7 @@ public class Perspective implements IPerspectiveFactory {
 		else
 			layout.addStandaloneView(UnPackNavigation.ID, true,0, 0, editorArea);
 		layout.getViewLayout(NavigationView.ID).setCloseable(false);
+		layout.getViewLayout(UnPackNavigation.ID).setCloseable(false);
 		layout.addView(IConsoleConstants.ID_CONSOLE_VIEW, IPageLayout.BOTTOM,0.70f, editorArea);
 		
 	    

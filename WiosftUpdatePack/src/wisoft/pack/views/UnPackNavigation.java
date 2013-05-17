@@ -21,6 +21,10 @@ import org.eclipse.ui.part.DrillDownAdapter;
 import org.eclipse.ui.part.ViewPart;
 
 import wisoft.pack.interfaces.IPackNavigation;
+import wisoft.pack.models.Model;
+import wisoft.pack.models.PackFolderModel;
+import wisoft.pack.models.PackInfoContentProvider;
+import wisoft.pack.models.PackInfoLabelProvider;
 import wisoft.pack.models.PackInfoModel;
 import wisoft.pack.models.RootModel;
 import wisoft.pack.utils.Navinfo;
@@ -29,7 +33,10 @@ public class UnPackNavigation extends ViewPart implements IPackNavigation {
 
 	public static final String ID = "wisoft.pack.views.UnPackNavigation"; //$NON-NLS-1$
 	private TreeViewer viewer; // 树查看器
-	public RootModel root;
+	public PackFolderModel root;
+	public PackFolderModel unUpdateFolder;
+	public PackFolderModel updatedFolder;
+	public PackFolderModel archiveFolder;
 	public UnPackNavigation() {
 	}
 
@@ -50,6 +57,12 @@ public class UnPackNavigation extends ViewPart implements IPackNavigation {
 	   // treeViewer.setInput(NavigatorEntityFactory.setNavigatorEntity());
 	    // 自定义的方法
 	    // 设置视图的工具栏
+		
+		
+		viewer.setContentProvider(new PackInfoContentProvider());
+		viewer.setLabelProvider(new PackInfoLabelProvider());
+		viewer.setInput(createDummyModel());
+		
 	    setViewToolBar();
 		
 		createActions();
@@ -75,6 +88,18 @@ public class UnPackNavigation extends ViewPart implements IPackNavigation {
 		actionBar.updateActionBars(); 
 	}
 
+	
+	private Model createDummyModel() {
+		root =new PackFolderModel(null,null);
+	         //root.addPackInfo(new PackInfoModel("cefsifhias"));
+	    unUpdateFolder =new PackFolderModel(null, "未更新");
+	    updatedFolder =new PackFolderModel(null, "已更新");
+	    archiveFolder =new PackFolderModel(null, "待归档");
+	    root.addChild(unUpdateFolder);
+	    root.addChild(updatedFolder);
+	    root.addChild(archiveFolder);
+	    return root;
+	}
 	/**
 	 * Create the actions.
 	 */
@@ -137,9 +162,11 @@ public class UnPackNavigation extends ViewPart implements IPackNavigation {
 	
 	public void addPackInfo(PackInfoModel pack)
 	{
-		this.root.addPackInfo(pack);
+		this.unUpdateFolder.addChild(pack);
 		this.viewer.refresh();
 	}
+	
+	
 	private void readNavInfo()
 	{
 		List<PackInfoModel> packs =Navinfo.getInstance().readPackNavInfo();

@@ -10,6 +10,7 @@ import org.dom4j.Element;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.ui.PlatformUI;
 
+import wisoft.pack.models.Model;
 import wisoft.pack.models.PackInfoModel;
 
 public class Navinfo {
@@ -67,25 +68,52 @@ public class Navinfo {
 		return getString("operate");
 	}
 	
-	public static void SaveNavInfo(PackInfoModel[] pack)
+	public static String getPackFolder() {
+		// TODO Auto-generated method stub
+		return getString("ele_packfolder");
+	}
+	
+	public static String getAttriFolderName() {
+		// TODO Auto-generated method stub
+		return getString("attr_name_packfolder");
+	}
+	
+	public static void SaveNavInfo(Model packroot)
 	{
-		System.out.println("开始保存");
 		Element root =xmlo.getRootElement();
 		if(root==null)
 			xmlo.initXml(Navinfo.getRootName());
-		List<Element> haveele = root.elements(Navinfo.getPackName());
-		for(int j=0;j<haveele.size();j++)
-		{			
-			xmlo.getRootElement().remove(haveele.get(j));
-		}
-		for(int i=0;i<pack.length;i++)
+		if(selOperate())
 		{
-			Element packxml =xmlo.addElementInRoot(Navinfo.getPackName(), Navinfo.getAttriPackName(), pack[i].getName());
-			if(!xmlo.isEqualByAttribute(packxml, Navinfo.getAttriPackPath(), pack[i].getSavePath()))
-			packxml.addAttribute(Navinfo.getAttriPackPath(), pack[i].getSavePath());
+			List<Element> haveele = root.elements(Navinfo.getPackName());
+			for(int j=0;j<haveele.size();j++)
+			{			
+				xmlo.getRootElement().remove(haveele.get(j));
+			}
+			for(int i=0;i<packroot.getChildren().size();i++)
+			{
+				PackInfoModel pack = (PackInfoModel)packroot.getChildren().get(i);
+				Element packxml =xmlo.addElementInRoot(Navinfo.getPackName(), Navinfo.getAttriPackName(), pack.getName());
+				if(!xmlo.isEqualByAttribute(packxml, Navinfo.getAttriPackPath(), pack.getSavePath()))
+				packxml.addAttribute(Navinfo.getAttriPackPath(), pack.getSavePath());
+			}
 		}
-		selOperate();
-		
+		else
+		{
+			Element unUpdate  = xmlo.addElementInElement(root, getPackFolder(), getAttriFolderName(), "未更新");
+			List<Element> haveele = unUpdate.elements();
+			for(int j=0;j<haveele.size();j++)
+			{			
+				unUpdate.remove(haveele.get(j));
+			}
+			for(int i=0;i<packroot.getChildren().size();i++)
+			{
+				PackInfoModel pack = (PackInfoModel)packroot.getChildren().get(i);
+				Element packxml =xmlo.addElementInRoot(Navinfo.getPackName(), Navinfo.getAttriPackName(), pack.getName());
+				if(!xmlo.isEqualByAttribute(packxml, Navinfo.getAttriPackPath(), pack.getSavePath()))
+				packxml.addAttribute(Navinfo.getAttriPackPath(), pack.getSavePath());
+			}
+		}
 		xmlo.save();
 		xmlo.close();
 	}
@@ -93,7 +121,6 @@ public class Navinfo {
 	public static boolean setedOperate()
 	{
 		Element operate =xmlo.OnlyElementInRoot(getOperate());
-		System.out.println("---"+operate.getText());
 		return !operate.getText().isEmpty();
 	}
 	
@@ -116,6 +143,8 @@ public class Navinfo {
 			return isOperate;
 		}
 	}
+	
+	
 	
 	public static boolean exists()
 	{
@@ -150,6 +179,5 @@ public class Navinfo {
 		{
 			return packs;
 		}
-		
 	}
 }
