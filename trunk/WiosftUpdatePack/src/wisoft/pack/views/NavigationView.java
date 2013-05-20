@@ -95,7 +95,7 @@ public class NavigationView extends ViewPart implements IPackNavigation {
 		viewer.getControl().setFocus();
 	}
 	
-	public void addPackInfo(PackInfoModel pack)
+	public void addPackInfo(PackFolderModel rootfolder)
 	{
 		this.root.addPackInfo(pack);
 		this.viewer.refresh();
