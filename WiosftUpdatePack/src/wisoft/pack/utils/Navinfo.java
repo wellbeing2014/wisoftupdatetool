@@ -11,6 +11,8 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.ui.PlatformUI;
 
 import wisoft.pack.models.Model;
+import wisoft.pack.models.PackFolder;
+import wisoft.pack.models.PackFolderModel;
 import wisoft.pack.models.PackInfoModel;
 
 public class Navinfo {
@@ -83,37 +85,32 @@ public class Navinfo {
 		Element root =xmlo.getRootElement();
 		if(root==null)
 			xmlo.initXml(Navinfo.getRootName());
-		if(selOperate())
+		selOperate();
+		
+		
+		List<Element> haveele = root.elements(Navinfo.getPackFolder());
+		for(int j=0;j<haveele.size();j++)
+		{			
+			xmlo.getRootElement().remove(haveele.get(j));
+		}
+		for(int i=0;i<packroot.getChildren().size();i++)
 		{
-			List<Element> haveele = root.elements(Navinfo.getPackName());
-			for(int j=0;j<haveele.size();j++)
-			{			
-				xmlo.getRootElement().remove(haveele.get(j));
-			}
-			for(int i=0;i<packroot.getChildren().size();i++)
-			{
-				PackInfoModel pack = (PackInfoModel)packroot.getChildren().get(i);
-				Element packxml =xmlo.addElementInRoot(Navinfo.getPackName(), Navinfo.getAttriPackName(), pack.getName());
-				if(!xmlo.isEqualByAttribute(packxml, Navinfo.getAttriPackPath(), pack.getSavePath()))
-				packxml.addAttribute(Navinfo.getAttriPackPath(), pack.getSavePath());
+			if(packroot.getChildren().get(i) instanceof PackFolderModel)
+			{	
+				PackFolderModel packfolder = (PackFolderModel)packroot.getChildren().get(i);
+				PackFolder pf = packfolder.getFolderType();
+				String foldername = pf.getFoldername();
+				Element folder_ele = xmlo.addElementInRoot(getPackFolder(), getAttriFolderName(),foldername);
+				for(Model model:packfolder.getChildren())
+				{
+					PackInfoModel pm = (PackInfoModel)model;
+					Element packxml =xmlo.addElementInElement(folder_ele,Navinfo.getPackName(), Navinfo.getAttriPackName(), pm.getName());
+					if(!xmlo.isEqualByAttribute(packxml, Navinfo.getAttriPackPath(), pm.getSavePath()))
+					packxml.addAttribute(Navinfo.getAttriPackPath(), pm.getSavePath());
+				}
 			}
 		}
-		else
-		{
-			Element unUpdate  = xmlo.addElementInElement(root, getPackFolder(), getAttriFolderName(), "未更新");
-			List<Element> haveele = unUpdate.elements();
-			for(int j=0;j<haveele.size();j++)
-			{			
-				unUpdate.remove(haveele.get(j));
-			}
-			for(int i=0;i<packroot.getChildren().size();i++)
-			{
-				PackInfoModel pack = (PackInfoModel)packroot.getChildren().get(i);
-				Element packxml =xmlo.addElementInRoot(Navinfo.getPackName(), Navinfo.getAttriPackName(), pack.getName());
-				if(!xmlo.isEqualByAttribute(packxml, Navinfo.getAttriPackPath(), pack.getSavePath()))
-				packxml.addAttribute(Navinfo.getAttriPackPath(), pack.getSavePath());
-			}
-		}
+		
 		xmlo.save();
 		xmlo.close();
 	}
@@ -152,25 +149,35 @@ public class Navinfo {
 	}
 	
 	@SuppressWarnings("finally")
-	public static List<PackInfoModel> readPackNavInfo()
+	public static PackFolderModel readPackNavInfo()
 	{
-		List<PackInfoModel> packs = new ArrayList<PackInfoModel>();
+		//定义一个根目录
+		PackFolderModel packs = new PackFolderModel(null,PackFolder.DEFALUT);
 		try 
 		{ //读取保存的更新包列表
 		if(!exists())
 		{
-			SaveNavInfo(packs.toArray(new PackInfoModel[0]));
+			SaveNavInfo(packs);
 			return packs;
 		}
 		
         Element root = xmlo.getRootElement();
-        for (Iterator i = root.elementIterator(Navinfo.getPackName()); i.hasNext();) {
-            Element packinfo = (Element) i.next();
-            String name = packinfo.attributeValue(Navinfo.getAttriPackName());
-            String path = packinfo.attributeValue(Navinfo.getAttriPackPath());
-            PackInfoModel  pack = new PackInfoModel(name,path);
-            packs.add(pack);
+        for (Iterator i = root.elementIterator(Navinfo.getPackFolder()); i.hasNext();) {
+        	Element packfolder = (Element) i.next();
+        	String foldername = packfolder.attributeValue(getAttriFolderName());
+        	PackFolder pf = PackFolder.getFolder(foldername);
+        	//在根目录下创建一个子目录，名称根据 xmlo读取。
+        	PackFolderModel pfm = new PackFolderModel(packs,pf);
+    		for (Iterator j = packfolder.elementIterator(Navinfo.getPackName()); j.hasNext();) {
+    			Element packinfo = (Element) j.next();
+    			String name = packinfo.attributeValue(Navinfo.getAttriPackName());
+    			String path = packinfo.attributeValue(Navinfo.getAttriPackPath());
+    			PackInfoModel  pack = new PackInfoModel(name,path);
+    			pfm.addChild(pack);
+    		}
         }
+        
+        
 		}
 		catch (Exception e) { 
 			e.printStackTrace();

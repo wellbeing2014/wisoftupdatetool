@@ -21,7 +21,11 @@ import org.eclipse.ui.part.DrillDownAdapter;
 import org.eclipse.ui.part.ViewPart;
 
 import wisoft.pack.interfaces.IPackNavigation;
+import wisoft.pack.models.FolderArchivedModel;
+import wisoft.pack.models.FolderUnUpdateModel;
+import wisoft.pack.models.FolderUpdatedModel;
 import wisoft.pack.models.Model;
+import wisoft.pack.models.PackFolder;
 import wisoft.pack.models.PackFolderModel;
 import wisoft.pack.models.PackInfoContentProvider;
 import wisoft.pack.models.PackInfoLabelProvider;
@@ -91,13 +95,9 @@ public class UnPackNavigation extends ViewPart implements IPackNavigation {
 	
 	private Model createDummyModel() {
 		root =new PackFolderModel(null,null);
-	         //root.addPackInfo(new PackInfoModel("cefsifhias"));
-	    unUpdateFolder =new PackFolderModel(null, "未更新");
-	    updatedFolder =new PackFolderModel(null, "已更新");
-	    archiveFolder =new PackFolderModel(null, "待归档");
-	    root.addChild(unUpdateFolder);
-	    root.addChild(updatedFolder);
-	    root.addChild(archiveFolder);
+	    unUpdateFolder = new PackFolderModel(root,PackFolder.UNUPDATE);
+	    updatedFolder = new PackFolderModel(root,PackFolder.UPDATED);
+	    archiveFolder = new PackFolderModel(root,PackFolder.ARCHIVED);
 	    return root;
 	}
 	/**
@@ -160,20 +160,19 @@ public class UnPackNavigation extends ViewPart implements IPackNavigation {
 		 return selPack.toArray(new PackInfoModel[0]);
 	}
 	
-	public void addPackInfo(PackInfoModel pack)
+	public void addUnUpdatePackInfo(PackInfoModel pack)
 	{
 		this.unUpdateFolder.addChild(pack);
 		this.viewer.refresh();
 	}
 	
 	
+	
 	private void readNavInfo()
 	{
-		List<PackInfoModel> packs =Navinfo.getInstance().readPackNavInfo();
-		for(PackInfoModel pack :packs)
-		{
-			addPackInfo(pack);
-		}
+		PackFolderModel packs =Navinfo.getInstance().readPackNavInfo();
+		this.viewer.setInput(packs);
+		this.viewer.refresh();
 	}
 	public void SaveNavInfo()
 	{
