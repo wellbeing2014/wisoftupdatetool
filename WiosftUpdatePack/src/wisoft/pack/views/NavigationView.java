@@ -30,6 +30,8 @@ import wisoft.pack.edits.PackInfoEditor;
 import wisoft.pack.edits.PackInfoInput;
 import wisoft.pack.interfaces.IPackNavigation;
 import wisoft.pack.models.Model;
+import wisoft.pack.models.PackFolder;
+import wisoft.pack.models.PackFolderModel;
 import wisoft.pack.models.PackInfoContentProvider;
 import wisoft.pack.models.PackInfoLabelProvider;
 import wisoft.pack.models.PackInfoModel;
@@ -44,7 +46,7 @@ public class NavigationView extends ViewPart implements IPackNavigation {
 	}
 	public static final String ID = "WiosftUpdatePack.navigationView";
 	private TreeViewer viewer;
-	public RootModel root;
+	public PackFolderModel root;
 	
 
     /**
@@ -52,8 +54,7 @@ public class NavigationView extends ViewPart implements IPackNavigation {
      * code, you will connect to a real model and expose its hierarchy.
      */
     private Model createDummyModel() {
-         root =new RootModel();
-         //root.addPackInfo(new PackInfoModel("cefsifhias"));
+         root =new PackFolderModel(null,PackFolder.DEFALUT);
         return root;
     }
 
@@ -95,9 +96,9 @@ public class NavigationView extends ViewPart implements IPackNavigation {
 		viewer.getControl().setFocus();
 	}
 	
-	public void addPackInfo(PackFolderModel rootfolder)
+	public void addPackInfo(PackInfoModel pack)
 	{
-		this.root.addPackInfo(pack);
+		this.root.addChild(pack);
 		this.viewer.refresh();
 	}
 	
@@ -111,7 +112,7 @@ public class NavigationView extends ViewPart implements IPackNavigation {
 			isdeldir =true;
 		for(int i=0;i<packlist.length;i++)
 		{
-			this.root.removePackInfo(packlist[i]);
+			this.root.removeChild(packlist[i]);
 			if(isdeldir)
 				FileUtil.delFolder(packlist[i].getSavePath());
 		}
@@ -163,44 +164,44 @@ public class NavigationView extends ViewPart implements IPackNavigation {
 				if(selection.getFirstElement() instanceof PackInfoModel)
 				{
 					packinfo =((PackInfoModel)selection.getFirstElement());
-				}	
-				else
-				{
-					Model md =((Model) selection.getFirstElement());
-					packinfo = (PackInfoModel)md.getParent();
-				}
-				if(packinfo.getEditInput()==null)
-				{
-					packinfo.setEditInput(new PackInfoInput(packinfo));
-				}
-				packinfo.readFromXML();
+					if(packinfo.getEditInput()==null)
+					{
+						packinfo.setEditInput(new PackInfoInput(packinfo));
+					}
+					packinfo.readFromXML();
 //				packinfo.saveIntoXML();
-				editorPart = workbenchPage.findEditor(packinfo.getEditInput());
-				if(editorPart!=null)
-					 workbenchPage.bringToTop(editorPart);
-				else
-				{
-					 try {
-			            editorPart = workbenchPage.openEditor(packinfo.getEditInput(), PackInfoEditor.ID);
-			          } catch (Exception e) {
-			            e.printStackTrace();
-			          }
-				}
+					editorPart = workbenchPage.findEditor(packinfo.getEditInput());
+					if(editorPart!=null)
+						workbenchPage.bringToTop(editorPart);
+					else
+					{
+						try {
+							editorPart = workbenchPage.openEditor(packinfo.getEditInput(), PackInfoEditor.ID);
+						} catch (Exception e) {
+							e.printStackTrace();
+						}
+					}
 					
-				editorPart.addPropertyListener(new IPropertyListener() {
-					
-					@Override
-					public void propertyChanged(Object source, int propId) {
-						// TODO Auto-generated method stub
-						if(propId==ISaveablePart2.PROP_DIRTY)
-						{
+					editorPart.addPropertyListener(new IPropertyListener() {
+						
+						@Override
+						public void propertyChanged(Object source, int propId) {
+							// TODO Auto-generated method stub
+							if(propId==ISaveablePart2.PROP_DIRTY)
+							{
 //							packinfo.isdirty = true;
 //							packinfo.setName("*"+packinfo.getName());
 //							viewer.refresh();
+							}
 						}
-					}
-				});
-				Activator.getDefault().setCurrent_pack(packinfo);
+					});
+					Activator.getDefault().setCurrent_pack(packinfo);
+				}	
+//				else
+//				{
+//					Model md =((Model) selection.getFirstElement());
+//					packinfo = (PackInfoModel)md.getParent();
+//				}
 			}
 		});
 	}
@@ -208,16 +209,13 @@ public class NavigationView extends ViewPart implements IPackNavigation {
 	
 	private void readNavInfo()
 	{
-		List<PackInfoModel> packs =Navinfo.getInstance().readPackNavInfo();
-		for(PackInfoModel pack :packs)
-		{
-			addPackInfo(pack);
-		}
+		this.root =Navinfo.getInstance().readPackNavInfo();
+		this.viewer.setInput(root);
+		this.viewer.refresh();
 	}
 	public void SaveNavInfo()
 	{
-		PackInfoModel[] pack = getAllPackInfo();
-		Navinfo.getInstance().SaveNavInfo(pack);
+		Navinfo.getInstance().SaveNavInfo(this.root);
 	}
 	
 }

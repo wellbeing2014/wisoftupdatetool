@@ -1,18 +1,20 @@
 package wisoft.pack.views;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.eclipse.jface.action.ActionContributionItem;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.IContributionItem;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.IToolBarManager;
+import org.eclipse.jface.viewers.DoubleClickEvent;
+import org.eclipse.jface.viewers.IDoubleClickListener;
+import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.TreeItem;
 import org.eclipse.ui.IActionBars;
+import org.eclipse.ui.IEditorPart;
+import org.eclipse.ui.IPropertyListener;
+import org.eclipse.ui.ISaveablePart2;
 import org.eclipse.ui.IViewPart;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PlatformUI;
@@ -20,27 +22,24 @@ import org.eclipse.ui.console.IConsoleConstants;
 import org.eclipse.ui.part.DrillDownAdapter;
 import org.eclipse.ui.part.ViewPart;
 
+import wisoft.pack.app.Activator;
+import wisoft.pack.edits.PackInfoEditor;
+import wisoft.pack.edits.PackInfoInput;
 import wisoft.pack.interfaces.IPackNavigation;
-import wisoft.pack.models.FolderArchivedModel;
-import wisoft.pack.models.FolderUnUpdateModel;
-import wisoft.pack.models.FolderUpdatedModel;
 import wisoft.pack.models.Model;
 import wisoft.pack.models.PackFolder;
 import wisoft.pack.models.PackFolderModel;
 import wisoft.pack.models.PackInfoContentProvider;
 import wisoft.pack.models.PackInfoLabelProvider;
 import wisoft.pack.models.PackInfoModel;
-import wisoft.pack.models.RootModel;
 import wisoft.pack.utils.Navinfo;
 
 public class UnPackNavigation extends ViewPart implements IPackNavigation {
 
 	public static final String ID = "wisoft.pack.views.UnPackNavigation"; //$NON-NLS-1$
 	private TreeViewer viewer; // Ê÷²é¿´Æ÷
-	public PackFolderModel root;
-	public PackFolderModel unUpdateFolder;
-	public PackFolderModel updatedFolder;
-	public PackFolderModel archiveFolder;
+	private PackFolderModel root;
+
 	public UnPackNavigation() {
 	}
 
@@ -66,7 +65,7 @@ public class UnPackNavigation extends ViewPart implements IPackNavigation {
 		viewer.setContentProvider(new PackInfoContentProvider());
 		viewer.setLabelProvider(new PackInfoLabelProvider());
 		viewer.setInput(createDummyModel());
-		
+		hookDoubleClickAction();
 	    setViewToolBar();
 		
 		createActions();
@@ -94,10 +93,8 @@ public class UnPackNavigation extends ViewPart implements IPackNavigation {
 
 	
 	private Model createDummyModel() {
-		root =new PackFolderModel(null,null);
-	    unUpdateFolder = new PackFolderModel(root,PackFolder.UNUPDATE);
-	    updatedFolder = new PackFolderModel(root,PackFolder.UPDATED);
-	    archiveFolder = new PackFolderModel(root,PackFolder.ARCHIVED);
+		root =new PackFolderModel(null,PackFolder.DEFALUT);
+
 	    return root;
 	}
 	/**
@@ -146,23 +143,67 @@ public class UnPackNavigation extends ViewPart implements IPackNavigation {
 	    drillDownAdapter.addNavigationActions(toolBarManager);
 	}
 	
-	public PackInfoModel[] getAllPackInfo()
+	
+	private void hookDoubleClickAction()
 	{
-		// IStructuredSelection selection = (IStructuredSelection)this.viewer.getTree().gegetSelection();
-		 List<PackInfoModel> selPack =new ArrayList<PackInfoModel>();
-		 TreeItem[] treeItems =this.viewer.getTree().getItems();
-		 for(int i=0;i<treeItems.length;i++)
-		 {
-			 if(treeItems[i].getData() instanceof PackInfoModel)
-				 selPack.add((PackInfoModel)treeItems[i].getData());
-		 }
-		 
-		 return selPack.toArray(new PackInfoModel[0]);
+		this.viewer.addDoubleClickListener(new IDoubleClickListener() {
+			
+			@Override
+			public void doubleClick(DoubleClickEvent event) {
+				// TODO Auto-generated method stub
+				IStructuredSelection selection = (IStructuredSelection)viewer.getSelection();
+				//(PackInfoModel)selection.getFirstElement();
+				IWorkbenchPage workbenchPage = getViewSite().getPage();
+				IEditorPart editorPart ;
+				final PackInfoModel packinfo;
+				if(selection.getFirstElement() instanceof PackInfoModel)
+				{
+					packinfo =((PackInfoModel)selection.getFirstElement());
+					if(packinfo.getEditInput()==null)
+					{
+						packinfo.setEditInput(new PackInfoInput(packinfo));
+					}
+					packinfo.readFromXML();
+//				packinfo.saveIntoXML();
+					editorPart = workbenchPage.findEditor(packinfo.getEditInput());
+					if(editorPart!=null)
+						workbenchPage.bringToTop(editorPart);
+					else
+					{
+						try {
+							editorPart = workbenchPage.openEditor(packinfo.getEditInput(), PackInfoEditor.ID);
+						} catch (Exception e) {
+							e.printStackTrace();
+						}
+					}
+					
+					editorPart.addPropertyListener(new IPropertyListener() {
+						
+						@Override
+						public void propertyChanged(Object source, int propId) {
+							// TODO Auto-generated method stub
+							if(propId==ISaveablePart2.PROP_DIRTY)
+							{
+//							packinfo.isdirty = true;
+//							packinfo.setName("*"+packinfo.getName());
+//							viewer.refresh();
+							}
+						}
+					});
+					Activator.getDefault().setCurrent_pack(packinfo);
+				}	
+//				else
+//				{
+//					Model md =((Model) selection.getFirstElement());
+//					packinfo = (PackInfoModel)md.getParent();
+//				}
+			}
+		});
 	}
 	
 	public void addUnUpdatePackInfo(PackInfoModel pack)
 	{
-		this.unUpdateFolder.addChild(pack);
+		this.root.getChildFolder(PackFolder.UNUPDATE, true).addChild(pack);
 		this.viewer.refresh();
 	}
 	
@@ -170,14 +211,16 @@ public class UnPackNavigation extends ViewPart implements IPackNavigation {
 	
 	private void readNavInfo()
 	{
-		PackFolderModel packs =Navinfo.getInstance().readPackNavInfo();
-		this.viewer.setInput(packs);
+		this.root =Navinfo.getInstance().readPackNavInfo();
+		this.root.getChildFolder(PackFolder.UNUPDATE, true);
+		this.root.getChildFolder(PackFolder.UPDATED, true);
+		this.root.getChildFolder(PackFolder.ARCHIVED, true);
+		this.viewer.setInput(root);
 		this.viewer.refresh();
 	}
 	public void SaveNavInfo()
 	{
-		PackInfoModel[] pack = getAllPackInfo();
-		Navinfo.getInstance().SaveNavInfo(pack);
+		Navinfo.getInstance().SaveNavInfo(this.root);
 	}
 	
 }

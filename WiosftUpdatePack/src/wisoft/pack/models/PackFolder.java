@@ -1,7 +1,7 @@
 package wisoft.pack.models;
 
 public enum PackFolder {
-	UNUPDATE("未更新"), UPDATED("未更新"), ARCHIVED("未更新"),DEFALUT("未更新");
+	UNUPDATE("未更新"), UPDATED("已更新"), ARCHIVED("已归档"),DEFALUT("默认文件夹");
 	private String foldername ;
 	
 	public String getFoldername() {
