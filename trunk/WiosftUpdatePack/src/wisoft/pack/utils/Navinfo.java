@@ -30,6 +30,7 @@ public class Navinfo {
 	  if (nav == null)
 		  nav = new Navinfo();
 	  nav.xmlo = new XmlOperator(Navinfo.getFileName());
+	  nav.xmlo.initXml(Navinfo.getRootName());
 	  return nav;
 	 }
 	public static String getFileName()
@@ -80,6 +81,37 @@ public class Navinfo {
 		return getString("attr_name_packfolder");
 	}
 	
+	
+	
+	/**
+	 * 将 Model结构 递归写入 Element 最终返回
+	 * @param parent
+	 * @param model
+	 * @return
+	 */
+	private static Element saveRecursion(Element parent,Model model)
+	{
+		for(int i=0;i<model.getChildren().size();i++)
+		{
+			if(model.getChildren().get(i) instanceof PackFolderModel)
+			{	
+				PackFolderModel packfolder = (PackFolderModel)model.getChildren().get(i);
+				PackFolder pf = packfolder.getFolderType();
+				String foldername = pf.getFoldername();
+				Element folder_ele = xmlo.addElementInElement(parent, getPackFolder(), getAttriFolderName(),foldername);
+				saveRecursion(folder_ele,packfolder);
+			}
+			
+			else if(model.getChildren().get(i) instanceof PackInfoModel)
+			{
+				PackInfoModel pm = (PackInfoModel)model.getChildren().get(i);
+				Element packxml =xmlo.addElementInElement(parent,Navinfo.getPackName(), Navinfo.getAttriPackName(), pm.getName());
+				if(!xmlo.isEqualByAttribute(packxml, Navinfo.getAttriPackPath(), pm.getSavePath()))
+				packxml.addAttribute(Navinfo.getAttriPackPath(), pm.getSavePath());
+			}
+		}
+		return parent;
+	}
 	public static void SaveNavInfo(Model packroot)
 	{
 		Element root =xmlo.getRootElement();
@@ -88,29 +120,11 @@ public class Navinfo {
 		selOperate();
 		
 		
-		List<Element> haveele = root.elements(Navinfo.getPackFolder());
-		for(int j=0;j<haveele.size();j++)
-		{			
-			xmlo.getRootElement().remove(haveele.get(j));
-		}
-		for(int i=0;i<packroot.getChildren().size();i++)
-		{
-			if(packroot.getChildren().get(i) instanceof PackFolderModel)
-			{	
-				PackFolderModel packfolder = (PackFolderModel)packroot.getChildren().get(i);
-				PackFolder pf = packfolder.getFolderType();
-				String foldername = pf.getFoldername();
-				Element folder_ele = xmlo.addElementInRoot(getPackFolder(), getAttriFolderName(),foldername);
-				for(Model model:packfolder.getChildren())
-				{
-					PackInfoModel pm = (PackInfoModel)model;
-					Element packxml =xmlo.addElementInElement(folder_ele,Navinfo.getPackName(), Navinfo.getAttriPackName(), pm.getName());
-					if(!xmlo.isEqualByAttribute(packxml, Navinfo.getAttriPackPath(), pm.getSavePath()))
-					packxml.addAttribute(Navinfo.getAttriPackPath(), pm.getSavePath());
-				}
-			}
-		}
 		
+		
+		Element rootPackElement =xmlo.addElementInRoot(Navinfo.getPackFolder(), Navinfo.getAttriFolderName(), PackFolder.DEFALUT.getFoldername());
+		rootPackElement.clearContent();
+		saveRecursion(rootPackElement,packroot);
 		xmlo.save();
 		xmlo.close();
 	}
@@ -148,43 +162,60 @@ public class Navinfo {
 		return xmlo.exists();
 	}
 	
+	/**
+	 * 递归读取 元素 写入 rootModel 最终返回
+	 * @param element
+	 * @param rootModel
+	 * @return
+	 */
+	private static PackFolderModel readRecursion(Element element,PackFolderModel rootModel) {
+		for (Iterator i = element.elementIterator(); i.hasNext();) {
+			Element zmodel = (Element) i.next();
+			
+			if(Navinfo.getPackName().equals(zmodel.getName()))
+			{
+				String name = zmodel.attributeValue(Navinfo.getAttriPackName());
+    			String path = zmodel.attributeValue(Navinfo.getAttriPackPath());
+    			PackInfoModel  zpack = new PackInfoModel(name,path);
+    			rootModel.addChild(zpack);
+			}
+			else if(Navinfo.getPackFolder().equals(zmodel.getName()))
+			{
+				String foldername = zmodel.attributeValue(getAttriFolderName());
+	        	PackFolder pf = PackFolder.getFolder(foldername);
+	        	//在根目录下创建一个子目录，名称根据 xmlo读取。
+	        	PackFolderModel pfm = new PackFolderModel(rootModel,pf);
+	        	rootModel.addChild(pfm);
+	        	readRecursion(zmodel,pfm);
+			}
+		}
+		return rootModel;
+	}
+	
 	@SuppressWarnings("finally")
 	public static PackFolderModel readPackNavInfo()
 	{
 		//定义一个根目录
-		PackFolderModel packs = new PackFolderModel(null,PackFolder.DEFALUT);
+		PackFolderModel pfm = new PackFolderModel(null,PackFolder.DEFALUT);
+		
 		try 
 		{ //读取保存的更新包列表
 		if(!exists())
 		{
-			SaveNavInfo(packs);
-			return packs;
+			SaveNavInfo(pfm);
+			return pfm;
 		}
 		
         Element root = xmlo.getRootElement();
-        for (Iterator i = root.elementIterator(Navinfo.getPackFolder()); i.hasNext();) {
-        	Element packfolder = (Element) i.next();
-        	String foldername = packfolder.attributeValue(getAttriFolderName());
-        	PackFolder pf = PackFolder.getFolder(foldername);
-        	//在根目录下创建一个子目录，名称根据 xmlo读取。
-        	PackFolderModel pfm = new PackFolderModel(packs,pf);
-    		for (Iterator j = packfolder.elementIterator(Navinfo.getPackName()); j.hasNext();) {
-    			Element packinfo = (Element) j.next();
-    			String name = packinfo.attributeValue(Navinfo.getAttriPackName());
-    			String path = packinfo.attributeValue(Navinfo.getAttriPackPath());
-    			PackInfoModel  pack = new PackInfoModel(name,path);
-    			pfm.addChild(pack);
-    		}
-        }
-        
-        
+        if(root.element(Navinfo.getPackFolder())!=null)
+        	readRecursion(root.element(Navinfo.getPackFolder()),pfm);
 		}
 		catch (Exception e) { 
 			e.printStackTrace();
 		} 
 		finally
 		{
-			return packs;
+			return pfm;
 		}
 	}
 }

@@ -71,7 +71,7 @@ public class OpenPackAction extends Action {
 		pim.setSavePath(destFolder);
 		pim.readFromXML();
 		pim.setName(pim.getModuleName()+"("+pim.getModuleCode()+")"+pim.getVersion());
-		nv.addPackInfo(pim);
+		nv.addUnUpdatePackInfo(pim);
 	}
 
 }
