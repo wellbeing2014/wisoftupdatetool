@@ -6,7 +6,7 @@ import org.eclipse.ui.IWorkbenchWindow;
 
 import wisoft.pack.dialogs.UpdateServerDialog;
 import wisoft.pack.models.PackInfoModel;
-import wisoft.pack.views.NavigationView;
+import wisoft.pack.views.UnPackNavigation;
 import wisoft.pack.views.UnPackNavigation;
 
 public class DeployPackToServerAction extends Action {
