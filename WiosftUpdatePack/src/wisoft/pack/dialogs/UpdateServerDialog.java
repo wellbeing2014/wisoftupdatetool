@@ -249,7 +249,11 @@ public class UpdateServerDialog extends Dialog {
 					if(UpdateInfo.FileOpr_Del.equals(dataitem.getConftype()))
 				    	  MessageDialog.openConfirm(shell, "提示", "该配置需要删除"+selSever.getWebappPath()+dataitem.getFullPath()+"确定删除该文件吗？");
 				    if(UpdateInfo.FileOpr_Mod.equals(dataitem.getConftype()))
-				    	  MessageDialog.openInformation(shell, "提示", selSever.getWebappPath()+dataitem.getFullPath());
+				    {
+				    	MessageDialog.openInformation(shell, "提示", selSever.getWebappPath()+dataitem.getFullPath());
+				    	UpdateServerDialog_EditConf1 edit =new UpdateServerDialog_EditConf1();
+				    	edit.open();
+				    }
 				}
 	      });
 	      button.pack();
