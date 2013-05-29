@@ -128,8 +128,6 @@ public class NavigationView extends ViewPart implements IPackNavigation {
 		 {
 			 if(selectionlist.get(i) instanceof PackInfoModel)
 				 selPack.add((PackInfoModel)(selectionlist.get(i)));
-			 else
-				 selPack.add((PackInfoModel)((Model)(selectionlist.get(i))).getParent());
 		 }
 		 return selPack.toArray(new PackInfoModel[0]);
 	}

@@ -1,13 +1,13 @@
 package wisoft.pack.actions;
 
 import org.eclipse.jface.action.Action;
-import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.ui.IWorkbenchWindow;
 
 import wisoft.pack.dialogs.UpdateServerDialog;
 import wisoft.pack.models.PackInfoModel;
 import wisoft.pack.views.NavigationView;
+import wisoft.pack.views.UnPackNavigation;
 
 public class DeployPackToServerAction extends Action {
 	private final IWorkbenchWindow window;
@@ -24,7 +24,7 @@ public class DeployPackToServerAction extends Action {
 	@Override
 	public void run() {
 		
-		NavigationView nv = (NavigationView)window.getActivePage().findView(NavigationView.ID);
+		UnPackNavigation nv = (UnPackNavigation)window.getActivePage().findView(UnPackNavigation.ID);
 		PackInfoModel[] nm = nv.getSelectPackInfo();
 		MessageBox mb;
 		if(nm.length!=1)
