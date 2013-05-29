@@ -1,5 +1,8 @@
 package wisoft.pack.views;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.eclipse.jface.action.ActionContributionItem;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.IContributionItem;
@@ -221,6 +224,19 @@ public class UnPackNavigation extends ViewPart implements IPackNavigation {
 	public void SaveNavInfo()
 	{
 		Navinfo.getInstance().SaveNavInfo(this.root);
+	}
+	
+	public PackInfoModel[] getSelectPackInfo()
+	{
+		 IStructuredSelection selection = (IStructuredSelection)this.viewer.getSelection();
+		 List<PackInfoModel> selPack =new ArrayList<PackInfoModel>();
+		 List<?> selectionlist = selection.toList();
+		 for(int i=0;i<selectionlist.size();i++)
+		 {
+			 if(selectionlist.get(i) instanceof PackInfoModel)
+				 selPack.add((PackInfoModel)(selectionlist.get(i)));
+		 }
+		 return selPack.toArray(new PackInfoModel[0]);
 	}
 	
 }
