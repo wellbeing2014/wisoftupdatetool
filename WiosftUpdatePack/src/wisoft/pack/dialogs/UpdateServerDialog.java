@@ -59,6 +59,10 @@ public class UpdateServerDialog extends Dialog {
 	private PackConfig_Server selSever;
 	private ComboViewer comboViewer;
 	private ProgressBar progressBar;
+	//全局状态 status 0表示未开始，1表示已开始 2表示暂停，3表示取消
+	private int status = 0; 
+	Thread  thread;
+	Button button;
 
 	/**
 	 * Create the dialog.
@@ -165,7 +169,7 @@ public class UpdateServerDialog extends Dialog {
 		progressBar = new ProgressBar(composite_1, SWT.NONE);
 		//gd_progressBar.widthHint = 239;
 		progressBar.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
-		Button button = formToolkit.createButton(composite_1, "\u5F00\u59CB/\u6682\u505C", SWT.NONE);
+		button = formToolkit.createButton(composite_1, "\u5F00\u59CB/\u6682\u505C", SWT.NONE);
 		button.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
@@ -176,6 +180,11 @@ public class UpdateServerDialog extends Dialog {
 		button.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
 		
 		Button button_1 = formToolkit.createButton(composite_1, "\u53D6\u6D88", SWT.NONE);
+		button_1.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+			}
+		});
 		button_1.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
 		composite_2.setLayout(new FormLayout());
 		fd_composite_2.right = new FormAttachment(100);
@@ -222,7 +231,14 @@ public class UpdateServerDialog extends Dialog {
 		text_1 = new Text(sashForm, SWT.BORDER | SWT.H_SCROLL | SWT.V_SCROLL | SWT.CANCEL | SWT.MULTI);
 		formToolkit.adapt(text_1, true, true);
 		sashForm.setWeights(new int[] {110, 246});
-		
+		 thread = new Thread(new Runnable() {
+			
+			@Override
+			public void run() {
+				// TODO Auto-generated method stub
+				 System.out.println("aaa"); 
+			}
+		});
 	}
 	
 	private void addTableData()
@@ -267,61 +283,86 @@ public class UpdateServerDialog extends Dialog {
 	
 	private void doStart()
 	{
-			print("【检查】更新包完整性----"+pm.getName(),true );
-			num=0;
-			countFile(pm.getUpdateFileRoot());
-			progressBar.setMaximum(num);
-			print("   需要更新"+num+"个文件",false);
-			int confnum = pm.getConfFiles().size();
-			print("   需要配置"+confnum+"个文件",false);
-			addTableData();
-			IStructuredSelection selection = (IStructuredSelection)comboViewer.getSelection();
-			PackConfig_Server ps= new PackConfig_Server();
-			if(selection!=null&&selection.getFirstElement()!=null)
+		switch(status)
+		{
+		case 0: //设置一个变量。
+			status=1;
+			button.setText("暂停");
+			if(thread.isAlive())
+				thread.stop();
+			thread.start();
+		case 1: status=2;
+			thread.suspend();
+			button.setText("继续");
+			print("【暂停】",true );
+		case 2: status=1;
+			thread.resume();
+			button.setText("暂停");
+			print("【继续】",true );
+		case 3: //设置一个变量。
+			status=1;
+			button.setText("暂停");
+			if(thread.isAlive())
+				thread.stop();
+			thread.start();
+		}
+	}
+	
+	private void doUpdateFiles()
+	{
+		print("【检查】更新包完整性----"+pm.getName(),true );
+		num=0;
+		countFile(pm.getUpdateFileRoot());
+		progressBar.setMaximum(num);
+		print("   需要更新"+num+"个文件",false);
+		int confnum = pm.getConfFiles().size();
+		print("   需要配置"+confnum+"个文件",false);
+		addTableData();
+		IStructuredSelection selection = (IStructuredSelection)comboViewer.getSelection();
+		PackConfig_Server ps= new PackConfig_Server();
+		if(selection!=null&&selection.getFirstElement()!=null)
+		{
+			ps = (PackConfig_Server)selection.getFirstElement();
+			selSever = ps;
+		}
+		print("【检查】服务文件夹是否存在----"+selSever.getWebappPath(),true );
+		try
+		{
+			File server = new File(selSever.getWebappPath());
+			if(!server.exists()&&!server.isDirectory())
 			{
-				ps = (PackConfig_Server)selection.getFirstElement();
-				selSever = ps;
-			}
-			print("【检查】服务文件夹是否存在----"+selSever.getWebappPath(),true );
-			try
-			{
-				File server = new File(selSever.getWebappPath());
-				if(!server.exists()&&!server.isDirectory())
-				{
-					print("【错误】：更新指向的服务器WEBAPP文件夹不存在！来自服务："+ps.getServerName(),true );
-					return;
-				}
-			}
-			catch(Exception e)
-			{
-				print("【错误】：检查服务器发生问题！来自："+e.getStackTrace().toString(),true );
+				print("【错误】：更新指向的服务器WEBAPP文件夹不存在！来自服务："+ps.getServerName(),true );
 				return;
 			}
-			print("检查通过服务器WEBAPP地址："+ps.getWebappPath(),false);
-			
-			print("【检查】更新包依赖----",true );
-			List<PackRelyModel> packrelys = pm.getPackRelys();
-			if(packrelys.size()>0)
-			{
-				for(PackRelyModel prm:packrelys)
-				{	
-					print("[更新包依赖 ]--- "+prm.getName()+" 发布时间："+prm.getPublishTime(),false );
-					boolean b = MessageDialog.openQuestion(this.shell,"注意有更新包依赖","此更新包，需要先更新  "+prm.getName()+"\n发布时间："+prm.getPublishTime()+"\n确定继续更新？");
-					if(b)
-						continue;
-					else
-						print("【中断】：用户已取消！",true);
-				}
+		}
+		catch(Exception e)
+		{
+			print("【错误】：检查服务器发生问题！来自："+e.getStackTrace().toString(),true );
+			return;
+		}
+		print("检查通过服务器WEBAPP地址："+ps.getWebappPath(),false);
+		
+		print("【检查】更新包依赖----",true );
+		List<PackRelyModel> packrelys = pm.getPackRelys();
+		if(packrelys.size()>0)
+		{
+			for(PackRelyModel prm:packrelys)
+			{	
+				print("[更新包依赖 ]--- "+prm.getName()+" 发布时间："+prm.getPublishTime(),false );
+				boolean b = MessageDialog.openQuestion(this.shell,"注意有更新包依赖","此更新包，需要先更新  "+prm.getName()+"\n发布时间："+prm.getPublishTime()+"\n确定继续更新？");
+				if(b)
+					continue;
+				else
+					print("【中断】：用户已取消！",true);
 			}
-			
-			boolean b = MessageDialog.openQuestion(this.shell,"开始更新？","所有检查完毕，确定启动更新程序？");
-			if(b)
-				copyFile();
-			else
-				print("【中断】：用户已取消！",true);
-			print("文件更新完毕:",true);
-			print("【执行SQL】:开始",true);
-			doSqlFile();
+		}
+		
+		boolean b = MessageDialog.openQuestion(this.shell,"开始更新？","所有检查完毕，确定启动更新程序？");
+		if(b)
+			copyFile();
+		else
+			print("【中断】：用户已取消！",true);
+		print("文件更新完毕:",true);
 	}
 	
 	private int num;
@@ -395,8 +436,9 @@ public class UpdateServerDialog extends Dialog {
 		});
 	}
 	
-	private void doSqlFile()
+	private void doExecuteSql()
 	{
+		print("【执行SQL】:开始",true);
 		String sql = "SQLPLUS "+selSever.getDBPath()+" @"+pm.getSavePath()+File.separator+UpdateInfo.SqlFileName;
         try {
         	final Process proc =Runtime.getRuntime().exec(sql);
