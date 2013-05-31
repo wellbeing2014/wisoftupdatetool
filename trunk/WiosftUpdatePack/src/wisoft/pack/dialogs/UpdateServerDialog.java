@@ -61,7 +61,7 @@ public class UpdateServerDialog extends Dialog {
 	private ProgressBar progressBar;
 	//全局状态 status 0表示未开始，1表示已开始 2表示暂停，3表示取消
 	private int status = 0; 
-	Thread  thread;
+	UpdateMainThread  thread;
 	Button button;
 
 	/**
@@ -231,14 +231,7 @@ public class UpdateServerDialog extends Dialog {
 		text_1 = new Text(sashForm, SWT.BORDER | SWT.H_SCROLL | SWT.V_SCROLL | SWT.CANCEL | SWT.MULTI);
 		formToolkit.adapt(text_1, true, true);
 		sashForm.setWeights(new int[] {110, 246});
-		 thread = new Thread(new Runnable() {
-			
-			@Override
-			public void run() {
-				// TODO Auto-generated method stub
-				 System.out.println("aaa"); 
-			}
-		});
+		 thread = new UpdateMainThread(this);
 	}
 	
 	private void addTableData()
@@ -288,27 +281,31 @@ public class UpdateServerDialog extends Dialog {
 		case 0: //设置一个变量。
 			status=1;
 			button.setText("暂停");
-			if(thread.isAlive())
-				thread.stop();
 			thread.start();
-		case 1: status=2;
-			thread.suspend();
+		case 1: //设置一个变量。
+			status=2;
 			button.setText("继续");
-			print("【暂停】",true );
-		case 2: status=1;
-			thread.resume();
-			button.setText("暂停");
-			print("【继续】",true );
-		case 3: //设置一个变量。
+			try {
+				if(thread.isAlive())
+				thread.wait();
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			};
+		case 2: //设置一个变量。
 			status=1;
 			button.setText("暂停");
 			if(thread.isAlive())
-				thread.stop();
+			thread.notify();
+		case 3: //设置一个变量。
+			status=3;
+			button.setText("开始");
 			thread.start();
+		
 		}
 	}
 	
-	private void doUpdateFiles()
+	public void doUpdateFiles()
 	{
 		print("【检查】更新包完整性----"+pm.getName(),true );
 		num=0;
@@ -436,7 +433,7 @@ public class UpdateServerDialog extends Dialog {
 		});
 	}
 	
-	private void doExecuteSql()
+	public void doExecuteSql()
 	{
 		print("【执行SQL】:开始",true);
 		String sql = "SQLPLUS "+selSever.getDBPath()+" @"+pm.getSavePath()+File.separator+UpdateInfo.SqlFileName;
@@ -496,4 +493,28 @@ public class UpdateServerDialog extends Dialog {
 			}   
 		});   
 	}
+}
+
+
+class UpdateMainThread extends Thread {  
+    private UpdateServerDialog ud;
+	public UpdateMainThread(UpdateServerDialog ud)
+	{
+		this.ud = ud;
+	}
+    public void run() {  
+        //然后在表格中添加一行   
+        try {Thread.sleep(100); } catch (InterruptedException e) {e.printStackTrace();}     
+        Display.getDefault().asyncExec(new Runnable() {
+			@Override
+			public void run() {
+				// TODO Auto-generated method stub
+				ud.doUpdateFiles();
+				
+			}
+		});
+//       while(1==1){
+//    	   System.out.println("aaa");
+//       }
+    }  
 }
