@@ -61,7 +61,6 @@ public class UpdateServerDialog extends Dialog {
 	private ProgressBar progressBar;
 	//全局状态 status 0表示未开始，1表示已开始 2表示暂停，3表示取消
 	private int status = 0; 
-	UpdateMainThread  thread;
 	Button button;
 
 	/**
@@ -168,7 +167,8 @@ public class UpdateServerDialog extends Dialog {
 		
 		progressBar = new ProgressBar(composite_1, SWT.NONE);
 		//gd_progressBar.widthHint = 239;
-		progressBar.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
+		progressBar.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 2, 1));
+		progressBar.setMinimum(0);
 		button = formToolkit.createButton(composite_1, "\u5F00\u59CB/\u6682\u505C", SWT.NONE);
 		button.addSelectionListener(new SelectionAdapter() {
 			@Override
@@ -176,16 +176,7 @@ public class UpdateServerDialog extends Dialog {
 				doStart();
 			}
 		});
-		progressBar.setMinimum(0);
 		button.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
-		
-		Button button_1 = formToolkit.createButton(composite_1, "\u53D6\u6D88", SWT.NONE);
-		button_1.addSelectionListener(new SelectionAdapter() {
-			@Override
-			public void widgetSelected(SelectionEvent e) {
-			}
-		});
-		button_1.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
 		composite_2.setLayout(new FormLayout());
 		fd_composite_2.right = new FormAttachment(100);
 		fd_composite_2.left = new FormAttachment(0);
@@ -231,7 +222,6 @@ public class UpdateServerDialog extends Dialog {
 		text_1 = new Text(sashForm, SWT.BORDER | SWT.H_SCROLL | SWT.V_SCROLL | SWT.CANCEL | SWT.MULTI);
 		formToolkit.adapt(text_1, true, true);
 		sashForm.setWeights(new int[] {110, 246});
-		 thread = new UpdateMainThread(this);
 	}
 	
 	private void addTableData()
@@ -274,35 +264,12 @@ public class UpdateServerDialog extends Dialog {
 	    }
 	}
 	
+	private boolean isstop = false;
+	
 	private void doStart()
 	{
-		switch(status)
-		{
-		case 0: //设置一个变量。
-			status=1;
-			button.setText("暂停");
-			thread.start();
-		case 1: //设置一个变量。
-			status=2;
-			button.setText("继续");
-			try {
-				if(thread.isAlive())
-				thread.wait();
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			};
-		case 2: //设置一个变量。
-			status=1;
-			button.setText("暂停");
-			if(thread.isAlive())
-			thread.notify();
-		case 3: //设置一个变量。
-			status=3;
-			button.setText("开始");
-			thread.start();
-		
-		}
+		UpdateMainThread thread =new UpdateMainThread(this);
+		thread.start();
 	}
 	
 	public void doUpdateFiles()
@@ -347,7 +314,7 @@ public class UpdateServerDialog extends Dialog {
 			{	
 				print("[更新包依赖 ]--- "+prm.getName()+" 发布时间："+prm.getPublishTime(),false );
 				boolean b = MessageDialog.openQuestion(this.shell,"注意有更新包依赖","此更新包，需要先更新  "+prm.getName()+"\n发布时间："+prm.getPublishTime()+"\n确定继续更新？");
-				if(b)
+				if(!(isstop = !b))
 					continue;
 				else
 					print("【中断】：用户已取消！",true);
@@ -355,11 +322,13 @@ public class UpdateServerDialog extends Dialog {
 		}
 		
 		boolean b = MessageDialog.openQuestion(this.shell,"开始更新？","所有检查完毕，确定启动更新程序？");
-		if(b)
-			copyFile();
-		else
-			print("【中断】：用户已取消！",true);
-		print("文件更新完毕:",true);
+		if(!(isstop = !b))
+		{
+			FileModel file =pm.getUpdateFileRoot();
+			copyCircle(file);
+		}
+		if(!isstop)
+			print("文件更新完毕:",true);
 	}
 	
 	private int num;
@@ -372,15 +341,14 @@ public class UpdateServerDialog extends Dialog {
 			countFile((FileModel)zfile);
 		}
 	}
-	private void copyFile()
-	{
-		FileModel file =pm.getUpdateFileRoot();
-		copyCircle(file);
-	}
-	
 	
 	private void copyCircle(FileModel file )
 	{
+		if(isstop)
+		{
+			print("【中断】：用户已取消！",true);
+			return;
+		}
 		File serverfile = new File(selSever.getWebappPath()+file.getFullPath());
 		if(file.isDir())
 		{
@@ -435,6 +403,8 @@ public class UpdateServerDialog extends Dialog {
 	
 	public void doExecuteSql()
 	{
+		if(isstop)
+			return;
 		print("【执行SQL】:开始",true);
 		String sql = "SQLPLUS "+selSever.getDBPath()+" @"+pm.getSavePath()+File.separator+UpdateInfo.SqlFileName;
         try {
@@ -481,7 +451,7 @@ public class UpdateServerDialog extends Dialog {
 			//这个线程是调用UI线程控件
 			public void run() {   
 				try {
-					Thread.sleep(100);
+					Thread.sleep(1);
 				} catch (InterruptedException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -510,11 +480,8 @@ class UpdateMainThread extends Thread {
 			public void run() {
 				// TODO Auto-generated method stub
 				ud.doUpdateFiles();
-				
+				ud.doExecuteSql();
 			}
 		});
-//       while(1==1){
-//    	   System.out.println("aaa");
-//       }
     }  
 }
