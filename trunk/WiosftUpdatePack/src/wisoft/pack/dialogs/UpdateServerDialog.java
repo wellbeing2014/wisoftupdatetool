@@ -250,7 +250,15 @@ public class UpdateServerDialog extends Dialog {
 				    if(UpdateInfo.FileOpr_Mod.equals(dataitem.getConftype()))
 				    {
 				    	MessageDialog.openInformation(shell, "提示", selSever.getWebappPath()+dataitem.getFullPath());
-				    	UpdateServerDialog_EditConf1 edit =new UpdateServerDialog_EditConf1();
+				    	File conffile = new File(selSever.getWebappPath()+dataitem.getFullPath());
+				    	if(!conffile.exists())
+				    	{
+				    		MessageDialog.openError(shell, "提示", "配置文件不存在："+selSever.getWebappPath()+dataitem.getFullPath());
+				    		return;
+				    	}
+				    	UpdateServerDialog_EditConf edit =new UpdateServerDialog_EditConf(shell);
+				    	edit.ConFile = conffile;
+				    	edit.UpdateNote = dataitem.getContent();
 				    	edit.open();
 				    }
 				}
