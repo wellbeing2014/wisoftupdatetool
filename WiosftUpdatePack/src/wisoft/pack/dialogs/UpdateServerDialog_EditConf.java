@@ -4,14 +4,12 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.IDialogConstants;
-import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.SashForm;
 import org.eclipse.swt.custom.StyledText;
@@ -25,6 +23,8 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
+
+import wisoft.pack.utils.XmlOperator;
 
 public class UpdateServerDialog_EditConf extends Dialog {
 
@@ -42,10 +42,10 @@ public class UpdateServerDialog_EditConf extends Dialog {
 	@Override
 	protected void okPressed() {
 		// TODO Auto-generated method stub
-		if(saveConf())
+		if(XmlOperator.validateXMLByXSD(styledText_1.getText())&&saveConf())
+		{	
 			super.okPressed();
-		else
-			MessageDialog.openError(getShell(), "提示", "保存出现问题");
+		}
 	}
 	
 	private boolean saveConf()
