@@ -18,4 +18,6 @@ Bundle-ClassPath: .,
  jars/dom4j-2.0.0-ALPHA-2.jar,
  jars/jaxen-1.1.1.jar,
  jars/swing2swt.jar,
- jars/commons-io-2.4.jar
+ jars/commons-io-2.4.jar,
+ jars/Access_JDBC30.jar,
+ jars/access_hibernate_dialect.jar
