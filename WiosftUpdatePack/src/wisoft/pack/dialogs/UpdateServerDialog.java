@@ -16,8 +16,12 @@ import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.SashForm;
 import org.eclipse.swt.custom.TableEditor;
+import org.eclipse.swt.events.DisposeEvent;
+import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.ShellAdapter;
+import org.eclipse.swt.events.ShellEvent;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.FormAttachment;
@@ -59,8 +63,6 @@ public class UpdateServerDialog extends Dialog {
 	private PackConfig_Server selSever;
 	private ComboViewer comboViewer;
 	private ProgressBar progressBar;
-	//全局状态 status 0表示未开始，1表示已开始 2表示暂停，3表示取消
-	private int status = 0; 
 	Button button;
 
 	/**
@@ -84,6 +86,14 @@ public class UpdateServerDialog extends Dialog {
 	 */
 	public Object open() {
 		createContents();
+		shell.addShellListener(new ShellAdapter() {
+			@Override
+			public void shellClosed(ShellEvent e) {
+				// TODO Auto-generated method stub
+					super.shellClosed(e);
+			}
+			
+		});
 		shell.open();
 		shell.layout();
 		Display display = getParent().getDisplay();
@@ -95,6 +105,7 @@ public class UpdateServerDialog extends Dialog {
 		return result;
 	}
 
+	
 	/**
 	 * Create contents of the dialog.
 	 */
@@ -229,38 +240,43 @@ public class UpdateServerDialog extends Dialog {
 		 List<FileModel> tabledata = pm.getConfFiles();
 		 table.removeAll();
 	     for (int i = 0;i<tabledata.size();i++) {
-	    	 final FileModel dataitem = tabledata.get(i);
-	    	 TableItem item =new TableItem(table, SWT.NONE);
-	      item.setText(0, String.valueOf(i+1));
-	      item.setText(1, dataitem.getFullPath());
-	      item.setText(2, dataitem.getConftype());
-	      item.setText(3, dataitem.getFullPath());
-	      TableEditor editor = new TableEditor(table);
-	      Button button = new Button(table, SWT.NONE);
-	      if(UpdateInfo.FileOpr_Del.equals(dataitem.getConftype()))
-	    	  button.setText("删除");
-	      if(UpdateInfo.FileOpr_Mod.equals(dataitem.getConftype()))
-	    	  button.setText("修改");
-	      
-	      button.addSelectionListener(new SelectionAdapter() {
+	    	final FileModel dataitem = tabledata.get(i);
+	    	final TableItem item =new TableItem(table, SWT.NONE);
+			item.setText(0, String.valueOf(i+1));
+			item.setText(1, dataitem.getFullPath());
+			item.setText(2, dataitem.getConftype());
+			item.setText(3, "未处理");
+			TableEditor editor = new TableEditor(table);
+			Button button = new Button(table, SWT.NONE);
+			if(UpdateInfo.FileOpr_Del.equals(dataitem.getConftype()))
+				  button.setText("删除");
+			if(UpdateInfo.FileOpr_Mod.equals(dataitem.getConftype()))
+				  button.setText("修改");
+			button.addSelectionListener(new SelectionAdapter() {
 				@Override
 				public void widgetSelected(SelectionEvent e) {
+					File conffile = new File(selSever.getWebappPath()+dataitem.getFullPath());
+					if(!conffile.exists())
+			    	{
+			    		MessageDialog.openError(shell, "提示", "配置文件不存在："+selSever.getWebappPath()+dataitem.getFullPath());
+			    		return;
+			    	}
 					if(UpdateInfo.FileOpr_Del.equals(dataitem.getConftype()))
-				    	  MessageDialog.openConfirm(shell, "提示", "该配置需要删除"+selSever.getWebappPath()+dataitem.getFullPath()+"确定删除该文件吗？");
+					{
+						boolean result= MessageDialog.openConfirm(shell, "提示", "该配置需要删除"+selSever.getWebappPath()+dataitem.getFullPath()+"确定删除该文件吗？");
+						if(result)
+							conffile.delete();
+					}
 				    if(UpdateInfo.FileOpr_Mod.equals(dataitem.getConftype()))
 				    {
-				    	MessageDialog.openInformation(shell, "提示", selSever.getWebappPath()+dataitem.getFullPath());
-				    	File conffile = new File(selSever.getWebappPath()+dataitem.getFullPath());
-				    	if(!conffile.exists())
-				    	{
-				    		MessageDialog.openError(shell, "提示", "配置文件不存在："+selSever.getWebappPath()+dataitem.getFullPath());
-				    		return;
-				    	}
+				    	
 				    	UpdateServerDialog_EditConf edit =new UpdateServerDialog_EditConf(shell);
 				    	edit.ConFile = conffile;
 				    	edit.UpdateNote = dataitem.getContent();
 				    	edit.open();
 				    }
+				    item.setText(3, "已处理");
+				    table.redraw();
 				}
 	      });
 	      button.pack();

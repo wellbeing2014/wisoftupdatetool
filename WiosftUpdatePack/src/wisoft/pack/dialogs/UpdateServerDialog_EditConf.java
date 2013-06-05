@@ -54,11 +54,10 @@ public class UpdateServerDialog_EditConf extends Dialog {
 			OutputStreamWriter out = new OutputStreamWriter(new FileOutputStream(ConFile.getAbsolutePath()),"UTF-8");
 			out.write(styledText_1.getText()); 
 			out.close(); 
-			
 			return true; 
-			} catch (IOException e) { 
+		} catch (IOException e) { 
 			return false;
-			} 
+		} 
 	}
 	
 	@Override
