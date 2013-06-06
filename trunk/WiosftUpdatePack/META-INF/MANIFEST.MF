@@ -20,4 +20,5 @@ Bundle-ClassPath: .,
  jars/swing2swt.jar,
  jars/commons-io-2.4.jar,
  jars/Access_JDBC30.jar,
- jars/access_hibernate_dialect.jar
+ jars/access_hibernate_dialect.jar,
+ jars/mybatis-3.2.2.jar

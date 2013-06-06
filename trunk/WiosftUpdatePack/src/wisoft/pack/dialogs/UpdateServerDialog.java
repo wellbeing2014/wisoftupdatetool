@@ -6,7 +6,9 @@ import java.io.InputStreamReader;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import java.util.Vector;
 
+import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.ComboViewer;
@@ -16,8 +18,6 @@ import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.SashForm;
 import org.eclipse.swt.custom.TableEditor;
-import org.eclipse.swt.events.DisposeEvent;
-import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.ShellAdapter;
@@ -90,7 +90,7 @@ public class UpdateServerDialog extends Dialog {
 			@Override
 			public void shellClosed(ShellEvent e) {
 				// TODO Auto-generated method stub
-					super.shellClosed(e);
+				e.doit=isConfAllDone();
 			}
 			
 		});
@@ -105,7 +105,19 @@ public class UpdateServerDialog extends Dialog {
 		return result;
 	}
 
-	
+	private boolean isConfAllDone()
+	{
+		for(TableItem item :this.table.getItems() )
+		{
+			if("已处理"!=item.getText(3))
+			{	
+				MessageDialog.openError(shell, "提示", "有配置文件没有被处理完成。");
+				return false;
+			
+			}
+		}
+		return true;
+	}
 	/**
 	 * Create contents of the dialog.
 	 */
@@ -235,10 +247,19 @@ public class UpdateServerDialog extends Dialog {
 		sashForm.setWeights(new int[] {110, 246});
 	}
 	
+	Vector<TableEditor> editors = new Vector<TableEditor>(); 
 	private void addTableData()
 	{
-		 List<FileModel> tabledata = pm.getConfFiles();
-		 table.removeAll();
+		for(TableEditor te:editors)
+		{
+			te.getEditor().dispose();
+			te.dispose();
+		}
+		editors.clear();
+		table.removeAll();
+		table.redraw();
+		table.update();
+		List<FileModel> tabledata = pm.getConfFiles();
 	     for (int i = 0;i<tabledata.size();i++) {
 	    	final FileModel dataitem = tabledata.get(i);
 	    	final TableItem item =new TableItem(table, SWT.NONE);
@@ -259,13 +280,17 @@ public class UpdateServerDialog extends Dialog {
 					if(!conffile.exists())
 			    	{
 			    		MessageDialog.openError(shell, "提示", "配置文件不存在："+selSever.getWebappPath()+dataitem.getFullPath());
+			    		item.setText(3, "已处理");
 			    		return;
 			    	}
 					if(UpdateInfo.FileOpr_Del.equals(dataitem.getConftype()))
 					{
 						boolean result= MessageDialog.openConfirm(shell, "提示", "该配置需要删除"+selSever.getWebappPath()+dataitem.getFullPath()+"确定删除该文件吗？");
 						if(result)
+						{
 							conffile.delete();
+							item.setText(3, "已处理");
+						}
 					}
 				    if(UpdateInfo.FileOpr_Mod.equals(dataitem.getConftype()))
 				    {
@@ -273,9 +298,12 @@ public class UpdateServerDialog extends Dialog {
 				    	UpdateServerDialog_EditConf edit =new UpdateServerDialog_EditConf(shell);
 				    	edit.ConFile = conffile;
 				    	edit.UpdateNote = dataitem.getContent();
-				    	edit.open();
+				    	if(IDialogConstants.OK_ID==edit.open())
+				    	{
+				    		System.out.println("点击ok");
+				    		item.setText(3, "已处理");
+				    	}
 				    }
-				    item.setText(3, "已处理");
 				    table.redraw();
 				}
 	      });
@@ -283,7 +311,7 @@ public class UpdateServerDialog extends Dialog {
 	      editor.minimumWidth = button.getSize().x;
 	      editor.horizontalAlignment = SWT.LEFT;
 	      editor.setEditor(button, item, 4);
-	      
+	      editors.add(editor);
 	      table.setData(tabledata.get(i));
 	    }
 	}
