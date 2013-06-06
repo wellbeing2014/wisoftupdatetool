@@ -20,3 +20,8 @@ http://jamesblog.iteye.com/blog/127208
 ^^^^^^^^
 今天为起始，开始重构去掉navinfo.xml用数据库替换。
 先架好 hibernate 和 access
+
+2013-6-6
+^^^^^^^^
+为了学习 mybatis和hibernate 区别，把hibernate 改成mybatis。
+暂时不能解决的问题是 如何将数据库地址 相对化。可能要从inputsteam里面修改。
