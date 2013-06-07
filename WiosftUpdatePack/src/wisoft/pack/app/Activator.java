@@ -8,7 +8,10 @@ import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osgi.service.datalocation.Location;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
 
+import wisoft.pack.data.mapper.PersonMapper;
 import wisoft.pack.models.PackInfoModel;
 
 /**
@@ -17,6 +20,7 @@ import wisoft.pack.models.PackInfoModel;
 @SuppressWarnings("restriction")
 public class Activator extends AbstractUIPlugin {
 
+	
 	// The plug-in ID
 	public static final String PLUGIN_ID = "WiosftUpdatePack"; //$NON-NLS-1$
 
@@ -53,10 +57,15 @@ public class Activator extends AbstractUIPlugin {
 	{
 		return Platform.getInstanceLocation().getURL().getPath();
 	}
+	
+	private ApplicationContext context ;
 	/**
 	 * The constructor
 	 */
 	public Activator() {
+		this.context = new ClassPathXmlApplicationContext( "wisoft/pack/data/conf_spring.xml" );
+		PersonMapper person = (PersonMapper)this.context.getBean("personMapper");
+		System.out.println("难道这就是mybatis "+person.selectPerson(1).getName());
 	}
 
 	/*

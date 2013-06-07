@@ -3,12 +3,18 @@
 <beans>
 	<bean id="dataSource" class="wisoft.pack.data.MyDataSource" />   
 	<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">  
-	    <property name="configLocation" value="classpath:wisoft/pack/data/mybatis-config.xml" />  
-	    <property name="dataSource"  ref="dataSource" />  
+	    <property name="dataSource"  ref="dataSource" /> 
+	    <property name="mapperLocations"  
+              value="classpath:wisoft/pack/data/mapper/*Mapper.xml" />  
 	</bean>  
 	<bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">  
 	    <property name="dataSource" ref="dataSource" />  
 	</bean>  
+	
+	
+	<bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">  
+       <property name="basePackage" value="wisoft.pack.data.mapper" />  
+    </bean>  
 </beans>
 
 

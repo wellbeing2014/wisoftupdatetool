@@ -1,7 +1,7 @@
-package wisoft.pack.dao;
+package wisoft.pack.data.mapper;
 
 import wisoft.pack.pojo.Person;
 
-public interface PersonDao {
+public interface PersonMapper {
 	public Person selectPerson(int id);
 }

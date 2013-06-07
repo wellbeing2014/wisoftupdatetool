@@ -1,6 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-	<classpathentry exported="true" kind="lib" path="jars/spring.jar"/>
+	<classpathentry exported="true" kind="lib" path="jars/spring-aop-3.2.3.RELEASE.jar"/>
+	<classpathentry exported="true" kind="lib" path="jars/spring-aspects-3.2.3.RELEASE.jar"/>
+	<classpathentry exported="true" kind="lib" path="jars/spring-beans-3.2.3.RELEASE.jar"/>
+	<classpathentry exported="true" kind="lib" path="jars/spring-context-3.2.3.RELEASE.jar"/>
+	<classpathentry exported="true" kind="lib" path="jars/spring-context-support-3.2.3.RELEASE.jar"/>
+	<classpathentry exported="true" kind="lib" path="jars/spring-core-3.2.3.RELEASE.jar"/>
+	<classpathentry exported="true" kind="lib" path="jars/spring-expression-3.2.3.RELEASE.jar"/>
+	<classpathentry exported="true" kind="lib" path="jars/spring-jdbc-3.2.3.RELEASE.jar"/>
+	<classpathentry exported="true" kind="lib" path="jars/spring-tx-3.2.3.RELEASE.jar"/>
+	<classpathentry exported="true" kind="lib" path="jars/commons-logging-1.1.1.jar"/>
 	<classpathentry exported="true" kind="lib" path="jars/mybatis-spring-1.2.0.jar" sourcepath="jars/mybatis-spring-1.2.0-sources.jar"/>
 	<classpathentry exported="true" kind="lib" path="jars/mybatis-3.2.2.jar"/>
 	<classpathentry exported="true" kind="lib" path="jars/access_hibernate_dialect.jar"/>
