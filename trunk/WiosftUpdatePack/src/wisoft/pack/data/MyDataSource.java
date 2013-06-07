@@ -15,7 +15,7 @@ public class MyDataSource extends DriverManagerDataSource {
 		
 		String mdbpath = "";
 		try {
-			URL url =FileLocator.toFileURL(WisoftSessionFactory.class.getResource("wup.mdb"));
+			URL url =FileLocator.toFileURL(MyDataSource.class.getResource("wup.mdb"));
 			File file =new File(url.toURI());
 			mdbpath = file.getAbsolutePath();
 		} catch (IOException e1) {
@@ -28,6 +28,8 @@ public class MyDataSource extends DriverManagerDataSource {
 		}
 		this.setDriverClassName("com.hxtt.sql.access.AccessDriver");
 		this.setUrl("jdbc:access:///"+mdbpath);
+		System.out.println("我是驱动，我被spring实例化了。");
+		System.out.println("我的URL是"+"jdbc:access:///"+mdbpath);
 	}
 
 }
