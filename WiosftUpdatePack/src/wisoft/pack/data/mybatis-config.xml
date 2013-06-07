@@ -1,17 +1,9 @@
 ﻿<?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE configuration  PUBLIC "-//mybatis.org//DTD Config 3.0//EN"  "http://mybatis.org/dtd/mybatis-3-config.dtd">
 <configuration>
-  <environments default="development">
-    <environment id="development">
-      <transactionManager type="JDBC"/>
-      <dataSource type="POOLED">
-        <property name="driver" value="com.hxtt.sql.access.AccessDriver"/>
-        <property name="url" value="jdbc:access:///${mymdbpath}"/>
-        <property name="username" value=""/>
-        <property name="password" value=""/>
-      </dataSource>
-    </environment>
-  </environments>
+  <typeAliases>  
+        <typeAlias alias="Person" type="wisoft.pack.pojo.Person"/>  
+  </typeAliases>
   <mappers>
     <mapper resource="wisoft/pack/data/person.xml"/>
   </mappers>

@@ -2,7 +2,7 @@
 <!DOCTYPE mapper
   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="wisoft.pack.pojo">
+<mapper namespace="wisoft.pack.dao.PersonDao">
   <select id="selectPerson" parameterType="int" resultType="wisoft.pack.pojo.Person">
     SELECT * from person where id = #{id}
   </select>
