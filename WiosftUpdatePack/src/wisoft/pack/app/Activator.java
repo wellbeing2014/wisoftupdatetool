@@ -64,10 +64,13 @@ public class Activator extends AbstractUIPlugin {
 	 */
 	public Activator() {
 		this.context = new ClassPathXmlApplicationContext( "wisoft/pack/data/conf_spring.xml" );
-		PersonMapper person = (PersonMapper)this.context.getBean("personMapper");
-		System.out.println("难道这就是mybatis "+person.selectPerson(1).getName());
+		System.out.println("难道这就是mybatis "+((PersonMapper)getSpringBean("personMapper")).selectPerson(1).getName());
 	}
 
+	public Object getSpringBean(String beanname)
+	{
+		return this.context.getBean(beanname);
+	}
 	/*
 	 * (non-Javadoc)
 	 * @see org.eclipse.ui.plugin.AbstractUIPlugin#start(org.osgi.framework.BundleContext)
