@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.dom4j.Element;
+import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.ui.PlatformUI;
 
 import wisoft.pack.app.Activator;
 import wisoft.pack.models.PackConfig_Server;
@@ -16,6 +18,9 @@ public class PackConfigInfo {
 	
 	private static PackConfigInfo info= null;
 	private static String filename = "PackConfig.xml";
+	
+	public static String Operate_Pack = "pack";
+	public static String Operate_UnPack = "unpack";
 	private XmlOperator xmlo;
 	public PackConfigInfo() {
 		// TODO Auto-generated constructor stub
@@ -139,4 +144,31 @@ public class PackConfigInfo {
 		}
 		xmlo.save();
 	}
+	
+	public  boolean setedOperate()
+	{
+		Element operate =xmlo.OnlyElementInRoot("OperateType");
+		return !operate.getText().isEmpty();
+	}
+	
+	public  boolean selOperate()
+	{
+		if(setedOperate())
+		{
+			String txt =xmlo.OnlyElementInRoot("OperateType").getText();
+			if(PackConfigInfo.Operate_Pack.equals(txt))
+				return true;
+			else
+				return false;
+		}
+		else
+		{
+			boolean isOperate =MessageDialog.openConfirm(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), "请选择你使用工具的方式", "确定为使用打包方式，取消为使用更新方式。")	;
+			Element operate =xmlo.OnlyElementInRoot("OperateType");
+			operate.setText(isOperate?PackConfigInfo.Operate_Pack:PackConfigInfo.Operate_UnPack);
+			xmlo.save();
+			return isOperate;
+		}
+	}
+
 }

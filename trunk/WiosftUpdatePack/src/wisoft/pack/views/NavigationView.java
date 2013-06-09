@@ -26,6 +26,7 @@ import org.eclipse.ui.console.IConsoleConstants;
 import org.eclipse.ui.part.ViewPart;
 
 import wisoft.pack.app.Activator;
+import wisoft.pack.data.dao.NavigatorData;
 import wisoft.pack.edits.PackInfoEditor;
 import wisoft.pack.edits.PackInfoInput;
 import wisoft.pack.interfaces.IPackNavigation;
@@ -35,9 +36,8 @@ import wisoft.pack.models.PackFolderModel;
 import wisoft.pack.models.PackInfoContentProvider;
 import wisoft.pack.models.PackInfoLabelProvider;
 import wisoft.pack.models.PackInfoModel;
-import wisoft.pack.models.RootModel;
 import wisoft.pack.utils.FileUtil;
-import wisoft.pack.utils.Navinfo;
+import wisoft.pack.utils.Navinfo1;
 
 
 
@@ -207,13 +207,13 @@ public class NavigationView extends ViewPart implements IPackNavigation {
 	
 	private void readNavInfo()
 	{
-		this.root =Navinfo.getInstance().readPackNavInfo();
+		this.root =NavigatorData.getUnPackInput();
 		this.viewer.setInput(root);
 		this.viewer.refresh();
 	}
 	public void SaveNavInfo()
 	{
-		Navinfo.getInstance().SaveNavInfo(this.root);
+		//Navinfo.getInstance().SaveNavInfo(this.root);
 	}
 	
 }

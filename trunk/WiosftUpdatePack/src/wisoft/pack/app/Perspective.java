@@ -4,7 +4,7 @@ import org.eclipse.ui.IPageLayout;
 import org.eclipse.ui.IPerspectiveFactory;
 import org.eclipse.ui.console.IConsoleConstants;
 
-import wisoft.pack.utils.Navinfo;
+import wisoft.pack.utils.PackConfigInfo;
 import wisoft.pack.views.NavigationView;
 import wisoft.pack.views.UnPackNavigation;
 
@@ -18,8 +18,7 @@ public class Perspective implements IPerspectiveFactory {
 
 	public void createInitialLayout(IPageLayout layout) {
 		String editorArea = layout.getEditorArea();
-		Navinfo.getInstance();
-		boolean isPack =Navinfo.selOperate();
+		boolean isPack =PackConfigInfo.getInstance().selOperate();
 		if(isPack)
 			layout.addStandaloneView(NavigationView.ID,  true, IPageLayout.LEFT, 0.25f, editorArea);
 		else
