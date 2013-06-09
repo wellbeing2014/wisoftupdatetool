@@ -1,8 +1,6 @@
 package wisoft.pack.utils;
 
-import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.List;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
@@ -15,10 +13,10 @@ import wisoft.pack.models.PackFolder;
 import wisoft.pack.models.PackFolderModel;
 import wisoft.pack.models.PackInfoModel;
 
-public class Navinfo {
+public class Navinfo1 {
 	private static final String BUNDLE_NAME = "wisoft.pack.utils.navinfo"; //$NON-NLS-1$
 	private static final ResourceBundle RESOURCE_BUNDLE = ResourceBundle.getBundle(BUNDLE_NAME);
-	public static Navinfo nav = null;
+	public static Navinfo1 nav = null;
 	public static XmlOperator xmlo = null;
 	
 	public static String Operate_Pack = "pack";
@@ -26,11 +24,11 @@ public class Navinfo {
 
 	
 	@SuppressWarnings("static-access")
-	public static synchronized Navinfo getInstance() {
+	public static synchronized Navinfo1 getInstance() {
 	  if (nav == null)
-		  nav = new Navinfo();
-	  nav.xmlo = new XmlOperator(Navinfo.getFileName());
-	  nav.xmlo.initXml(Navinfo.getRootName());
+		  nav = new Navinfo1();
+	  nav.xmlo = new XmlOperator(Navinfo1.getFileName());
+	  nav.xmlo.initXml(Navinfo1.getRootName());
 	  return nav;
 	 }
 	public static String getFileName()
@@ -105,9 +103,9 @@ public class Navinfo {
 			else if(model.getChildren().get(i) instanceof PackInfoModel)
 			{
 				PackInfoModel pm = (PackInfoModel)model.getChildren().get(i);
-				Element packxml =xmlo.addElementInElement(parent,Navinfo.getPackName(), Navinfo.getAttriPackName(), pm.getName());
-				if(!xmlo.isEqualByAttribute(packxml, Navinfo.getAttriPackPath(), pm.getSavePath()))
-				packxml.addAttribute(Navinfo.getAttriPackPath(), pm.getSavePath());
+				Element packxml =xmlo.addElementInElement(parent,Navinfo1.getPackName(), Navinfo1.getAttriPackName(), pm.getName());
+				if(!xmlo.isEqualByAttribute(packxml, Navinfo1.getAttriPackPath(), pm.getSavePath()))
+				packxml.addAttribute(Navinfo1.getAttriPackPath(), pm.getSavePath());
 			}
 		}
 		return parent;
@@ -116,13 +114,13 @@ public class Navinfo {
 	{
 		Element root =xmlo.getRootElement();
 		if(root==null)
-			xmlo.initXml(Navinfo.getRootName());
+			xmlo.initXml(Navinfo1.getRootName());
 		selOperate();
 		
 		
 		
 		
-		Element rootPackElement =xmlo.addElementInRoot(Navinfo.getPackFolder(), Navinfo.getAttriFolderName(), PackFolder.DEFALUT.getFoldername());
+		Element rootPackElement =xmlo.addElementInRoot(Navinfo1.getPackFolder(), Navinfo1.getAttriFolderName(), PackFolder.DEFALUT.getFoldername());
 		rootPackElement.clearContent();
 		saveRecursion(rootPackElement,packroot);
 		xmlo.save();
@@ -140,7 +138,7 @@ public class Navinfo {
 		if(setedOperate())
 		{
 			String txt =xmlo.OnlyElementInRoot(getOperate()).getText();
-			if(Navinfo.Operate_Pack.equals(txt))
+			if(Navinfo1.Operate_Pack.equals(txt))
 				return true;
 			else
 				return false;
@@ -149,12 +147,11 @@ public class Navinfo {
 		{
 			boolean isOperate =MessageDialog.openConfirm(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), "请选择你使用工具的方式", "确定为使用打包方式，取消为使用更新方式。")	;
 			Element operate =xmlo.OnlyElementInRoot(getOperate());
-			operate.setText(isOperate?Navinfo.Operate_Pack:Navinfo.Operate_UnPack);
+			operate.setText(isOperate?Navinfo1.Operate_Pack:Navinfo1.Operate_UnPack);
 			xmlo.save();
 			return isOperate;
 		}
 	}
-	
 	
 	
 	public static boolean exists()
@@ -172,14 +169,14 @@ public class Navinfo {
 		for (Iterator i = element.elementIterator(); i.hasNext();) {
 			Element zmodel = (Element) i.next();
 			
-			if(Navinfo.getPackName().equals(zmodel.getName()))
+			if(Navinfo1.getPackName().equals(zmodel.getName()))
 			{
-				String name = zmodel.attributeValue(Navinfo.getAttriPackName());
-    			String path = zmodel.attributeValue(Navinfo.getAttriPackPath());
+				String name = zmodel.attributeValue(Navinfo1.getAttriPackName());
+    			String path = zmodel.attributeValue(Navinfo1.getAttriPackPath());
     			PackInfoModel  zpack = new PackInfoModel(name,path);
     			rootModel.addChild(zpack);
 			}
-			else if(Navinfo.getPackFolder().equals(zmodel.getName()))
+			else if(Navinfo1.getPackFolder().equals(zmodel.getName()))
 			{
 				String foldername = zmodel.attributeValue(getAttriFolderName());
 	        	PackFolder pf = PackFolder.getFolder(foldername);
@@ -207,8 +204,8 @@ public class Navinfo {
 		}
 		
         Element root = xmlo.getRootElement();
-        if(root.element(Navinfo.getPackFolder())!=null)
-        	readRecursion(root.element(Navinfo.getPackFolder()),pfm);
+        if(root.element(Navinfo1.getPackFolder())!=null)
+        	readRecursion(root.element(Navinfo1.getPackFolder()),pfm);
 		}
 		catch (Exception e) { 
 			e.printStackTrace();

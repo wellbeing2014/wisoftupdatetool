@@ -11,7 +11,6 @@ import org.osgi.framework.BundleContext;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
-import wisoft.pack.data.mapper.PersonMapper;
 import wisoft.pack.models.PackInfoModel;
 
 /**
@@ -64,7 +63,6 @@ public class Activator extends AbstractUIPlugin {
 	 */
 	public Activator() {
 		this.context = new ClassPathXmlApplicationContext( "wisoft/pack/data/conf_spring.xml" );
-		System.out.println("难道这就是mybatis "+((PersonMapper)getSpringBean("personMapper")).selectPerson(1).getName());
 	}
 
 	public Object getSpringBean(String beanname)
