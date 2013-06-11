@@ -26,6 +26,7 @@ import org.eclipse.ui.part.DrillDownAdapter;
 import org.eclipse.ui.part.ViewPart;
 
 import wisoft.pack.app.Activator;
+import wisoft.pack.data.dao.NavigatorData;
 import wisoft.pack.edits.PackInfoEditor;
 import wisoft.pack.edits.PackInfoInput;
 import wisoft.pack.interfaces.IPackNavigation;
@@ -35,7 +36,6 @@ import wisoft.pack.models.PackFolderModel;
 import wisoft.pack.models.PackInfoContentProvider;
 import wisoft.pack.models.PackInfoLabelProvider;
 import wisoft.pack.models.PackInfoModel;
-import wisoft.pack.utils.Navinfo;
 
 public class UnPackNavigation extends ViewPart implements IPackNavigation {
 
@@ -214,16 +214,19 @@ public class UnPackNavigation extends ViewPart implements IPackNavigation {
 	
 	private void readNavInfo()
 	{
-		this.root =Navinfo.getInstance().readPackNavInfo();
-		this.root.getChildFolder(PackFolder.UNUPDATE, true);
-		this.root.getChildFolder(PackFolder.UPDATED, true);
-		this.root.getChildFolder(PackFolder.ARCHIVED, true);
+//		this.root =Navinfo.getInstance().readPackNavInfo();
+//		this.root.getChildFolder(PackFolder.UNUPDATE, true);
+//		this.root.getChildFolder(PackFolder.UPDATED, true);
+//		this.root.getChildFolder(PackFolder.ARCHIVED, true);
+//		this.viewer.setInput(root);
+//		this.viewer.refresh();
+		this.root =NavigatorData.getUnPackInput();
 		this.viewer.setInput(root);
 		this.viewer.refresh();
 	}
 	public void SaveNavInfo()
 	{
-		Navinfo.getInstance().SaveNavInfo(this.root);
+//		Navinfo.getInstance().SaveNavInfo(this.root);
 	}
 	
 	public PackInfoModel[] getSelectPackInfo()
