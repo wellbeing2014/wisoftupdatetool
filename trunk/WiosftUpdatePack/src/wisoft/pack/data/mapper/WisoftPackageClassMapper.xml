@@ -76,13 +76,26 @@
     </trim>
   </insert>
   
-  <resultMap type="wisoft.pack.data.dao.PackageAndClass" id="uClassAndPacks">
-  	<association property="calssinfo" column="package_class_id" select="selectClassById"></association>
+  <resultMap type="wisoft.pack.data.dao.PackageClassInfo" id="uClassAndPacks">
+  	<association property="info" column="id" select="selectClassInfoById"></association>
+  	<association property="parent" column="parent_id" select="selectClassById"></association>
+  	<collection property="children" column="id" ofType="PackageClassInfo" javaType="java.util.ArrayList"  select="selectClassByParentId"></collection>
+  	<collection property="upackages" column="id" ofType="wisoft.pack.data.pojo.UnpackPackages" javaType="java.util.ArrayList"  select="wisoft.pack.data.mapper.UnpackPackagesMapper.selectUPakageByClassId"></collection>
   </resultMap>
-  <select id="selectUnPackClassAndPackages" resultMap="uClassAndPacks">
+
+  
+  <select id="selectUnPackClassWithPack" resultMap="uClassAndPacks" >
+  	select * from WISOFT_PACKAGE_CLASS where class_type=0
+  </select>
+  <select id="selectClassInfoById" parameterType="String" resultMap="BaseResultMap" >
+	select * from WISOFT_PACKAGE_CLASS where id=#{id}  	
   </select>
   
-  <select id="selectClassById" parameterType="int" resultType="wisoft.pack.data.pojo.WisoftPackageClass" >
+  <select id="selectClassById" parameterType="String" resultMap="uClassAndPacks" >
 	select * from WISOFT_PACKAGE_CLASS where id=#{id}  	
+  </select>
+  
+  <select id="selectClassByParentId" parameterType="String" resultMap="uClassAndPacks" >
+	select * from WISOFT_PACKAGE_CLASS where parent_id=#{parent_id}  	
   </select>
 </mapper>

@@ -1,5 +1,8 @@
 package wisoft.pack.data.mapper;
 
+import java.util.List;
+
+import wisoft.pack.data.dao.PackageClassInfo;
 import wisoft.pack.data.pojo.WisoftPackageClass;
 
 public interface WisoftPackageClassMapper {
@@ -16,5 +19,10 @@ public interface WisoftPackageClassMapper {
 	 */
 	int insertSelective(WisoftPackageClass record);
 	
-	WisoftPackageClass selectUnPackClass();
+	List<PackageClassInfo> selectUnPackClassWithPack();
+	
+	WisoftPackageClass selectClassInfoById(String id);
+	
+	PackageClassInfo selectClassById(String id);
+	List<PackageClassInfo> selectClassByParentId(String parent_id);
 }

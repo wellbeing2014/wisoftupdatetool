@@ -15,4 +15,6 @@ public interface UnpackPackagesMapper {
 	 * @mbggenerated  Sun Jun 09 13:16:06 CST 2013
 	 */
 	int insertSelective(UnpackPackages record);
+	
+	UnpackPackages selectUPakageByClassId(String parent_class_id);
 }

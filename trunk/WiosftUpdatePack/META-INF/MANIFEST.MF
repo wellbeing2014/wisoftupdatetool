@@ -34,4 +34,5 @@ Bundle-ClassPath: .,
  jars/spring-core-3.2.3.RELEASE.jar,
  jars/spring-expression-3.2.3.RELEASE.jar,
  jars/spring-jdbc-3.2.3.RELEASE.jar,
- jars/spring-tx-3.2.3.RELEASE.jar
+ jars/spring-tx-3.2.3.RELEASE.jar,
+ jars/log4j-1.2.17.jar

@@ -1,5 +1,6 @@
 package wisoft.pack.data.mapper;
 
+import wisoft.pack.data.pojo.UnpackPackages;
 import wisoft.pack.data.pojo.UnpackServerDb;
 
 public interface UnpackServerDbMapper {
@@ -15,4 +16,6 @@ public interface UnpackServerDbMapper {
 	 * @mbggenerated  Sun Jun 09 13:16:06 CST 2013
 	 */
 	int insertSelective(UnpackServerDb record);
+	
+	
 }

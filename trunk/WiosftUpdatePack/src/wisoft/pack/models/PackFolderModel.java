@@ -1,39 +1,28 @@
 package wisoft.pack.models;
 
+import wisoft.pack.data.pojo.WisoftPackageClass;
+
 public class PackFolderModel extends Model {
 	
-	private PackFolder FolderType = PackFolder.DEFALUT;
-	public PackFolder getFolderType() {
-		return FolderType;
+	
+	private WisoftPackageClass classinfo;
+
+	public WisoftPackageClass getClassinfo() {
+		return classinfo;
 	}
-	public void setFolderType(PackFolder folderType) {
-		FolderType = folderType;
+
+	public void setClassinfo(WisoftPackageClass classinfo) {
+		this.classinfo = classinfo;
+		this.name = classinfo.getClassName();
 	}
-	public PackFolderModel(Model parent,PackFolder name)
-	{
-		this.parent = parent;
-		this.setFolderType(name);
-		this.setName(name.getFoldername());
-	}
-	public PackFolderModel getChildFolder(PackFolder folder,boolean force)
-	{
-		for(Model model :this.getChildren())
-		{
-			if((model instanceof PackFolderModel)  )
-			{
-				PackFolder pf =((PackFolderModel) model).getFolderType();
-				if(pf.equals(folder))
-				return (PackFolderModel)model;
-			}
-		}
-		if(force)
-		{
-			PackFolderModel zpf =new PackFolderModel(this,folder);
-			this.addChild(zpf);
-			return zpf;
-		}
-		else
-			return null;
+	
+	
+	public PackFolderModel(Model parent,WisoftPackageClass classinfo) {
+		// TODO Auto-generated constructor stub
+		if(parent!=null)
+			setParent(parent);
+		if(classinfo!=null)
+			setClassinfo(classinfo);
 	}
 }
 
