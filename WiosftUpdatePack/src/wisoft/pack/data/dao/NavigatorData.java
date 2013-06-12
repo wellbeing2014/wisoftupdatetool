@@ -22,7 +22,7 @@ public class NavigatorData {
 		for(PackageClassInfo upi : unpacklist)
 		{
 			WisoftPackageClass wpc =upi.getInfo();
-			
+			pfm.addChild(new PackFolderModel(pfm, classinfo))
 		}
 		return pfm;
 	}

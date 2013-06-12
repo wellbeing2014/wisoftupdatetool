@@ -7,6 +7,7 @@ import java.util.List;
 import org.dom4j.Element;
 import org.eclipse.ui.IEditorInput;
 
+import wisoft.pack.data.pojo.UnpackPackages;
 import wisoft.pack.utils.UpdateInfo;
 import wisoft.pack.utils.XmlOperator;
 
@@ -25,8 +26,17 @@ public class PackInfoModel extends Model {
 	public XmlOperator getXmlo() {
 		return xmlo;
 	}
+	
+	private UnpackPackages packageinfo;
 
 	
+	public UnpackPackages getPackageinfo() {
+		return packageinfo;
+	}
+	public void setPackageinfo(UnpackPackages packageinfo) {
+		this.packageinfo = packageinfo;
+	}
+
 	private String savePath="";
 	public String getSavePath() {
 		return savePath;
