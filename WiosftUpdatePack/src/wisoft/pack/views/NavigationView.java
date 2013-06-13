@@ -6,6 +6,7 @@ import java.util.List;
 import org.eclipse.jface.action.ActionContributionItem;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.IContributionItem;
+import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.viewers.DoubleClickEvent;
 import org.eclipse.jface.viewers.IDoubleClickListener;
@@ -23,25 +24,29 @@ import org.eclipse.ui.IViewPart;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.console.IConsoleConstants;
+import org.eclipse.ui.part.DrillDownAdapter;
 import org.eclipse.ui.part.ViewPart;
 
+import wisoft.pack.actions.OpenNewPackDialogAction;
 import wisoft.pack.app.Activator;
 import wisoft.pack.data.dao.NavigatorData;
+import wisoft.pack.data.pojo.WisoftPackageClass;
 import wisoft.pack.edits.PackInfoEditor;
 import wisoft.pack.edits.PackInfoInput;
 import wisoft.pack.interfaces.IPackNavigation;
 import wisoft.pack.models.Model;
-import wisoft.pack.models.PackFolder;
 import wisoft.pack.models.PackFolderModel;
 import wisoft.pack.models.PackInfoContentProvider;
 import wisoft.pack.models.PackInfoLabelProvider;
 import wisoft.pack.models.PackInfoModel;
 import wisoft.pack.utils.FileUtil;
-import wisoft.pack.utils.Navinfo1;
 
 
 
 public class NavigationView extends ViewPart implements IPackNavigation {
+	
+	
+	protected OpenNewPackDialogAction addNewPack;
 	public NavigationView() {
 	}
 	public static final String ID = "WiosftUpdatePack.navigationView";
@@ -54,10 +59,55 @@ public class NavigationView extends ViewPart implements IPackNavigation {
      * code, you will connect to a real model and expose its hierarchy.
      */
     private Model createDummyModel() {
-         root =new PackFolderModel(null,PackFolder.DEFALUT);
+         root =new PackFolderModel(null,new WisoftPackageClass());
         return root;
     }
 
+    
+    /**
+	 * Initialize the toolbar.
+	 */
+	private void initializeToolBar() {
+		IToolBarManager toolbarManager = getViewSite().getActionBars()
+				.getToolBarManager();
+		
+		toolbarManager.add(addNewPack);
+	}
+
+	/**
+	 * Initialize the menu.
+	 */
+	private void initializeMenu() {
+		IMenuManager menuManager = getViewSite().getActionBars()
+				.getMenuManager();
+	}
+	
+	private void setViewToolBar() {
+	    // IActionBars:Used by a part to access its menu, toolbar, and
+	    // status line managers.
+	    IActionBars bars = getViewSite().getActionBars();
+	    // 定义工具栏
+	    IToolBarManager toolBarManager = bars.getToolBarManager();
+	    // 定义下拉菜单栏
+	    IMenuManager menuManager = bars.getMenuManager();
+	    // DrillDownAdapter:Implements a simple web style navigation
+	    // metaphor for a TreeViewer. Home, back,
+	    // and "drill into" functions are supported for the viewer,
+	    DrillDownAdapter drillDownAdapter = new DrillDownAdapter(viewer);
+	    // 为工具栏添加“goHome”，“goBack”，“goInto”操作
+	    drillDownAdapter.addNavigationActions(menuManager);
+	    // 为菜单栏添加“goHome”，“goBack”，“goInto”操作
+	    drillDownAdapter.addNavigationActions(toolBarManager);
+	}
+	
+	/**
+	 * Create the actions.
+	 */
+	private void createActions() {
+		// Create the actions
+		addNewPack = new OpenNewPackDialogAction(this.getSite().getWorkbenchWindow(), "新增一个更新包");
+	}
+	
 	/**
      * This is a callback that will allow us to create the viewer and initialize
      * it.
@@ -67,6 +117,12 @@ public class NavigationView extends ViewPart implements IPackNavigation {
 		viewer.setContentProvider(new PackInfoContentProvider());
 		viewer.setLabelProvider(new PackInfoLabelProvider());
 		viewer.setInput(createDummyModel());
+		
+		setViewToolBar();
+		
+		createActions();
+		initializeToolBar();
+		initializeMenu();
 		readNavInfo();
 		//System.out.println(dir.getAbsolutePath());
 		hookDoubleClickAction();
@@ -166,7 +222,7 @@ public class NavigationView extends ViewPart implements IPackNavigation {
 					{
 						packinfo.setEditInput(new PackInfoInput(packinfo));
 					}
-					packinfo.readFromXML();
+					packinfo.readFromXML(packinfo.getSavePath());
 //				packinfo.saveIntoXML();
 					editorPart = workbenchPage.findEditor(packinfo.getEditInput());
 					if(editorPart!=null)
@@ -207,7 +263,7 @@ public class NavigationView extends ViewPart implements IPackNavigation {
 	
 	private void readNavInfo()
 	{
-		this.root =NavigatorData.getUnPackInput();
+		this.root =NavigatorData.getPackInput();
 		this.viewer.setInput(root);
 		this.viewer.refresh();
 	}

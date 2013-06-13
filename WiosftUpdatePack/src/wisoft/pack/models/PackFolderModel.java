@@ -2,15 +2,18 @@ package wisoft.pack.models;
 
 import java.util.List;
 
+import wisoft.pack.data.pojo.PackageInfo;
 import wisoft.pack.data.pojo.UnpackPackages;
 import wisoft.pack.data.pojo.WisoftPackageClass;
 
 public class PackFolderModel extends Model {
 	
-	
+	public PackFolderModel() {
+		// TODO Auto-generated constructor stub
+	}
 	private WisoftPackageClass classinfo;
 	private List<PackFolderModel> packfloderchildren;
-	
+	private List<PackageInfo> upackages;
 	
 	public List<PackFolderModel> getPackfloderchildren() {
 		return packfloderchildren;
@@ -18,18 +21,24 @@ public class PackFolderModel extends Model {
 
 	public void setPackfloderchildren(List<PackFolderModel> packfloderchildren) {
 		this.packfloderchildren = packfloderchildren;
+		for(PackFolderModel pfm :packfloderchildren)
+		{
+			this.addChild(pfm);
+		}
 	}
 
-	public List<UnpackPackages> getUpackages() {
+	public List<PackageInfo> getUpackages() {
 		return upackages;
 	}
 
-	public void setUpackages(List<UnpackPackages> upackages) {
+	public void setUpackages(List<PackageInfo> upackages) {
 		this.upackages = upackages;
+		for(PackageInfo upg :upackages)
+		{
+			this.addChild(new PackInfoModel(upg));
+		}
 	}
 
-
-	private List<UnpackPackages> upackages;
 
 	public WisoftPackageClass getClassinfo() {
 		return classinfo;

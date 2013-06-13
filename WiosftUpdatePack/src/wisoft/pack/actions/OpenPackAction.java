@@ -68,8 +68,8 @@ public class OpenPackAction extends Action {
 		}
 		UnPackNavigation nv = (UnPackNavigation)window.getActivePage().findView(UnPackNavigation.ID);
 		PackInfoModel pim = new PackInfoModel();
-		pim.setSavePath(destFolder);
-		pim.readFromXML();
+		//pim.setSavePath(destFolder);
+		pim.readFromXML(destFolder);
 		pim.setName(pim.getModuleName()+"("+pim.getModuleCode()+")"+pim.getVersion());
 		nv.addUnUpdatePackInfo(pim);
 	}

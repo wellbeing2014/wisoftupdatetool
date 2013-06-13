@@ -6,8 +6,6 @@ import wisoft.pack.app.Activator;
 import wisoft.pack.data.mapper.PackPackagesMapper;
 import wisoft.pack.data.mapper.UnpackPackagesMapper;
 import wisoft.pack.data.mapper.WisoftPackageClassMapper;
-import wisoft.pack.data.pojo.WisoftPackageClass;
-import wisoft.pack.models.PackFolder;
 import wisoft.pack.models.PackFolderModel;
 
 public class NavigatorData {
@@ -18,11 +16,21 @@ public class NavigatorData {
 	public static PackFolderModel getUnPackInput()
 	{
 		PackFolderModel pfm = new PackFolderModel(null,null);
-		List<PackageClassInfo> unpacklist= packageclass.selectUnPackClassWithPack();
-		for(PackageClassInfo upi : unpacklist)
+		List<PackFolderModel> unpacklist= packageclass.selectUnPackClassWithPack();
+		for(PackFolderModel zpfm:unpacklist)
 		{
-			WisoftPackageClass wpc =upi.getInfo();
-			pfm.addChild(new PackFolderModel(pfm, classinfo))
+			pfm.addChild(zpfm);
+		}
+		return pfm;
+	}
+	
+	public static PackFolderModel getPackInput()
+	{
+		PackFolderModel pfm = new PackFolderModel(null,null);
+		List<PackFolderModel> unpacklist= packageclass.selectPackClassWithPack();
+		for(PackFolderModel zpfm:unpacklist)
+		{
+			pfm.addChild(zpfm);
 		}
 		return pfm;
 	}

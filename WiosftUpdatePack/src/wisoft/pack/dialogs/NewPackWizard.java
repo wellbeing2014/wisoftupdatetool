@@ -13,6 +13,8 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.MessageBox;
 
+import wisoft.pack.data.pojo.PackPackages;
+import wisoft.pack.data.pojo.PackageInfo;
 import wisoft.pack.models.PackInfoModel;
 import wisoft.pack.utils.UpdateInfo;
 import wisoft.pack.views.Console;
@@ -40,6 +42,7 @@ public class NewPackWizard extends Wizard {
 
 	@Override
 	public boolean performFinish() {
+		PackPackages packinfo = new PackPackages();
 		String savePath1 = this.page1.text_2.getText().trim();
 		final String ModuleName = this.page1.combo.getText().trim();
 		final String ModuleCode = this.page1.text.getText().trim();
@@ -51,6 +54,14 @@ public class NewPackWizard extends Wizard {
 		final String packname = ModuleName+"("+ModuleCode+")"+version;
 		File savpathdir = new File(savePath1.substring(0, savePath1.lastIndexOf("/"))); 
 		final String savePath = savePath1;
+		packinfo.setPackageName(packname);
+		packinfo.setModuleName(ModuleName);
+		packinfo.setModuleCode(ModuleCode);
+		packinfo.setModuleVer(version);
+		packinfo.setPackPerson(createMan);
+		packinfo.setState(0);
+		packinfo.setSavePath(savePath);
+		
 		if(!savpathdir.exists())
 		{
 			MessageBox mb = new MessageBox(this.getShell(),SWT.ERROR);
@@ -60,7 +71,7 @@ public class NewPackWizard extends Wizard {
 			return false;
 		}
 			
-		final PackInfoModel pack  = new PackInfoModel(packname,savePath);
+		final PackInfoModel pack  = new PackInfoModel(packinfo);
 		Console.getInstance().print("创建更新包开始……", packname, Console.ConsoleType.INFO);	
 		
 		Job job = new Job("创建更新包") {
@@ -91,7 +102,7 @@ public class NewPackWizard extends Wizard {
 			        monitor.worked(1);
 			        monitor.setTaskName("建立更新包……");
 			        Thread.sleep(1000);
-					pack.setSavePath(savePath);
+					//pack.setSavePath(savePath);
 					pack.setModuleCode(ModuleCode);
 					pack.setModuleName(ModuleName);
 					pack.setVersion(version);
