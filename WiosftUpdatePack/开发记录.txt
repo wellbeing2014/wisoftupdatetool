@@ -25,3 +25,15 @@ http://jamesblog.iteye.com/blog/127208
 ^^^^^^^^
 为了学习 mybatis和hibernate 区别，把hibernate 改成mybatis。
 暂时不能解决的问题是 如何将数据库地址 相对化。可能要从inputsteam里面修改。
+
+
+2013-6-10
+spring+mybatis+access基本搞完
+
+2013-6-13
+去掉用来记录导航信息的navinfo.xml，换作数据库读写。
+mybatis有一个好处是，可以组装数据，可以直接 通过查询，递归生成要查询的树。
+我的导航树，直接用PackFolderModel生成。
+扩展两个导航树，使其能够增加删除节点，移动节点。整个工作希望在2个工作日内完成。
+
+
