@@ -22,7 +22,7 @@
    <extension
          point="org.eclipse.ui.views">
       <view
-            name="MyPackInfoTree"
+            name="更新包列表"
             allowMultiple="true"
             class="wisoft.pack.views.NavigationView"
             id="WiosftUpdatePack.navigationView">

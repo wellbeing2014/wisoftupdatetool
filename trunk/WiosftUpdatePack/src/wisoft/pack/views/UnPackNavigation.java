@@ -27,6 +27,7 @@ import org.eclipse.ui.part.ViewPart;
 
 import wisoft.pack.app.Activator;
 import wisoft.pack.data.dao.NavigatorData;
+import wisoft.pack.data.pojo.WisoftPackageClass;
 import wisoft.pack.edits.PackInfoEditor;
 import wisoft.pack.edits.PackInfoInput;
 import wisoft.pack.interfaces.IPackNavigation;
@@ -96,7 +97,7 @@ public class UnPackNavigation extends ViewPart implements IPackNavigation {
 
 	
 	private Model createDummyModel() {
-		root =new PackFolderModel(null,PackFolder.DEFALUT);
+		root =new PackFolderModel(null,new WisoftPackageClass());
 
 	    return root;
 	}
@@ -166,7 +167,7 @@ public class UnPackNavigation extends ViewPart implements IPackNavigation {
 					{
 						packinfo.setEditInput(new PackInfoInput(packinfo));
 					}
-					packinfo.readFromXML();
+					packinfo.readFromXML(packinfo.getSavePath());
 //				packinfo.saveIntoXML();
 					editorPart = workbenchPage.findEditor(packinfo.getEditInput());
 					if(editorPart!=null)
@@ -206,7 +207,7 @@ public class UnPackNavigation extends ViewPart implements IPackNavigation {
 	
 	public void addUnUpdatePackInfo(PackInfoModel pack)
 	{
-		this.root.getChildFolder(PackFolder.UNUPDATE, true).addChild(pack);
+		this.root.addChild(pack);
 		this.viewer.refresh();
 	}
 	

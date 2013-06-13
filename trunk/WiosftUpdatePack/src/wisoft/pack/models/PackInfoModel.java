@@ -7,18 +7,13 @@ import java.util.List;
 import org.dom4j.Element;
 import org.eclipse.ui.IEditorInput;
 
-import wisoft.pack.data.pojo.UnpackPackages;
+import wisoft.pack.data.pojo.PackageInfo;
 import wisoft.pack.utils.UpdateInfo;
 import wisoft.pack.utils.XmlOperator;
 
 import com.wisoft.wims.WimsSingleIssueTracking;
 
 public class PackInfoModel extends Model {
-	
-//	protected PackInfoOfOverview overview = new PackInfoOfOverview(this);
-//	protected PackInfoOfSelectFiles selectFiles = new PackInfoOfSelectFiles(this);
-//	protected PackInfoOfEditConfs editConfs =new PackInfoOfEditConfs(this);
-//	protected PackInfoOfEditSql editSql = new PackInfoOfEditSql(this);
 	
 	private  IEditorInput editInput;
 	private XmlOperator xmlo = new XmlOperator();
@@ -27,27 +22,21 @@ public class PackInfoModel extends Model {
 		return xmlo;
 	}
 	
-	private UnpackPackages packageinfo;
+	private PackageInfo packageinfo;
 
 	
-	public UnpackPackages getPackageinfo() {
+	public PackageInfo getPackageinfo() {
 		return packageinfo;
 	}
-	public void setPackageinfo(UnpackPackages packageinfo) {
+	public void setPackageinfo(PackageInfo packageinfo) {
 		this.packageinfo = packageinfo;
 	}
-
-	private String savePath="";
-	public String getSavePath() {
-		return savePath;
-	}
-	public void setSavePath(String savePath) {
-		this.savePath = savePath;
-	}
 	
-//	private String moduleName="";
-//	private String moduleCode="";
-//	private String version ="";
+	
+	public String getSavePath()
+	{
+		return this.packageinfo.getSavePath();
+	}
 	@Override
 	public String getName()
 	{
@@ -277,15 +266,11 @@ public class PackInfoModel extends Model {
 //		return overview;
 //	}
 	
-	public PackInfoModel(String name,String path)
+	public PackInfoModel(PackageInfo pageinfo)
 	{
-		this.name =name;
-//		this.addChild(overview);
-//		this.addChild(selectFiles);
-//		this.addChild(editConfs);
-//		this.addChild(editSql);
-		setSavePath(path);
-		readFromXML();
+		this.packageinfo = pageinfo;
+		this.name =pageinfo.getPackageName();
+		readFromXML(this.packageinfo.getSavePath());
 	}
 	
 	public PackInfoModel()
@@ -300,18 +285,15 @@ public class PackInfoModel extends Model {
 	public PackInfoModel(String name)
 	{
 		this.name =name;
-//		this.addChild(overview);
-//		this.addChild(selectFiles);
-//		this.addChild(editConfs);
-//		this.addChild(editSql);
+
 	}
 	
 	public void saveIntoXML()
 	{
 		//创建文件夹
-		File dir = new File(savePath);
+		File dir = new File(this.packageinfo.getSavePath());
 		dir.mkdirs();
-		xmlo.setXmlfile(new File(savePath+"/"+UpdateInfo.FileName));
+		xmlo.setXmlfile(new File(this.packageinfo.getSavePath()+"/"+UpdateInfo.FileName));
 		xmlo.initXml("root");
 		
 		Element scope =xmlo.OnlyElementInRoot(UpdateInfo.Scope);
@@ -323,12 +305,12 @@ public class PackInfoModel extends Model {
 		xmlo.save();
 	}
 	
-	public void readFromXML()
+	public void readFromXML(String savepath)
 	{
 		//创建文件夹
-		File dir = new File(savePath);
+		File dir = new File(savepath);
 		dir.mkdirs();
-		xmlo.setXmlfile(new File(savePath+"/"+UpdateInfo.FileName));
+		xmlo.setXmlfile(new File(savepath+"/"+UpdateInfo.FileName));
 		xmlo.initXml("root");
 	}
 	
