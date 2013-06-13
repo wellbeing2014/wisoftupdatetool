@@ -28,6 +28,7 @@ http://jamesblog.iteye.com/blog/127208
 
 
 2013-6-10
+数据库地址 相对化的问题，用继承了DataSource类然后通过spring 注入进sqlsession了。
 spring+mybatis+access基本搞完
 
 2013-6-13
