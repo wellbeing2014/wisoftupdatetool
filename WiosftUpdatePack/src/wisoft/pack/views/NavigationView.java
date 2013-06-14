@@ -3,11 +3,13 @@ package wisoft.pack.views;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.ActionContributionItem;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.IContributionItem;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.IToolBarManager;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.DoubleClickEvent;
 import org.eclipse.jface.viewers.IDoubleClickListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -27,10 +29,10 @@ import org.eclipse.ui.console.IConsoleConstants;
 import org.eclipse.ui.part.DrillDownAdapter;
 import org.eclipse.ui.part.ViewPart;
 
-import wisoft.pack.actions.OpenNewPackDialogAction;
 import wisoft.pack.app.Activator;
 import wisoft.pack.data.dao.NavigatorData;
 import wisoft.pack.data.pojo.WisoftPackageClass;
+import wisoft.pack.dialogs.AddPackClassDialog;
 import wisoft.pack.edits.PackInfoEditor;
 import wisoft.pack.edits.PackInfoInput;
 import wisoft.pack.interfaces.IPackNavigation;
@@ -46,7 +48,7 @@ import wisoft.pack.utils.FileUtil;
 public class NavigationView extends ViewPart implements IPackNavigation {
 	
 	
-	protected OpenNewPackDialogAction addNewPack;
+	protected IAction addNewPackClass;
 	public NavigationView() {
 	}
 	public static final String ID = "WiosftUpdatePack.navigationView";
@@ -71,7 +73,7 @@ public class NavigationView extends ViewPart implements IPackNavigation {
 		IToolBarManager toolbarManager = getViewSite().getActionBars()
 				.getToolBarManager();
 		
-		toolbarManager.add(addNewPack);
+		toolbarManager.add(addNewPackClass);
 	}
 
 	/**
@@ -105,8 +107,29 @@ public class NavigationView extends ViewPart implements IPackNavigation {
 	 */
 	private void createActions() {
 		// Create the actions
-		addNewPack = new OpenNewPackDialogAction(this.getSite().getWorkbenchWindow(), "新增一个更新包");
+		addNewPackClass = new Action("添加分类"){
+			public void run() {
+				AddPackClass();
+			};
+		};
+		addNewPackClass.setImageDescriptor(Activator.getImageDescriptor("/icons/add.gif"));
 	}
+	
+	private void AddPackClass()
+	{
+		IStructuredSelection selection = (IStructuredSelection) viewer.getSelection();
+		if(selection!=null&&selection.getFirstElement()!=null)
+		{
+			if(selection.getFirstElement() instanceof PackFolderModel)
+			{
+				PackFolderModel parent = (PackFolderModel)selection.getFirstElement();
+				
+				AddPackClassDialog acd = new AddPackClassDialog(this.getSite().getShell(), parent.getPath());
+				acd.open();
+			}
+		}
+	}
+	
 	
 	/**
      * This is a callback that will allow us to create the viewer and initialize

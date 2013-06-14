@@ -44,4 +44,19 @@ public abstract class Model {
 		this.children.remove(child);
 	}
 	
+	private String getPath(Model model,String myname)
+	{
+		myname = "/"+myname;
+		if(model.getParent()!=null&&model.getParent().getName()!=null)
+		{
+			myname = model.getParent().getName()+myname;
+			myname = getPath(model.getParent(),myname);
+		}
+		return myname;
+	}
+	
+	public String getPath()
+	{
+		return getPath(this,getName());
+	}
 }
