@@ -9,6 +9,7 @@ import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.IContributionItem;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.IToolBarManager;
+import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.DoubleClickEvent;
 import org.eclipse.jface.viewers.IDoubleClickListener;
@@ -125,7 +126,17 @@ public class NavigationView extends ViewPart implements IPackNavigation {
 				PackFolderModel parent = (PackFolderModel)selection.getFirstElement();
 				
 				AddPackClassDialog acd = new AddPackClassDialog(this.getSite().getShell(), parent.getPath());
-				acd.open();
+				int i=acd.open();
+				if(IDialogConstants.OK_ID==i)
+				{
+					WisoftPackageClass wpc = new WisoftPackageClass();
+					wpc.setClassName(acd.classname);
+					wpc.setIsdefault(0);
+					wpc.setParentId(parent.getClassinfo().getId());
+					wpc.setOrderNo("0");
+					wpc.setClassType(1);
+					NavigatorData.
+				}
 			}
 		}
 	}
