@@ -34,5 +34,10 @@ public class NavigatorData {
 		}
 		return pfm;
 	}
+	
+	public static boolean insertpackageclass(WisoftPackageClass wpc)
+	{
+		packageclass.insert(wpc);
+	}
 
 }

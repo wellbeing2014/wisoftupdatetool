@@ -17,7 +17,7 @@ import org.eclipse.swt.events.SelectionEvent;
 
 public class AddPackClassDialog extends Dialog {
 	private String classpath;
-	private String classname;
+	public String classname;
 	private boolean isedit;
 	private Text text;
 	private Text text_1;
@@ -50,6 +50,13 @@ public class AddPackClassDialog extends Dialog {
 		// TODO Auto-generated method stub
 		super.configureShell(newShell);
 		newShell.setText("Ìí¼ÓÄ¿Â¼");
+	}
+	
+	@Override
+	protected void okPressed() {
+		// TODO Auto-generated method stub
+		classname =this.text_1.getText().trim();
+		super.okPressed();
 	}
 	
 	/**
