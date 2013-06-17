@@ -20,4 +20,6 @@ public interface UnpackPackagesMapper {
     int insertSelective(UnpackPackages record);
     
     UnpackPackages selectUPakageByClassId(String parent_class_id);
+    
+    int deleteUpackageByClassId(String classid);
 }

@@ -32,6 +32,7 @@ import org.eclipse.ui.part.ViewPart;
 
 import wisoft.pack.app.Activator;
 import wisoft.pack.data.dao.NavigatorData;
+import wisoft.pack.data.dao.UUIDGenerator;
 import wisoft.pack.data.pojo.WisoftPackageClass;
 import wisoft.pack.dialogs.AddPackClassDialog;
 import wisoft.pack.edits.PackInfoEditor;
@@ -50,6 +51,7 @@ public class NavigationView extends ViewPart implements IPackNavigation {
 	
 	
 	protected IAction addNewPackClass;
+	protected IAction removeNewPackClass;
 	public NavigationView() {
 	}
 	public static final String ID = "WiosftUpdatePack.navigationView";
@@ -114,6 +116,12 @@ public class NavigationView extends ViewPart implements IPackNavigation {
 			};
 		};
 		addNewPackClass.setImageDescriptor(Activator.getImageDescriptor("/icons/add.gif"));
+		removeNewPackClass = new Action("删除分类"){
+			public void run() {
+				RemovePackClass();
+			};
+		};
+		removeNewPackClass.setImageDescriptor(Activator.getImageDescriptor("/icons/del.png"));
 	}
 	
 	private void AddPackClass()
@@ -134,8 +142,36 @@ public class NavigationView extends ViewPart implements IPackNavigation {
 					wpc.setIsdefault(0);
 					wpc.setParentId(parent.getClassinfo().getId());
 					wpc.setOrderNo("0");
-					wpc.setClassType(1);
-					NavigatorData.
+					wpc.setClassType(parent.getClassinfo().getClassType());
+					wpc.setId(UUIDGenerator.getUUID());
+					NavigatorData.insertpackageclass(wpc);
+				}
+				viewer.refresh();
+			}
+		}
+	}
+	
+	private void RemovePackClass()
+	{
+		IStructuredSelection selection = (IStructuredSelection) viewer.getSelection();
+		if(selection!=null&&selection.getFirstElement()!=null)
+		{
+			if(selection.getFirstElement() instanceof PackFolderModel)
+			{
+				PackFolderModel parent = (PackFolderModel)selection.getFirstElement();
+				if(parent.getClassinfo().getIsdefault()==1)
+					MessageDialog.openError(this.getViewSite().getShell(), "错误", "不能删除默认的分类");
+				else 
+				{
+					String message="确认要删除该分类么?";
+					if(parent.getChildren().size()>0)
+					message="该分类包含有子分类或更新包，确定要一起删除么？";
+					boolean i = MessageDialog.openConfirm(this.getViewSite().getShell(), "确认删除", message);
+					if(i)
+					{
+						parent.removeChildrenFromDB();
+					}
+						
 				}
 			}
 		}

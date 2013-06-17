@@ -169,4 +169,9 @@
   <select id="selectUPakageByClassId" parameterType="String" resultMap="PackinfoResultMap">
   	select * from UNPACK_PACKAGES where package_class_id=#{package_class_id}
   </select>
+  
+  <delete id="deleteUpackageByClassId" parameterType="String">
+  	delete from UNPACK_PACKAGES where package_class_id =#{classid} and 
+  	package_class_id in (select id from WISOFT_PACKAGE_CLASS where parent_id =#{classid})
+  </delete>
 </mapper>

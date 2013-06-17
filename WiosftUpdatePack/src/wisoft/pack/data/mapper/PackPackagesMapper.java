@@ -15,4 +15,9 @@ public interface PackPackagesMapper {
 	 * @mbggenerated  Sun Jun 09 13:16:06 CST 2013
 	 */
 	int insertSelective(PackPackages record);
+	
+	
+	PackPackages selectPakageByClassId(String parent_class_id);
+	    
+	int deletepackageByClassId(String classid);
 }
