@@ -26,4 +26,6 @@ public interface WisoftPackageClassMapper {
 	
 	PackFolderModel selectClassById(String id);
 	List<PackFolderModel> selectClassByParentId(String parent_id);
+	
+	int deleteClassById(String id);
 }

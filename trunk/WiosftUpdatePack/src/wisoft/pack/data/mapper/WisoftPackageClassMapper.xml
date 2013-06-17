@@ -80,6 +80,7 @@
   	<association property="classinfo" column="id" select="selectClassInfoById"></association>
   	<collection property="packfloderchildren" column="id" ofType="PackFolderModel" javaType="java.util.ArrayList"  select="selectClassByParentId"></collection>
   	<collection property="upackages" column="id" ofType="wisoft.pack.data.pojo.UnpackPackages" javaType="java.util.ArrayList"  select="wisoft.pack.data.mapper.UnpackPackagesMapper.selectUPakageByClassId"></collection>
+  	<collection property="packages" column="id" ofType="wisoft.pack.data.pojo.PackPackages" javaType="java.util.ArrayList"  select="wisoft.pack.data.mapper.PackPackagesMapper.selectPakageByClassId"></collection>
   </resultMap>
 
   
@@ -88,7 +89,7 @@
   </select>
   
   <select id="selectPackClassWithPack" resultMap="uClassAndPacks" >
-  	select * from WISOFT_PACKAGE_CLASS where class_type=1
+  	select * from WISOFT_PACKAGE_CLASS where class_type=1 and parent_id is null
   </select>
   <select id="selectClassInfoById" parameterType="String" resultMap="BaseResultMap" >
 	select * from WISOFT_PACKAGE_CLASS where id=#{id}  	
@@ -101,4 +102,8 @@
   <select id="selectClassByParentId" parameterType="String" resultMap="uClassAndPacks" >
 	select * from WISOFT_PACKAGE_CLASS where parent_id=#{parent_id}  	
   </select>
+  
+  <delete id="deleteClassById"  parameterType="String">
+  	delete form WISOFT_PACKAGE_CLASS where id = #{id} or parent_id = #{id}
+  </delete>
 </mapper>

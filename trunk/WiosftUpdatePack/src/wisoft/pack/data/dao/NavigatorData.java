@@ -6,6 +6,7 @@ import wisoft.pack.app.Activator;
 import wisoft.pack.data.mapper.PackPackagesMapper;
 import wisoft.pack.data.mapper.UnpackPackagesMapper;
 import wisoft.pack.data.mapper.WisoftPackageClassMapper;
+import wisoft.pack.data.pojo.WisoftPackageClass;
 import wisoft.pack.models.PackFolderModel;
 
 public class NavigatorData {
@@ -37,7 +38,14 @@ public class NavigatorData {
 	
 	public static boolean insertpackageclass(WisoftPackageClass wpc)
 	{
-		packageclass.insert(wpc);
+		return packageclass.insert(wpc)==1;
 	}
-
+	
+	public static boolean deleteClassById(String id)
+	{
+		 packageclass.deleteClassById(id);
+		 unpackages.deleteUpackageByClassId(id);
+		 packages.deletepackageByClassId(id);
+		 return true;
+	}
 }

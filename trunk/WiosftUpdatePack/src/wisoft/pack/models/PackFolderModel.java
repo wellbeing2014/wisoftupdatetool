@@ -2,6 +2,7 @@ package wisoft.pack.models;
 
 import java.util.List;
 
+import wisoft.pack.data.dao.NavigatorData;
 import wisoft.pack.data.pojo.PackageInfo;
 import wisoft.pack.data.pojo.UnpackPackages;
 import wisoft.pack.data.pojo.WisoftPackageClass;
@@ -13,7 +14,7 @@ public class PackFolderModel extends Model {
 	}
 	private WisoftPackageClass classinfo;
 	private List<PackFolderModel> packfloderchildren;
-	private List<PackageInfo> upackages;
+	private List<PackageInfo> packages;
 	
 	public List<PackFolderModel> getPackfloderchildren() {
 		return packfloderchildren;
@@ -27,13 +28,13 @@ public class PackFolderModel extends Model {
 		}
 	}
 
-	public List<PackageInfo> getUpackages() {
-		return upackages;
+	public List<PackageInfo> getPackages() {
+		return packages;
 	}
 
-	public void setUpackages(List<PackageInfo> upackages) {
-		this.upackages = upackages;
-		for(PackageInfo upg :upackages)
+	public void setPackages(List<PackageInfo> packages) {
+		this.packages = packages;
+		for(PackageInfo upg :packages)
 		{
 			this.addChild(new PackInfoModel(upg));
 		}
@@ -56,6 +57,11 @@ public class PackFolderModel extends Model {
 			setParent(parent);
 		if(classinfo!=null)
 			setClassinfo(classinfo);
+	}
+	
+	public boolean removeChildrenFromDB()
+	{
+		return NavigatorData.deleteClassById(this.classinfo.getId());
 	}
 }
 
