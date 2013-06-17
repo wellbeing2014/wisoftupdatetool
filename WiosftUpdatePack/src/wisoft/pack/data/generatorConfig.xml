@@ -2,12 +2,12 @@
 <!DOCTYPE generatorConfiguration PUBLIC "-//mybatis.org//DTD MyBatis Generator Configuration 1.0//EN" "http://mybatis.org/dtd/mybatis-generator-config_1_0.dtd" >
 <generatorConfiguration >
   <context id="context1" >
-    <jdbcConnection driverClass="com.hxtt.sql.access.AccessDriver" connectionURL="jdbc:access:///E:/WorkSpace/RCP_work/WiosftUpdatePack/src/wisoft/pack/data/wup.mdb" userId="" password="" />
+    <jdbcConnection driverClass="com.hxtt.sql.access.AccessDriver" connectionURL="jdbc:access:///D:\wellbeing_work\RCP_work\WiosftUpdatePack\src\wisoft\pack\data\wup.mdb" userId="" password="" />
     <javaModelGenerator targetPackage="wisoft.pack.data.pojo" targetProject="WiosftUpdatePack/src" />
     <sqlMapGenerator targetPackage="wisoft.pack.data.mapper" targetProject="WiosftUpdatePack/src" />
     <javaClientGenerator targetPackage="wisoft.pack.data.mapper" targetProject="WiosftUpdatePack/src" type="XMLMAPPER" />
     
-    <table schema="" tableName="UNPACK_PACKAGES"     	  
+    <table schema="" tableName="PACKAGEINFO"     	  
           enableCountByExample="false" enableUpdateByExample="false"
      	  enableDeleteByExample="false" enableSelectByExample="false"
      	  selectByExampleQueryId="false" />
