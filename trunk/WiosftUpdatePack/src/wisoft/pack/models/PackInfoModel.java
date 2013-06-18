@@ -7,6 +7,9 @@ import java.util.List;
 import org.dom4j.Element;
 import org.eclipse.ui.IEditorInput;
 
+import wisoft.pack.data.dao.NavigatorData;
+import wisoft.pack.data.dao.UUIDGenerator;
+import wisoft.pack.data.pojo.PackPackages;
 import wisoft.pack.data.pojo.PackageInfo;
 import wisoft.pack.utils.UpdateInfo;
 import wisoft.pack.utils.XmlOperator;
@@ -250,21 +253,6 @@ public class PackInfoModel extends Model {
 		this.editInput = editInput;
 	}
 
-//	public PackInfoOfEditConfs getEditConfs() {
-//		return editConfs;
-//	}
-//	
-//	public PackInfoOfEditSql getEditSql() {
-//		return editSql;
-//	}
-//	
-//	public PackInfoOfSelectFiles getSelectFiles() {
-//		return selectFiles;
-//	}
-//	
-//	public PackInfoOfOverview getOverview() {
-//		return overview;
-//	}
 	
 	public PackInfoModel(PackageInfo pageinfo)
 	{
@@ -275,17 +263,13 @@ public class PackInfoModel extends Model {
 	
 	public PackInfoModel()
 	{
-//		this.addChild(overview);
-//		this.addChild(selectFiles);
-//		this.addChild(editConfs);
-//		this.addChild(editSql);
+
 	}
 	
 	
 	public PackInfoModel(String name)
 	{
 		this.name =name;
-
 	}
 	
 	public void saveIntoXML()
@@ -343,5 +327,26 @@ public class PackInfoModel extends Model {
 		Element filelist =xmlo.OnlyElementInRoot(UpdateInfo.UpdateFileList);
 		FileModel fm =new FileModel(filelist);
 		return fm;
+	}
+	
+	public void saveToDB()
+	{
+		PackPackages ppg ;
+		if(this.packageinfo.getId()==null)
+		{
+			this.packageinfo.setId(UUIDGenerator.getUUID());
+			ppg = (PackPackages)this.packageinfo;
+			ppg.setPackPerson(getCreateMan());
+			ppg.setCreateTime(getCreateTime());
+			ppg.setState(0);
+			NavigatorData.insertPackPackage(ppg);
+		}
+		else
+		{
+			ppg = NavigatorData.getPackPackageBy(this.packageinfo.getId());
+			ppg.setPackPerson(getCreateMan());
+			ppg.setCreateTime(getCreateTime());
+			ppg.setState(0);
+		}
 	}
 }

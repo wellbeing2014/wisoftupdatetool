@@ -1,5 +1,7 @@
 package wisoft.pack.data.mapper;
 
+import java.util.List;
+
 import wisoft.pack.data.pojo.PackPackages;
 
 public interface PackPackagesMapper {
@@ -17,7 +19,9 @@ public interface PackPackagesMapper {
 	int insertSelective(PackPackages record);
 	
 	
-	PackPackages selectPakageByClassId(String parent_class_id);
+	List<PackPackages> selectPakageByClassId(String parent_class_id);
 	    
 	int deletepackageByClassId(String classid);
+	
+	PackPackages selectPakageById(String id);
 }
