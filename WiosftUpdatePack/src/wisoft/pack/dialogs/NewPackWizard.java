@@ -14,7 +14,6 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.MessageBox;
 
 import wisoft.pack.data.pojo.PackPackages;
-import wisoft.pack.data.pojo.PackageInfo;
 import wisoft.pack.models.PackInfoModel;
 import wisoft.pack.utils.UpdateInfo;
 import wisoft.pack.views.Console;
@@ -87,6 +86,7 @@ public class NewPackWizard extends Wizard {
 			}
 			@Override
 			protected IStatus run(IProgressMonitor monitor) {
+				
 				monitor.beginTask("≥ı ºªØºÏ≤È°≠°≠", 3);
 				try
 				{
@@ -130,7 +130,7 @@ public class NewPackWizard extends Wizard {
 		};
 		job.setUser(true);
 		job.schedule(); 
-	
+		
 		nv.addPackInfo(pack);
 		return true;
 	}

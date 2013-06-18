@@ -136,12 +136,12 @@
     </trim>
   </insert>
   
-  <select id="selectPakageByClassId" parameterType="String" resultMap="PackinfoResultMap">
-  	select * from PACK_PACKAGES where package_class_id=#{package_class_id}
-  </select>
-  
   <delete id="deletepackageByClassId" parameterType="String">
   	delete from PACK_PACKAGES where package_class_id =#{classid} and 
   	package_class_id in (select id from WISOFT_PACKAGE_CLASS where parent_id =#{classid})
   </delete>
+  
+  <select id="selectPakageById" parameterType="String">
+  	select * from PACK_PACKAGES where id=#{id}
+  </select>
 </mapper>

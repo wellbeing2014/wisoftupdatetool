@@ -2,6 +2,7 @@ package wisoft.pack.data.mapper;
 
 import java.util.List;
 
+import wisoft.pack.data.pojo.PackageInfo;
 import wisoft.pack.data.pojo.WisoftPackageClass;
 import wisoft.pack.models.PackFolderModel;
 
@@ -28,4 +29,6 @@ public interface WisoftPackageClassMapper {
 	List<PackFolderModel> selectClassByParentId(String parent_id);
 	
 	int deleteClassById(String id);
+	
+	List<PackageInfo> selectPackageInfoByClassid(String package_class_id);
 }

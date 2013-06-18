@@ -76,29 +76,55 @@
     </trim>
   </insert>
   
-  <resultMap type="wisoft.pack.models.PackFolderModel" id="uClassAndPacks">
+  <resultMap type="wisoft.pack.models.PackFolderModel" id="ClassAndPacks">
   	<association property="classinfo" column="id" select="selectClassInfoById"></association>
   	<collection property="packfloderchildren" column="id" ofType="PackFolderModel" javaType="java.util.ArrayList"  select="selectClassByParentId"></collection>
-  	<collection property="packages" column="id" ofType="wisoft.pack.data.pojo.P" javaType="java.util.ArrayList"  select="wisoft.pack.data.mapper.PackPackagesMapper.selectPakageByClassId"></collection>
+  	<collection property="packages" column="id" ofType="wisoft.pack.data.pojo.PackageInfo" javaType="java.util.ArrayList"  select="selectPackageInfoByClassid"></collection>
   </resultMap>
 
+  <resultMap id="PackinfoResultMap" type="wisoft.pack.data.pojo.PackageInfo" >
+  	<result column="ID" property="id" jdbcType="VARCHAR" />
+   	<result column="package_name" property="packageName" jdbcType="VARCHAR" />
+    <result column="module_name" property="moduleName" jdbcType="VARCHAR" />
+    <result column="module_code" property="moduleCode" jdbcType="VARCHAR" />
+    <result column="module_ver" property="moduleVer" jdbcType="VARCHAR" />
+    <result column="test_number" property="testNumber" jdbcType="INTEGER" />
+    <result column="save_path" property="savePath" jdbcType="VARCHAR" />
+    <result column="package_publishdate" property="packagePublishdate" jdbcType="VARCHAR" />
+    <result column="package_class_id" property="packageClassId" jdbcType="VARCHAR" />
+    <result column="wims_project_id" property="wimsProjectId" jdbcType="VARCHAR" />
+    <result column="package_file_id" property="packageFileId" jdbcType="VARCHAR" />
+  </resultMap>
   
-  <select id="selectUnPackClassWithPack" resultMap="uClassAndPacks" >
+  
+  <select id="selectPackageInfoByClassid" parameterType="String" resultMap="PackinfoResultMap" >
+  	select * from 
+	(	SELECT id,package_name,module_name,module_code,module_ver,test_number,
+	 		package_publishdate,save_path,package_class_id,wims_project_id,package_file_id
+		from pack_packages
+		UNION ALL 
+		select id,package_name,module_name,module_code,module_ver,test_number,
+			package_publishdate,save_path,package_class_id,wims_project_id,package_file_id
+		from unpack_packages) 
+	where package_class_id=#{package_class_id}
+  </select>
+  
+  <select id="selectUnPackClassWithPack" resultMap="ClassAndPacks" >
   	select * from WISOFT_PACKAGE_CLASS where class_type=0
   </select>
   
-  <select id="selectPackClassWithPack" resultMap="uClassAndPacks" >
+  <select id="selectPackClassWithPack" resultMap="ClassAndPacks" >
   	select * from WISOFT_PACKAGE_CLASS where class_type=1 and parent_id is null
   </select>
   <select id="selectClassInfoById" parameterType="String" resultMap="BaseResultMap" >
 	select * from WISOFT_PACKAGE_CLASS where id=#{id}  	
   </select>
   
-  <select id="selectClassById" parameterType="String" resultMap="uClassAndPacks" >
+  <select id="selectClassById" parameterType="String" resultMap="ClassAndPacks" >
 	select * from WISOFT_PACKAGE_CLASS where id=#{id}  	
   </select>
   
-  <select id="selectClassByParentId" parameterType="String" resultMap="uClassAndPacks" >
+  <select id="selectClassByParentId" parameterType="String" resultMap="ClassAndPacks" >
 	select * from WISOFT_PACKAGE_CLASS where parent_id=#{parent_id}  	
   </select>
   
