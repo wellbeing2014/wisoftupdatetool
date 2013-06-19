@@ -39,6 +39,9 @@
       #{archiveTime,jdbcType=VARCHAR}, #{state,jdbcType=INTEGER}, #{packageClassId,jdbcType=VARCHAR}, 
       #{wimsProjectId,jdbcType=VARCHAR}, #{packageFileId,jdbcType=VARCHAR})
   </insert>
+  
+  <update id="update" parameterType="wisoft.pack.data.pojo.PackPackages">
+  </update>
   <insert id="insertSelective" parameterType="wisoft.pack.data.pojo.PackPackages">
     <!--
       WARNING - @mbggenerated

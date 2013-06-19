@@ -347,6 +347,7 @@ public class PackInfoModel extends Model {
 			ppg.setPackPerson(getCreateMan());
 			ppg.setCreateTime(getCreateTime());
 			ppg.setState(0);
+			NavigatorData.insertPackPackage(ppg);
 		}
 	}
 }

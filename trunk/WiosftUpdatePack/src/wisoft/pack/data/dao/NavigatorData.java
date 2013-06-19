@@ -55,6 +55,11 @@ public class NavigatorData {
 		packages.insert(pack);
 	}
 	
+	public static void UpdatePackPackage(PackPackages pack)
+	{
+		packages.update(pack);
+	}
+	
 	public static PackPackages getPackPackageBy(String id)
 	{
 		return packages.selectPakageById(id);
