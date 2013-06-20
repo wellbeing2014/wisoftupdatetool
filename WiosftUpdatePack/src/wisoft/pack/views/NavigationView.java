@@ -77,6 +77,7 @@ public class NavigationView extends ViewPart implements IPackNavigation {
 				.getToolBarManager();
 		
 		toolbarManager.add(addNewPackClass);
+		toolbarManager.add(removeNewPackClass);
 	}
 
 	/**
@@ -146,8 +147,8 @@ public class NavigationView extends ViewPart implements IPackNavigation {
 					wpc.setId(UUIDGenerator.getUUID());
 					NavigatorData.insertpackageclass(wpc);
 				}
-				viewer.refresh();
 			}
+			readNavInfo();
 		}
 	}
 	
@@ -174,6 +175,7 @@ public class NavigationView extends ViewPart implements IPackNavigation {
 						
 				}
 			}
+			readNavInfo();
 		}
 	}
 	

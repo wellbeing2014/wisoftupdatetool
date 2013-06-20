@@ -41,6 +41,20 @@
   </insert>
   
   <update id="update" parameterType="wisoft.pack.data.pojo.PackPackages">
+  	update PACK_PACKAGES
+  	set package_name= #{packageName,jdbcType=VARCHAR},
+  		module_name = #{moduleName,jdbcType=VARCHAR},
+  		module_code = #{moduleCode,jdbcType=VARCHAR},
+  		module_ver = #{moduleVer,jdbcType=VARCHAR},
+  		test_number =  #{testNumber,jdbcType=INTEGER}, 
+  		package_publishdate = #{packagePublishdate,jdbcType=VARCHAR},
+  		pack_person = #{packPerson,jdbcType=VARCHAR},
+  		create_time = #{createTime,jdbcType=VARCHAR}, 
+  		archive_time =  #{archiveTime,jdbcType=VARCHAR},
+  		state = #{state,jdbcType=INTEGER},
+  		package_class_id =  #{packageClassId,jdbcType=VARCHAR}, 
+  		wims_project_id =  #{wimsProjectId,jdbcType=VARCHAR},
+  		package_file_id =#{packageFileId,jdbcType=VARCHAR}
   </update>
   <insert id="insertSelective" parameterType="wisoft.pack.data.pojo.PackPackages">
     <!--
