@@ -129,6 +129,6 @@
   </select>
   
   <delete id="deleteClassById"  parameterType="String">
-  	delete form WISOFT_PACKAGE_CLASS where id = #{id} or parent_id = #{id}
+  	delete from WISOFT_PACKAGE_CLASS where id = #{id} or parent_id = #{id}
   </delete>
 </mapper>

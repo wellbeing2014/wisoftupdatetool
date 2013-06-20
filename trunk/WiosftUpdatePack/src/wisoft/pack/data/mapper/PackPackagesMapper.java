@@ -21,7 +21,7 @@ public interface PackPackagesMapper {
 	
 	List<PackPackages> selectPakageByClassId(String parent_class_id);
 	    
-	int deletepackageByClassId(String classid);
+	void deletepackageByClassId(String classid);
 	
 	PackPackages selectPakageById(String id);
 	
