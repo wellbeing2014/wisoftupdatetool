@@ -26,6 +26,9 @@ public class NavigatorData {
 		return pfm;
 	}
 	
+	/**获取打包导航树的列表
+	 * @return
+	 */
 	public static PackFolderModel getPackInput()
 	{
 		PackFolderModel pfm = new PackFolderModel(null,null);

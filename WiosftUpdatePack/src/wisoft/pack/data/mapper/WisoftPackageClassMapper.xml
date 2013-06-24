@@ -98,7 +98,8 @@
   
   
   <select id="selectPackageInfoByClassid" parameterType="String" resultMap="PackinfoResultMap" >
-  	select * from 
+  	select id,package_name,module_name,module_code,module_ver,test_number,
+	 		package_publishdate,save_path,package_class_id,wims_project_id,package_file_id from 
 	(	SELECT id,package_name,module_name,module_code,module_ver,test_number,
 	 		package_publishdate,save_path,package_class_id,wims_project_id,package_file_id
 		from pack_packages

@@ -1,6 +1,8 @@
 package wisoft.pack.edits;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.viewers.ColumnWeightData;
@@ -34,6 +36,8 @@ import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.swt.widgets.ToolItem;
+import org.eclipse.swt.widgets.Widget;
+import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.forms.IManagedForm;
 import org.eclipse.ui.forms.editor.FormEditor;
 import org.eclipse.ui.forms.editor.FormPage;
@@ -58,7 +62,6 @@ import com.wisoft.wims.WimsSingleIssueTracking;
 public class BFormPage extends FormPage {
 	
 	private PackInfoModel pm;
-	
 	private Text text;
 	private Text text_1;
 	private Text text_2;
@@ -302,6 +305,10 @@ public class BFormPage extends FormPage {
 		lblNewLabel.setText("\u6A21\u5757\u540D\u79F0\uFF1A");
 		
 		text = new Text(composite, SWT.BORDER);
+		text.addModifyListener(new ModifyListener() {
+			public void modifyText(ModifyEvent e) {
+			}
+		});
 		text.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
 		toolkit.adapt(text, true, true);
 		
@@ -502,8 +509,11 @@ public class BFormPage extends FormPage {
 	public void loadXmlData()
 	{
 		this.text.setText(pm.getModuleName());
+		addtoDirtyControl(this.text,"ModuleName",pm.getModuleName());
 		this.text_1.setText( pm.getVersion());
+		addtoDirtyControl(this.text_1,"Version",pm.getVersion());
 		this.text_2.setText( pm.getModuleCode());
+		addtoDirtyControl(this.text_2,"ModuleCode",pm.getModuleCode());
 		this.text_3.setText( pm.getCreateMan());
 		this.text_4.setText( pm.getCreateTime());
 		this.button.setSelection(pm.getScopeFront());
@@ -531,6 +541,50 @@ public class BFormPage extends FormPage {
 			item.setText(new String[]{tackid,tackperson,tackcontent});
 		}
 	}
+	
+	Map<String,Object[]> dirtyFields =new HashMap<String,Object[]>();
+	private String INITDATA="INITDATA";
+	private String FIELDNAME="FIELDNAME";
+	
+	/**修改后对比初始数据是否与修改后的不同，只有不同，才通知编辑器 Dirty,相同时，通知编辑器 没有Dirty
+	 * @param widget
+	 * @param fieldname
+	 * @param initValue
+	 */
+	private void addtoDirtyControl(Widget widget, String fieldname, Object initValue) {
+		widget.setData(INITDATA,initValue);
+		widget.setData(FIELDNAME,fieldname);
+		if(widget instanceof Text){
+		    ((Text)widget).addModifyListener(new ModifyListener(){
+		
+		        @Override
+		        public void modifyText(ModifyEvent e) {
+		            Text text = (Text)e.getSource();
+		            Object initData = text.getData(INITDATA);
+		            String fieldname = (String) text.getData(FIELDNAME);
+		            String newData = text.getText();
+		            if(newData.equals(initData)){
+		                dirtyFields.remove(fieldname);
+		            }else{
+		                dirtyFields.put(fieldname, new Object[]{initData,newData});
+		            }
+		            setDirty();
+		        }
+
+				
+		    });
+		}
+	}  
+	
+	
+	@Override 
+	public boolean isDirty() { 
+		return !dirtyFields.isEmpty();
+	} 
+	public void setDirty() { 
+		firePropertyChange(IEditorPart.PROP_DIRTY); 
+	} 
+	
 	class PackRelyContentProvider implements IStructuredContentProvider {
 		public Object[] getElements(Object inputElement) {
 			if (inputElement instanceof PackInfoModel) {
@@ -564,4 +618,5 @@ public class BFormPage extends FormPage {
 			else return null;
 		}
 	}
+	
 }

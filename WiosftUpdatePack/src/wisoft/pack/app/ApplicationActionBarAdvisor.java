@@ -25,6 +25,7 @@ import wisoft.pack.actions.OpenNewPackDialogAction;
 import wisoft.pack.actions.OpenPackAction;
 import wisoft.pack.actions.PackConfigAction;
 import wisoft.pack.actions.SavePackEditAction;
+import wisoft.pack.utils.PackConfigInfo;
 
 /**
  * An action bar advisor is responsible for creating, adding, and disposing of the
@@ -98,6 +99,7 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor {
         toolMenu.add(packConfigAction);
         helpMenu.add(aboutAction);
         fileMenu.add(exitAction);
+        
         menuBar.add(fileMenu);
         menuBar.add(ediltMenu);
         menuBar.add(toolMenu);
@@ -108,13 +110,20 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor {
     protected void fillCoolBar(ICoolBarManager coolBar) {
         IToolBarManager toolbar = new ToolBarManager(SWT.FLAT | SWT.RIGHT);
         coolBar.add(new ToolBarContributionItem(toolbar, "main"));   
-        toolbar.add(openPackAction);
-        toolbar.add(openNewPackDialogAction);
-        toolbar.add(removePackInfoAction);
-        toolbar.add(exportPackAction);
-        toolbar.add(savenAction);
-        toolbar.add(packConfigAction);
-        toolbar.add(deployPackAction);
+        boolean isPack =PackConfigInfo.getInstance().selOperate();
+		if(isPack)
+		{
+			toolbar.add(exportPackAction);
+			toolbar.add(openNewPackDialogAction);
+		}
+		else
+		{
+			toolbar.add(openPackAction);
+			toolbar.add(deployPackAction);
+		}
+		toolbar.add(removePackInfoAction);
+		toolbar.add(savenAction);
+		toolbar.add(packConfigAction);
     }
     
     @SuppressWarnings("restriction")   

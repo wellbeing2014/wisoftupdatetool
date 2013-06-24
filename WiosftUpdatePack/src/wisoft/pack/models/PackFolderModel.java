@@ -4,7 +4,6 @@ import java.util.List;
 
 import wisoft.pack.data.dao.NavigatorData;
 import wisoft.pack.data.pojo.PackageInfo;
-import wisoft.pack.data.pojo.UnpackPackages;
 import wisoft.pack.data.pojo.WisoftPackageClass;
 
 public class PackFolderModel extends Model {

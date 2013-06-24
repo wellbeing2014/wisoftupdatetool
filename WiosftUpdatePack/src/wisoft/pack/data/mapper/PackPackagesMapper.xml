@@ -15,6 +15,7 @@
     <result column="test_number" jdbcType="INTEGER" property="testNumber" />
     <result column="package_publishdate" jdbcType="VARCHAR" property="packagePublishdate" />
     <result column="pack_person" jdbcType="VARCHAR" property="packPerson" />
+    <result column="save_path" jdbcType="VARCHAR" property="savePath" />
     <result column="create_time" jdbcType="VARCHAR" property="createTime" />
     <result column="archive_time" jdbcType="VARCHAR" property="archiveTime" />
     <result column="state" jdbcType="INTEGER" property="state" />
@@ -30,13 +31,13 @@
     -->
     insert into PACK_PACKAGES (ID, package_name, module_name, 
       module_code, module_ver, test_number, 
-      package_publishdate, pack_person, create_time, 
+      package_publishdate, pack_person, save_path, create_time, 
       archive_time, state, package_class_id, 
       wims_project_id, package_file_id)
     values (#{id,jdbcType=VARCHAR}, #{packageName,jdbcType=VARCHAR}, #{moduleName,jdbcType=VARCHAR}, 
       #{moduleCode,jdbcType=VARCHAR}, #{moduleVer,jdbcType=VARCHAR}, #{testNumber,jdbcType=INTEGER}, 
-      #{packagePublishdate,jdbcType=VARCHAR}, #{packPerson,jdbcType=VARCHAR}, #{createTime,jdbcType=VARCHAR}, 
-      #{archiveTime,jdbcType=VARCHAR}, #{state,jdbcType=INTEGER}, #{packageClassId,jdbcType=VARCHAR}, 
+      #{packagePublishdate,jdbcType=VARCHAR}, #{packPerson,jdbcType=VARCHAR}, #{savePath,jdbcType=VARCHAR},
+       #{createTime,jdbcType=VARCHAR}, #{archiveTime,jdbcType=VARCHAR}, #{state,jdbcType=INTEGER}, #{packageClassId,jdbcType=VARCHAR}, 
       #{wimsProjectId,jdbcType=VARCHAR}, #{packageFileId,jdbcType=VARCHAR})
   </insert>
   
@@ -49,6 +50,7 @@
   		test_number =  #{testNumber,jdbcType=INTEGER}, 
   		package_publishdate = #{packagePublishdate,jdbcType=VARCHAR},
   		pack_person = #{packPerson,jdbcType=VARCHAR},
+  		save_path = #{savePath,jdbcType=VARCHAR},
   		create_time = #{createTime,jdbcType=VARCHAR}, 
   		archive_time =  #{archiveTime,jdbcType=VARCHAR},
   		state = #{state,jdbcType=INTEGER},
@@ -87,6 +89,9 @@
       </if>
       <if test="packPerson != null">
         pack_person,
+      </if>
+      <if test="savePath != null">
+        save_path,
       </if>
       <if test="createTime != null">
         create_time,
@@ -131,6 +136,9 @@
       </if>
       <if test="packPerson != null">
         #{packPerson,jdbcType=VARCHAR},
+      </if>
+      <if test="savePath != null">
+        #{savePath,jdbcType=VARCHAR},
       </if>
       <if test="createTime != null">
         #{createTime,jdbcType=VARCHAR},

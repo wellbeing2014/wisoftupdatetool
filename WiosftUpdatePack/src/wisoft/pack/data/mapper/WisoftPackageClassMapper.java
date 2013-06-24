@@ -31,4 +31,5 @@ public interface WisoftPackageClassMapper {
 	int deleteClassById(String id);
 	
 	List<PackageInfo> selectPackageInfoByClassid(String package_class_id);
+	
 }
