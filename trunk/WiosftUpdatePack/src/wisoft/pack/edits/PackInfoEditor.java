@@ -21,6 +21,8 @@ public class PackInfoEditor extends FormEditor {
 	public static final String ID = "wisoft.pack.edits.PackInfoEditor"; //$NON-NLS-1$
 	private SQLEditor sqleditor;
 	private XMLEditor xmleditor;
+	
+	private BFormPage bformpage;
 
 	public PackInfoEditor() {
 	}
@@ -34,10 +36,11 @@ public class PackInfoEditor extends FormEditor {
 		//createPage1();
 		sqleditor =new SQLEditor();
 		xmleditor =new XMLEditor();
-	
+		bformpage = new BFormPage(this,"BFormPage","基本信息");
+		
 		PackInfoModel pack = ((PackInfoInput)getEditorInput()).getPackinfo();
 		try {
-			addPage(new BFormPage(this,"BFormPage","基本信息"),getEditorInput());
+			addPage(bformpage,getEditorInput());
 			addPage(new CFormPage(this,"CFormPage","文件列表"));
 			int i = addPage(sqleditor, new XmlSqlEditorInput(XmlSqlEditorInput.TYPE_SQL,pack));
 			setPageText(i,"SQL语句编写");
@@ -111,12 +114,13 @@ public class PackInfoEditor extends FormEditor {
 		sqleditor.doSaveAs();
 	}
 	
-	@Override
-	public boolean isDirty()
-	{
-		return sqleditor.isDirty();
+	
+	@Override 
+	public boolean isDirty() { 
 		
-	}
+		return bformpage.isDirty()||sqleditor.isDirty(); 
+	} 
+	
 	
 	
 }

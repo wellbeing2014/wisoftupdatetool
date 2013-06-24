@@ -33,6 +33,7 @@ import org.eclipse.ui.part.ViewPart;
 import wisoft.pack.app.Activator;
 import wisoft.pack.data.dao.NavigatorData;
 import wisoft.pack.data.dao.UUIDGenerator;
+import wisoft.pack.data.pojo.PackPackages;
 import wisoft.pack.data.pojo.WisoftPackageClass;
 import wisoft.pack.dialogs.AddPackClassDialog;
 import wisoft.pack.edits.PackInfoEditor;
@@ -224,11 +225,34 @@ public class NavigationView extends ViewPart implements IPackNavigation {
 		viewer.getControl().setFocus();
 	}
 	
-	public void addPackInfo(PackInfoModel pack)
+	/** 新增更新包的向导调用，加入到数据库，并刷新。
+	 * @param pack
+	 */
+	public void addPackInfo(PackPackages pack)
 	{
-		this.root.addChild(pack);
-		this.viewer.refresh();
+		pack.setPackageClassId(getDefaultPackClass().getId());
+		pack.setId(UUIDGenerator.getUUID());
+		NavigatorData.insertPackPackage(pack);
+		readNavInfo();
 	}
+	
+	/** 查找 默认的更新包分类，根据pojo对象中的isdefault
+	 * @return
+	 */
+	public WisoftPackageClass getDefaultPackClass()
+	{
+		for(Model pfm:this.root.getChildren())
+		{
+			PackFolderModel zpfm=(PackFolderModel)pfm;
+			if(zpfm.getClassinfo().getIsdefault()==1)
+			{
+				return zpfm.getClassinfo();
+			}
+		}
+		return null;
+	}
+	
+	
 	
 	public void removePackInfo(PackInfoModel[] packlist)
 	{

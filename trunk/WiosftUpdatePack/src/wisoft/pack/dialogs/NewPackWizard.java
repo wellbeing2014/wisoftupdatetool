@@ -131,7 +131,7 @@ public class NewPackWizard extends Wizard {
 		job.setUser(true);
 		job.schedule(); 
 		
-		nv.addPackInfo(pack);
+		nv.addPackInfo(packinfo);
 		return true;
 	}
 }

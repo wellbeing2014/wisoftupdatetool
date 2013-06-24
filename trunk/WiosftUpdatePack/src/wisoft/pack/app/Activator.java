@@ -12,6 +12,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import wisoft.pack.models.PackInfoModel;
+import wisoft.pack.utils.PackConfigInfo;
 
 /**
  * The activator class controls the plug-in life cycle
@@ -107,4 +108,6 @@ public class Activator extends AbstractUIPlugin {
 	public static ImageDescriptor getImageDescriptor(String path) {
 		return imageDescriptorFromPlugin(PLUGIN_ID, path);
 	}
+	
+	
 }
