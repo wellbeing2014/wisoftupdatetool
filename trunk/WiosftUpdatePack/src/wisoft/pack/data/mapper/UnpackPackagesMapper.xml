@@ -152,6 +152,24 @@
     </trim>
   </insert>
   
+  <update id="update" parameterType="wisoft.pack.data.pojo.UnpackPackages">
+  	update PACK_PACKAGES
+  	set package_name= #{packageName,jdbcType=VARCHAR},
+  		module_name = #{moduleName,jdbcType=VARCHAR},
+  		module_code = #{moduleCode,jdbcType=VARCHAR},
+  		module_ver = #{moduleVer,jdbcType=VARCHAR},
+  		test_number =  #{testNumber,jdbcType=INTEGER}, 
+  		package_publishdate = #{packagePublishdate,jdbcType=VARCHAR},
+  		unpack_person = #{unpackPerson,jdbcType=VARCHAR},
+  		save_path = #{savePath,jdbcType=VARCHAR},
+  		create_time = #{createTime,jdbcType=VARCHAR}, 
+  		update_time = #{updateTime,jdbcType=VARCHAR}, 
+  		archive_time =  #{archiveTime,jdbcType=VARCHAR},
+  		state = #{state,jdbcType=INTEGER},
+  		package_class_id =  #{packageClassId,jdbcType=VARCHAR}, 
+  		wims_project_id =  #{wimsProjectId,jdbcType=VARCHAR},
+  		package_file_id =#{packageFileId,jdbcType=VARCHAR}
+  </update>
   
   <resultMap id="PackinfoResultMap" type="wisoft.pack.data.pojo.PackageInfo" >
   	<result column="ID" property="id" jdbcType="VARCHAR" />
@@ -168,6 +186,10 @@
   </resultMap>
   <select id="selectUPakageByClassId" parameterType="String" resultMap="PackinfoResultMap">
   	select * from UNPACK_PACKAGES where package_class_id=#{package_class_id}
+  </select>
+  
+  <select id="selectUPakageById" parameterType="String" resultMap="BaseResultMap">
+  	select * from UNPACK_PACKAGES where package_class_id=#{id}
   </select>
   
   <delete id="deleteUpackageByClassId" parameterType="String">

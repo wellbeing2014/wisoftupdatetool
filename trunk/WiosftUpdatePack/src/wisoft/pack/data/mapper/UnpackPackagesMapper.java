@@ -1,5 +1,6 @@
 package wisoft.pack.data.mapper;
 
+import wisoft.pack.data.pojo.PackPackages;
 import wisoft.pack.data.pojo.UnpackPackages;
 
 public interface UnpackPackagesMapper {
@@ -21,5 +22,9 @@ public interface UnpackPackagesMapper {
     
     UnpackPackages selectUPakageByClassId(String parent_class_id);
     
+    UnpackPackages selectUPakageById(String id);
+    
     int deleteUpackageByClassId(String classid);
+    
+    int update(UnpackPackages record);
 }

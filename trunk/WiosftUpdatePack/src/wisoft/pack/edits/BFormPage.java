@@ -1,9 +1,11 @@
 package wisoft.pack.edits;
 
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.viewers.ColumnWeightData;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
@@ -51,6 +53,7 @@ import org.eclipse.ui.forms.widgets.TableWrapLayout;
 import org.eclipse.wb.swt.ResourceManager;
 
 import wisoft.pack.app.Activator;
+import wisoft.pack.data.dao.NavigatorData;
 import wisoft.pack.dialogs.PackRelyDialog;
 import wisoft.pack.dialogs.TrackingListSelDialog;
 import wisoft.pack.models.PackInfoModel;
@@ -542,7 +545,7 @@ public class BFormPage extends FormPage {
 		}
 	}
 	
-	Map<String,Object[]> dirtyFields =new HashMap<String,Object[]>();
+	public Map<String,Object[]> dirtyFields =new HashMap<String,Object[]>();
 	private String INITDATA="INITDATA";
 	private String FIELDNAME="FIELDNAME";
 	
@@ -576,7 +579,33 @@ public class BFormPage extends FormPage {
 		}
 	}  
 	
-	
+	@Override
+	public void doSave(IProgressMonitor monitor) {
+		// TODO Auto-generated method stub
+		
+		System.out.println("bformpageÓÐ¸Ä¶¯");
+		Iterator it = dirtyFields.entrySet().iterator();
+		for(Map.Entry<String, Object[]> entry:dirtyFields.entrySet())
+		{
+			String key = entry.getKey();
+			Object[] values = entry.getValue();
+			if("ModuleName".equals(key))
+			{
+				pm.setModuleName(values[2].toString());
+			}
+			else if("Version".equals(key))
+			{
+				pm.setVersion(values[2].toString());
+			}
+			else if("ModuleCode".equals(key))
+			{
+				pm.setModuleCode(values[2].toString());
+			}
+		}
+		pm.getPackageinfo().setPackNameBySelf();
+		pm.getPackageinfo().saveToDB();
+		super.doSave(monitor);
+	}
 	@Override 
 	public boolean isDirty() { 
 		return !dirtyFields.isEmpty();
