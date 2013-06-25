@@ -94,18 +94,19 @@
     <result column="package_class_id" property="packageClassId" jdbcType="VARCHAR" />
     <result column="wims_project_id" property="wimsProjectId" jdbcType="VARCHAR" />
     <result column="package_file_id" property="packageFileId" jdbcType="VARCHAR" />
+    <result column="type" property="type" jdbcType="INTEGER" />
   </resultMap>
   
   
   <select id="selectPackageInfoByClassid" parameterType="String" resultMap="PackinfoResultMap" >
   	select id,package_name,module_name,module_code,module_ver,test_number,
-	 		package_publishdate,save_path,package_class_id,wims_project_id,package_file_id from 
+	 		package_publishdate,save_path,package_class_id,wims_project_id,package_file_id,type from 
 	(	SELECT id,package_name,module_name,module_code,module_ver,test_number,
-	 		package_publishdate,save_path,package_class_id,wims_project_id,package_file_id
+	 		package_publishdate,save_path,package_class_id,wims_project_id,package_file_id,1 as type
 		from pack_packages
 		UNION ALL 
 		select id,package_name,module_name,module_code,module_ver,test_number,
-			package_publishdate,save_path,package_class_id,wims_project_id,package_file_id
+			package_publishdate,save_path,package_class_id,wims_project_id,package_file_id,0 as type
 		from unpack_packages) 
 	where package_class_id=#{package_class_id}
   </select>

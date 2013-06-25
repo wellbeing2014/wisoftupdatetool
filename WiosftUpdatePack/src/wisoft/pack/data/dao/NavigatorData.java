@@ -7,6 +7,7 @@ import wisoft.pack.data.mapper.PackPackagesMapper;
 import wisoft.pack.data.mapper.UnpackPackagesMapper;
 import wisoft.pack.data.mapper.WisoftPackageClassMapper;
 import wisoft.pack.data.pojo.PackPackages;
+import wisoft.pack.data.pojo.UnpackPackages;
 import wisoft.pack.data.pojo.WisoftPackageClass;
 import wisoft.pack.models.PackFolderModel;
 
@@ -63,8 +64,18 @@ public class NavigatorData {
 		packages.update(pack);
 	}
 	
-	public static PackPackages getPackPackageBy(String id)
+	public static PackPackages getPackPackageById(String id)
 	{
 		return packages.selectPakageById(id);
+	}
+	
+	public static UnpackPackages getUPakageById(String id)
+	{
+		return unpackages.selectUPakageById(id);
+	}
+	
+	public static void UpdateUnpackPackage(UnpackPackages pack)
+	{
+		unpackages.update(pack);
 	}
 }

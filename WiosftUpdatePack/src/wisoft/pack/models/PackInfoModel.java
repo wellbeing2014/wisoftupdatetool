@@ -343,7 +343,7 @@ public class PackInfoModel extends Model {
 		}
 		else
 		{
-			ppg = NavigatorData.getPackPackageBy(this.packageinfo.getId());
+			ppg = NavigatorData.getPackPackageById(this.packageinfo.getId());
 			ppg.setPackPerson(getCreateMan());
 			ppg.setCreateTime(getCreateTime());
 			ppg.setState(0);

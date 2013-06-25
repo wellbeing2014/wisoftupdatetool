@@ -104,8 +104,10 @@ public class PackInfoEditor extends FormEditor {
 	@Override
 	public void doSave(IProgressMonitor monitor) {
 		// TODO Auto-generated method stub
-		System.out.println("妈呀，我开始保存了。");
+		bformpage.doSave(monitor);
+		
 		sqleditor.doSave(monitor);
+		
 	}
 
 	@Override

@@ -1,5 +1,7 @@
 package wisoft.pack.data.pojo;
 
+import wisoft.pack.data.dao.NavigatorData;
+
 public class PackageInfo {
 	
 	protected String id;
@@ -23,6 +25,8 @@ public class PackageInfo {
 	private String wimsProjectId;
 	
 	private String packageFileId;
+	
+	private int type;
 
 	public String getId() {
 		return id;
@@ -112,4 +116,48 @@ public class PackageInfo {
 		this.packageFileId = packageFileId;
 	}
 	
+	public int getType() {
+		return type;
+	}
+	
+	public void setType(int type) {
+		this.type = type;
+	}
+	
+	public void setPackNameBySelf()
+	{
+		setPackageName(moduleName+"("+moduleCode+")"+moduleVer);
+	}
+	
+	public void saveToDB()
+	{
+		if(type==1)
+		{
+			PackPackages ppg = NavigatorData.getPackPackageById(this.getId());
+			ppg.setPackageName(packageName);
+			ppg.setModuleName(moduleName);
+			ppg.setModuleVer(moduleVer);
+			ppg.setPackageClassId(packageClassId);
+			ppg.setPackageFileId(packageFileId);
+			ppg.setPackagePublishdate(packagePublishdate);
+			ppg.setTestNumber(testNumber);
+			ppg.setWimsProjectId(wimsProjectId);
+			
+			NavigatorData.UpdatePackPackage(ppg);
+		}
+		else if(type==0)
+		{
+			UnpackPackages ppg = NavigatorData.getUPakageById(this.getId());
+			ppg.setPackageName(packageName);
+			ppg.setModuleName(moduleName);
+			ppg.setModuleVer(moduleVer);
+			ppg.setPackageClassId(packageClassId);
+			ppg.setPackageFileId(packageFileId);
+			ppg.setPackagePublishdate(packagePublishdate);
+			ppg.setTestNumber(testNumber);
+			ppg.setWimsProjectId(wimsProjectId);
+			
+			NavigatorData.UpdateUnpackPackage(ppg);
+		}
+	}
 }
