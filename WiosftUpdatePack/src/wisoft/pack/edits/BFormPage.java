@@ -591,15 +591,15 @@ public class BFormPage extends FormPage {
 			Object[] values = entry.getValue();
 			if("ModuleName".equals(key))
 			{
-				pm.setModuleName(values[2].toString());
+				pm.setModuleName(values[1].toString());
 			}
 			else if("Version".equals(key))
 			{
-				pm.setVersion(values[2].toString());
+				pm.setVersion(values[1].toString());
 			}
 			else if("ModuleCode".equals(key))
 			{
-				pm.setModuleCode(values[2].toString());
+				pm.setModuleCode(values[1].toString());
 			}
 		}
 		pm.getPackageinfo().setPackNameBySelf();

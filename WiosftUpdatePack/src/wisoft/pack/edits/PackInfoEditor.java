@@ -107,7 +107,7 @@ public class PackInfoEditor extends FormEditor {
 		bformpage.doSave(monitor);
 		
 		sqleditor.doSave(monitor);
-		
+		firePropertyChange(PROP_DIRTY);
 	}
 
 	@Override
