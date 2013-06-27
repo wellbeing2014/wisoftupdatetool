@@ -1,6 +1,9 @@
 package wisoft.pack.actions;
 
 import org.eclipse.jface.action.Action;
+import org.eclipse.ui.PlatformUI;
+
+import wisoft.pack.edits.PackInfoEditor;
 
 public class SavePackEditAction extends Action {
 	public SavePackEditAction()
@@ -15,6 +18,9 @@ public class SavePackEditAction extends Action {
 	public void run() {
 		// TODO Auto-generated method stub
 		System.out.println("save");
+		PackInfoEditor ep =(PackInfoEditor)PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getActiveEditor();
+		ep.setPartName1("Œ“»’ƒ„¬±»");
+		ep.doSaveAs();
 		super.run();
 	}
 }
