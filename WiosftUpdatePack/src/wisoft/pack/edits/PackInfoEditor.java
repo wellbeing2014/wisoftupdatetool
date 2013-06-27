@@ -113,7 +113,6 @@ public class PackInfoEditor extends FormEditor {
 	@Override
 	public void doSaveAs() {
 		// TODO Auto-generated method stub
-		sqleditor.doSaveAs();
 	}
 	
 	
@@ -123,6 +122,9 @@ public class PackInfoEditor extends FormEditor {
 		return bformpage.isDirty()||sqleditor.isDirty(); 
 	} 
 	
-	
+	public void setPartName1(String name)
+	{
+		this.setPartName(name);
+	}
 	
 }

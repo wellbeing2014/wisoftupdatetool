@@ -604,6 +604,8 @@ public class BFormPage extends FormPage {
 		}
 		pm.getPackageinfo().setPackNameBySelf();
 		pm.getPackageinfo().saveToDB();
+		dirtyFields.clear();
+		setDirty();
 		super.doSave(monitor);
 	}
 	@Override 
