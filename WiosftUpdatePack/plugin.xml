@@ -164,5 +164,8 @@
    <extension
          point="org.eclipse.ui.console.consoleFactories">
    </extension>
+   <extension
+         point="org.eclipse.ui.navigator.viewer">
+   </extension>
 
 </plugin>
