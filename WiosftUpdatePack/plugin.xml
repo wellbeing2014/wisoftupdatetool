@@ -32,6 +32,12 @@
             id="wisoft.pack.views.UnPackNavigation"
             name="更新包列表">
       </view>
+      <view
+            class="wisoft.pack.views.PackNavigation"
+            id="WisoftUpdatePack.packnavigation"
+            name="更新包列表"
+            restorable="true">
+      </view>
    </extension>
    <extension
          point="org.eclipse.ui.commands">
@@ -166,6 +172,24 @@
    </extension>
    <extension
          point="org.eclipse.ui.navigator.viewer">
+      <viewer
+            popupMenuId="WisoftUpdatePack.packnavigation"
+            viewerId="WisoftUpdatePack.packnavigation">
+      </viewer>
+      <viewerContentBinding
+            viewerId="WisoftUpdatePack.packnavigation">
+      </viewerContentBinding>
+   </extension>
+   <extension
+         point="org.eclipse.ui.navigator.navigatorContent">
+      <navigatorContent
+            activeByDefault="true"
+            contentProvider="wisoft.pack.models.PackInfoContentProvider"
+            id="WiosftUpdatePack.navigatorContent1"
+            labelProvider="wisoft.pack.models.PackInfoLabelProvider"
+            name="packnavcontent"
+            priority="normal">
+      </navigatorContent>
    </extension>
 
 </plugin>
