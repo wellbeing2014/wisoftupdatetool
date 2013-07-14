@@ -178,6 +178,11 @@
       </viewer>
       <viewerContentBinding
             viewerId="WisoftUpdatePack.packnavigation">
+         <includes>
+            <contentExtension
+                  pattern="wisoft.pack.*">
+            </contentExtension>
+         </includes>
       </viewerContentBinding>
    </extension>
    <extension
@@ -189,6 +194,13 @@
             labelProvider="wisoft.pack.models.PackInfoLabelProvider"
             name="packnavcontent"
             priority="normal">
+         <enablement>
+            <or>
+               <instanceof
+                     value="wisoft.pack.models.PackFolderModel">
+               </instanceof>
+            </or>
+         </enablement>
       </navigatorContent>
    </extension>
 
