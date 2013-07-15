@@ -180,7 +180,8 @@
             viewerId="WisoftUpdatePack.packnavigation">
          <includes>
             <contentExtension
-                  pattern="wisoft.pack.*">
+                  isRoot="false"
+                  pattern="de.techjava.rcp.cnf.content.VirtualContent">
             </contentExtension>
          </includes>
       </viewerContentBinding>
@@ -190,17 +191,30 @@
       <navigatorContent
             activeByDefault="true"
             contentProvider="wisoft.pack.models.PackInfoContentProvider"
-            id="WiosftUpdatePack.navigatorContent1"
+            id="de.techjava.rcp.cnf.content.VirtualContent"
             labelProvider="wisoft.pack.models.PackInfoLabelProvider"
-            name="packnavcontent"
+            name="Virtual content"
             priority="normal">
-         <enablement>
+         <triggerPoints>
             <or>
                <instanceof
                      value="wisoft.pack.models.PackFolderModel">
                </instanceof>
+               <instanceof
+                     value="wisoft.pack.models.PackInfoModel">
+               </instanceof>
             </or>
-         </enablement>
+         </triggerPoints>
+         <possibleChildren>
+            <or>
+               <instanceof
+                     value="wisoft.pack.models.PackFolderModel">
+               </instanceof>
+               <instanceof
+                     value="wisoft.pack.models.PackInfoModel">
+               </instanceof>
+            </or>
+         </possibleChildren>
       </navigatorContent>
    </extension>
 
