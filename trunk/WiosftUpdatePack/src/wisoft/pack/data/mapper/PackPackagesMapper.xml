@@ -166,6 +166,10 @@
   	package_class_id in (select id from WISOFT_PACKAGE_CLASS where parent_id =#{classid})
   </delete>
   
+  <delete id="delete" parameterType="String">
+  	delete from PACK_PACKAGES where id=#{id}
+  </delete>
+  
   <select id="selectPakageById" parameterType="String" resultMap="BaseResultMap">
   	select * from PACK_PACKAGES where id=#{id}
   </select>

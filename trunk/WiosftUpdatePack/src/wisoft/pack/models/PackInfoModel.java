@@ -10,6 +10,7 @@ import org.eclipse.ui.IEditorInput;
 import wisoft.pack.data.dao.NavigatorData;
 import wisoft.pack.data.dao.UUIDGenerator;
 import wisoft.pack.data.pojo.PackPackages;
+import wisoft.pack.data.pojo.PackProperties;
 import wisoft.pack.data.pojo.PackageInfo;
 import wisoft.pack.utils.UpdateInfo;
 import wisoft.pack.utils.XmlOperator;
@@ -285,7 +286,6 @@ public class PackInfoModel extends Model {
 		xmlo.OnlyElementInElemnt(scope, UpdateInfo.Scope_DB).setText("false");
 		xmlo.OnlyElementInElemnt(scope, UpdateInfo.Scope_Front).setText("false");
 		xmlo.OnlyElementInRoot(UpdateInfo.ReleaseNote);
-		
 		xmlo.save();
 	}
 	
@@ -296,6 +296,7 @@ public class PackInfoModel extends Model {
 		dir.mkdirs();
 		xmlo.setXmlfile(new File(savepath+"/"+UpdateInfo.FileName));
 		xmlo.initXml("root");
+		
 	}
 	
 	

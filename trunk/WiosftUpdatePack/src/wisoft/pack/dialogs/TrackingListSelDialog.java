@@ -8,6 +8,8 @@ import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.FocusAdapter;
 import org.eclipse.swt.events.FocusEvent;
+import org.eclipse.swt.events.KeyAdapter;
+import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Image;
@@ -24,17 +26,15 @@ import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.swt.widgets.Text;
-import org.eclipse.wb.swt.SWTResourceManager;
 
 import wisoft.pack.app.Activator;
+import wisoft.pack.sourceprovider.SWTResourceManager;
 
 import com.wisoft.wims.IWimsManagerWSPortType;
 import com.wisoft.wims.ResultReturn;
 import com.wisoft.wims.TrackServicesIn;
 import com.wisoft.wims.TrankingManager;
 import com.wisoft.wims.WimsSingleIssueTracking;
-import org.eclipse.swt.events.KeyAdapter;
-import org.eclipse.swt.events.KeyEvent;
 
 public class TrackingListSelDialog extends Dialog {
 	private Text text;

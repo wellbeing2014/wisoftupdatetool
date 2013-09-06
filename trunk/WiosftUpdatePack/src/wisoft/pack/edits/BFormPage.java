@@ -50,14 +50,13 @@ import org.eclipse.ui.forms.widgets.ScrolledForm;
 import org.eclipse.ui.forms.widgets.Section;
 import org.eclipse.ui.forms.widgets.TableWrapData;
 import org.eclipse.ui.forms.widgets.TableWrapLayout;
-import org.eclipse.wb.swt.ResourceManager;
 
 import wisoft.pack.app.Activator;
-import wisoft.pack.data.dao.NavigatorData;
 import wisoft.pack.dialogs.PackRelyDialog;
 import wisoft.pack.dialogs.TrackingListSelDialog;
 import wisoft.pack.models.PackInfoModel;
 import wisoft.pack.models.PackRelyModel;
+import wisoft.pack.sourceprovider.ResourceManager;
 import wisoft.pack.utils.AutoResizeTableLayout;
 
 import com.wisoft.wims.WimsSingleIssueTracking;

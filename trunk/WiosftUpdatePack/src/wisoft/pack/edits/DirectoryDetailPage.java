@@ -9,7 +9,6 @@ import org.dom4j.Element;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
@@ -32,10 +31,10 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.Section;
 import org.eclipse.ui.forms.widgets.TableWrapData;
 import org.eclipse.ui.forms.widgets.TableWrapLayout;
-import org.eclipse.wb.swt.ResourceManager;
 
 import wisoft.pack.models.FileModel;
 import wisoft.pack.models.PackInfoModel;
+import wisoft.pack.sourceprovider.ResourceManager;
 import wisoft.pack.utils.UpdateInfo;
 
 public class DirectoryDetailPage implements IDetailsPage {

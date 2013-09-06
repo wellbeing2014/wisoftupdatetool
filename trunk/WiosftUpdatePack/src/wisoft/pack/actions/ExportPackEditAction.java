@@ -1,13 +1,7 @@
 package wisoft.pack.actions;
 
 import org.eclipse.jface.action.Action;
-import org.eclipse.jface.wizard.WizardDialog;
-import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.ui.IWorkbenchWindow;
-
-import wisoft.pack.dialogs.ExportPackWizard;
-import wisoft.pack.models.PackInfoModel;
-import wisoft.pack.views.NavigationView;
 
 
 public class ExportPackEditAction extends Action {
@@ -26,8 +20,8 @@ public class ExportPackEditAction extends Action {
 	
 	@Override
 	public void run() {
-		NavigationView nv = (NavigationView)window.getActivePage().findView(NavigationView.ID);
-		PackInfoModel[] nm = nv.getSelectPackInfo();
+//		NavigationView nv = (NavigationView)window.getActivePage().findView(NavigationView.ID);
+	/*	PackInfoModel[] nm = nv.getSelectPackInfo();
 		MessageBox mb;
 		if(nm.length==1)
 		{
@@ -40,7 +34,7 @@ public class ExportPackEditAction extends Action {
 			mb.setMessage("请选择一个更新包工程。");
 			mb.setText("提示");
 			mb.open();
-		}
+		}*/
 	}
 
 }

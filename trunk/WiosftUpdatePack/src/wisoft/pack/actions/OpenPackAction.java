@@ -1,6 +1,7 @@
 package wisoft.pack.actions;
 
 import java.io.File;
+import java.io.IOException;
 
 import org.eclipse.jface.action.Action;
 import org.eclipse.swt.SWT;
@@ -13,8 +14,6 @@ import wisoft.pack.models.PackInfoModel;
 import wisoft.pack.utils.FileUtil;
 import wisoft.pack.utils.UpdateInfo;
 import wisoft.pack.utils.ZipUtil;
-import wisoft.pack.views.NavigationView;
-import wisoft.pack.views.UnPackNavigation;
 
 public class OpenPackAction extends Action {
 	
@@ -62,16 +61,21 @@ public class OpenPackAction extends Action {
 		File updateinfoxml = new File(destFolder+File.separator+UpdateInfo.FileName);
 		if(!updateinfoxml.exists())
 		{
-			FileUtil.delFolder(destFolder);
+			try {
+				FileUtil.delete(destFolder);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 			mb.setMessage("亲，这个更新包是不标准的，不能更新，\n劳驾您手动更新吧。");
 			mb.open();
 		}
-		UnPackNavigation nv = (UnPackNavigation)window.getActivePage().findView(UnPackNavigation.ID);
+//		UnPackNavigation nv = (UnPackNavigation)window.getActivePage().findView(UnPackNavigation.ID);
 		PackInfoModel pim = new PackInfoModel();
 		//pim.setSavePath(destFolder);
 		pim.readFromXML(destFolder);
 		pim.setName(pim.getModuleName()+"("+pim.getModuleCode()+")"+pim.getVersion());
-		nv.addUnUpdatePackInfo(pim);
+//		nv.addUnUpdatePackInfo(pim);
 	}
 
 }

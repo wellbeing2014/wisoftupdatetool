@@ -26,4 +26,6 @@ public interface PackPackagesMapper {
 	PackPackages selectPakageById(String id);
 	
 	int update(PackPackages record);
+	
+	int delete(String id);
 }

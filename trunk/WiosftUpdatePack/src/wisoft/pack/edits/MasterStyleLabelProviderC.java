@@ -10,7 +10,8 @@ import org.eclipse.jface.viewers.StyledString.Styler;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.TextStyle;
-import org.eclipse.wb.swt.SWTResourceManager;
+
+import wisoft.pack.sourceprovider.SWTResourceManager;
 
 public class MasterStyleLabelProviderC extends LabelProvider implements IStyledLabelProvider{
 	private final Styler fBoldStyler; 

@@ -30,13 +30,13 @@ import org.eclipse.ui.forms.editor.FormPage;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.ScrolledForm;
 import org.eclipse.ui.forms.widgets.Section;
-import org.eclipse.wb.swt.ResourceManager;
 
 import wisoft.pack.app.Activator;
 import wisoft.pack.dialogs.AddConfIntoPackDialog;
 import wisoft.pack.dialogs.AddFileIntoPackDialog;
 import wisoft.pack.models.FileModel;
 import wisoft.pack.models.PackInfoModel;
+import wisoft.pack.sourceprovider.ResourceManager;
 import wisoft.pack.utils.FileUtil;
 import wisoft.pack.utils.UpdateInfo;
 import wisoft.pack.utils.XmlOperator;
@@ -330,10 +330,7 @@ public class FileMasterDetailsBlock extends MasterDetailsBlock {
 						if(!fm.isVirtual())
 						{
 							String filepath = pi.getSavePath()+"/"+UpdateInfo.UpdateDirName+fm.getFullPath();
-							if(fm.isDir())
-								FileUtil.delFolder(filepath);
-							else
-								FileUtil.delAllFile(filepath);
+							FileUtil.delete(filepath);
 						}
 						xmlo.save();
 						printlnToConsole("删除文件完成:"+fm.getName(),ConsoleType.INFO);

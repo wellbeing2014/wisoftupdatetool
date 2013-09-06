@@ -6,17 +6,17 @@ import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.DirectoryDialog;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
-import org.eclipse.wb.swt.SWTResourceManager;
 
 import wisoft.pack.models.PackInfoModel;
+import wisoft.pack.sourceprovider.SWTResourceManager;
 import wisoft.pack.utils.PackConfigInfo;
 import wisoft.pack.utils.UpdateInfo;
-import org.eclipse.swt.layout.RowLayout;
 
 public class ExportPackWizardPage extends WizardPage {
 	public Text text;
