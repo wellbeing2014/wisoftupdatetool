@@ -4,8 +4,11 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.ui.texteditor.AbstractTextEditor;
 import org.eclipse.ui.texteditor.ITextEditorExtension3;
 
+import wisoft.pack.utils.PackConfigInfo;
+
 public class SQLEditor extends AbstractTextEditor {
 	private ColorManager colorManager;
+	private static boolean isOpr = PackConfigInfo.getInstance().selOperate();
 	public SQLEditor()
 	{
 		super();

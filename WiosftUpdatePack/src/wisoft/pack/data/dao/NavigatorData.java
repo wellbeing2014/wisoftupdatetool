@@ -7,10 +7,16 @@ import wisoft.pack.data.mapper.PackPackagesMapper;
 import wisoft.pack.data.mapper.UnpackPackagesMapper;
 import wisoft.pack.data.mapper.WisoftPackageClassMapper;
 import wisoft.pack.data.pojo.PackPackages;
+import wisoft.pack.data.pojo.PackProperties;
+import wisoft.pack.data.pojo.PackageInfo;
 import wisoft.pack.data.pojo.UnpackPackages;
 import wisoft.pack.data.pojo.WisoftPackageClass;
 import wisoft.pack.models.PackFolderModel;
 
+/**
+ * @author wellbeing
+ *
+ */
 public class NavigatorData {
 	private static WisoftPackageClassMapper packageclass = (WisoftPackageClassMapper)Activator.getDefault().getSpringBean("wisoftPackageClassMapper");
 	private static UnpackPackagesMapper unpackages = (UnpackPackagesMapper)Activator.getDefault().getSpringBean("unpackPackagesMapper");
@@ -54,6 +60,10 @@ public class NavigatorData {
 		 return true;
 	}
 	
+	/**
+	 * 插入一个 更新 并且返回
+	 * @param pack
+	 */
 	public static void insertPackPackage(PackPackages pack)
 	{
 		packages.insert(pack);
@@ -63,6 +73,16 @@ public class NavigatorData {
 	{
 		packages.update(pack);
 	}
+	
+	
+	/** 根据父类删除 pack 和unpack的记录
+	 * @param pack
+	 */
+	public static void deletePackPackage(PackageInfo pack)
+	{
+		packages.delete(pack.getId());
+	}
+	
 	
 	public static PackPackages getPackPackageById(String id)
 	{
@@ -77,5 +97,23 @@ public class NavigatorData {
 	public static void UpdateUnpackPackage(UnpackPackages pack)
 	{
 		unpackages.update(pack);
+	}
+	
+	/** 插入一个更新包到默认的分类
+	 * @param packageinfo
+	 */
+	public static  void insertUnPack(UnpackPackages packageinfo)
+	{
+		unpackages.insert(packageinfo);
+	}
+	
+	/** 根据 类型获取 默认的分类
+	 * @param type  PackProperties.TYPE_UNPACK|PackProperties.TYPE_PACK
+	 * @return
+	 */
+	public static WisoftPackageClass getDefaultClass(int type)
+	{
+		return
+		 packageclass.selectDefaultClassInfo(PackProperties.TYPE_UNPACK);
 	}
 }

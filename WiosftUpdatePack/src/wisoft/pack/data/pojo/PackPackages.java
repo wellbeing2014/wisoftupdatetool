@@ -93,4 +93,9 @@ public class PackPackages extends PackageInfo{
 		this.state = state;
 	}
 	
+	@Override
+	public String toString() {
+		// TODO Auto-generated method stub
+		return this.getModuleName()+"("+this.getModuleCode()+")"+this.getModuleVer();
+	}
 }

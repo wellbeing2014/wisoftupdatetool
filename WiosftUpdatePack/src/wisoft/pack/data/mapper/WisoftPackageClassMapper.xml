@@ -112,11 +112,11 @@
   </select>
   
   <select id="selectUnPackClassWithPack" resultMap="ClassAndPacks" >
-  	select * from WISOFT_PACKAGE_CLASS where class_type=0
+  	select * from WISOFT_PACKAGE_CLASS where class_type=0 order by order_no desc
   </select>
   
   <select id="selectPackClassWithPack" resultMap="ClassAndPacks" >
-  	select * from WISOFT_PACKAGE_CLASS where class_type=1 and parent_id is null
+  	select * from WISOFT_PACKAGE_CLASS where class_type=1 and parent_id is null order by order_no
   </select>
   <select id="selectClassInfoById" parameterType="String" resultMap="BaseResultMap" >
 	select * from WISOFT_PACKAGE_CLASS where id=#{id}  	
@@ -128,6 +128,10 @@
   
   <select id="selectClassByParentId" parameterType="String" resultMap="ClassAndPacks" >
 	select * from WISOFT_PACKAGE_CLASS where parent_id=#{parent_id}  	
+  </select>
+  
+   <select id="selectDefaultClassInfo" parameterType="integer" resultMap="BaseResultMap" >
+	select * from wisoft_package_class where isdefault=1 and class_type=#{type}	
   </select>
   
   <delete id="deleteClassById"  parameterType="String">

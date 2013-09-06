@@ -14,7 +14,7 @@ import wisoft.pack.models.PackConfig_Server;
 import com.wisoft.wims.WimsProInfo;
 
 
-public class PackConfigInfo {
+public class PackConfigInfo{
 	
 	private static PackConfigInfo info= null;
 	private static String filename = "PackConfig.xml";
@@ -145,12 +145,19 @@ public class PackConfigInfo {
 		xmlo.save();
 	}
 	
+	
+	/**是否设置了OperateType属性。
+	 * @return
+	 */
 	public  boolean setedOperate()
 	{
 		Element operate =xmlo.OnlyElementInRoot("OperateType");
 		return !operate.getText().isEmpty();
 	}
 	
+	/**获取设置系统的使用方式，true为打包方式，false为解包方式。
+	 * @return
+	 */
 	public  boolean selOperate()
 	{
 		if(setedOperate())
@@ -170,5 +177,5 @@ public class PackConfigInfo {
 			return isOperate;
 		}
 	}
-
+	
 }

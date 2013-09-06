@@ -6,13 +6,15 @@ import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.adaptor.LocationManager;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osgi.service.datalocation.Location;
+import org.eclipse.ui.IViewPart;
+import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import wisoft.pack.models.PackInfoModel;
-import wisoft.pack.utils.PackConfigInfo;
+import wisoft.pack.views.PackNavigation;
 
 /**
  * The activator class controls the plug-in life cycle
@@ -109,5 +111,14 @@ public class Activator extends AbstractUIPlugin {
 		return imageDescriptorFromPlugin(PLUGIN_ID, path);
 	}
 	
+	
+	/**在当前APP下查找视图
+	 * @param viewID
+	 * @return
+	 */
+	public static IViewPart findView(String viewID)
+	{
+		return PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().findView(viewID);
+	}
 	
 }

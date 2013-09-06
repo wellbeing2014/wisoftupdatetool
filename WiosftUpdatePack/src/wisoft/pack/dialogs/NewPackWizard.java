@@ -6,30 +6,40 @@ import java.util.Date;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.jobs.IJobChangeEvent;
+import org.eclipse.core.runtime.jobs.IJobChangeListener;
 import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.core.runtime.jobs.JobChangeAdapter;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.MessageBox;
+import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.handlers.HandlerUtil;
 
+import wisoft.pack.app.Activator;
+import wisoft.pack.data.dao.NavigatorData;
+import wisoft.pack.data.dao.UUIDGenerator;
 import wisoft.pack.data.pojo.PackPackages;
+import wisoft.pack.data.pojo.WisoftPackageClass;
 import wisoft.pack.models.PackInfoModel;
 import wisoft.pack.utils.UpdateInfo;
 import wisoft.pack.views.Console;
+import wisoft.pack.views.PackNavigation;
 import wisoft.pack.views.Console.ConsoleType;
-import wisoft.pack.views.NavigationView;
 
 public class NewPackWizard extends Wizard {
 	private NewPackWizardPage page1;
 	private NewPackReleaseNoteWizardPage page2;
-	private NavigationView nv ;
+	public PackPackages packinfo = new PackPackages();
 
-	public NewPackWizard(NavigationView nv) {
+	public NewPackWizard() {
 		setWindowTitle("创建一个更新包");
 		page1 =new NewPackWizardPage();
 		page2 = new NewPackReleaseNoteWizardPage();
-		this.nv = nv;
+		//this.nv = nv;
 	}
 
 	@Override
@@ -41,7 +51,7 @@ public class NewPackWizard extends Wizard {
 
 	@Override
 	public boolean performFinish() {
-		PackPackages packinfo = new PackPackages();
+		//PackPackages packinfo = new PackPackages();
 		String savePath1 = this.page1.text_2.getText().trim();
 		final String ModuleName = this.page1.combo.getText().trim();
 		final String ModuleCode = this.page1.text.getText().trim();
@@ -125,13 +135,31 @@ public class NewPackWizard extends Wizard {
 					printlnToConsole(e.toString(),packname,Console.ConsoleType.ERROR);
 				}
 				printlnToConsole("更新包创建成功", packname, Console.ConsoleType.INFO);	
+				WisoftPackageClass wpc =NavigatorData.getDefaultClass(1);
+				packinfo.setPackageClassId((wpc!=null)?wpc.getId():null);
+				packinfo.setId(UUIDGenerator.getUUID());
+				NavigatorData.insertPackPackage(packinfo);
+				
 		        return Status.OK_STATUS;
 			}
 		};
+		job.addJobChangeListener(new JobChangeAdapter(){
+			public void done(IJobChangeEvent event) { 
+				if (event.getResult().isOK()) 
+				{	
+					Display.getDefault().asyncExec(new Runnable() {                        
+		    			public void run() {                    
+		    				PackNavigation packnav =(PackNavigation)Activator.findView(PackNavigation.ID);
+		    				packnav.refreshInput(packinfo);
+		    			}
+					});
+				}
+			}
+		});
 		job.setUser(true);
 		job.schedule(); 
 		
-		nv.addPackInfo(packinfo);
+		//nv.addPackInfo(packinfo);
 		return true;
 	}
 }

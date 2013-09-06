@@ -24,6 +24,8 @@ import org.dom4j.util.XMLErrorHandler;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.widgets.Display;
 
+import wisoft.pack.data.pojo.PackageInfo;
+
 /**
  * @author wellbeing
  *
@@ -114,6 +116,7 @@ public class XmlOperator {
 		}
 		else
 			RootElement =this.document.addElement(root);
+		
 		save();
 	}
 	

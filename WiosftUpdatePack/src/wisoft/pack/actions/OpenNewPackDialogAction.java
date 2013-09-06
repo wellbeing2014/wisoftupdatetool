@@ -5,7 +5,6 @@ import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.ui.IWorkbenchWindow;
 
 import wisoft.pack.dialogs.NewPackWizard;
-import wisoft.pack.views.NavigationView;
 
 public class OpenNewPackDialogAction extends Action {
 	private final IWorkbenchWindow window;
@@ -21,8 +20,7 @@ public class OpenNewPackDialogAction extends Action {
 	}
 
 	public void run() {
-		NavigationView nv = (NavigationView)window.getActivePage().findView(NavigationView.ID);
-		WizardDialog wd = new WizardDialog(window.getShell(),new NewPackWizard(nv));
+		WizardDialog wd = new WizardDialog(window.getShell(),new NewPackWizard());
 		wd.open();
 	}
 

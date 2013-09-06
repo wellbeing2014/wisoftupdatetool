@@ -3,6 +3,8 @@ package wisoft.pack.models;
 import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.swt.graphics.Image;
+import org.eclipse.ui.ISharedImages;
+import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.navigator.IDescriptionProvider;
 
 import wisoft.pack.app.Activator;
@@ -22,12 +24,14 @@ IDescriptionProvider {
 	
 	@Override
 	public Image getImage(Object element) {
-		// TODO Auto-generated method stub
-		if(element instanceof PackFolderModel)
-			return Activator.getImageDescriptor("/icons/open.png").createImage();
-		else if(element instanceof PackInfoModel)
-			return Activator.getImageDescriptor("/icons/wi_updatetool.ico").createImage();
-		else
+		
+		if (element instanceof PackFolderModel) {
+			return PlatformUI.getWorkbench().getSharedImages().getImage(
+					ISharedImages.IMG_OBJ_FOLDER);
+		} else if (element instanceof PackInfoModel) {
+			return PlatformUI.getWorkbench().getSharedImages().getImage(
+					ISharedImages.IMG_OBJ_FILE);
+		}else
 			return super.getImage(element);
 		
 	}

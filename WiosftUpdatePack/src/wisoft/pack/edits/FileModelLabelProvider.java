@@ -12,10 +12,10 @@ import org.eclipse.swt.graphics.ImageData;
 import org.eclipse.swt.graphics.TextStyle;
 import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.PlatformUI;
-import org.eclipse.wb.swt.ResourceManager;
-import org.eclipse.wb.swt.SWTResourceManager;
 
 import wisoft.pack.models.FileModel;
+import wisoft.pack.sourceprovider.ResourceManager;
+import wisoft.pack.sourceprovider.SWTResourceManager;
 import wisoft.pack.utils.UpdateInfo;
 
 public class FileModelLabelProvider      implements IStyledLabelProvider,ILabelProvider {

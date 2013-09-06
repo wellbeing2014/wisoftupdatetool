@@ -31,9 +31,10 @@ import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.swt.widgets.ToolItem;
-import org.eclipse.wb.swt.ResourceManager;
 
 import wisoft.pack.models.PackConfig_Server;
+import wisoft.pack.sourceprovider.AbstractSourceProvider;
+import wisoft.pack.sourceprovider.ResourceManager;
 import wisoft.pack.utils.PackConfigInfo;
 
 public class PackConfigDialog extends TitleAreaDialog {
@@ -87,6 +88,19 @@ public class PackConfigDialog extends TitleAreaDialog {
 		tabFolder.setBounds(0, 0, 619, 369);
 		tabFolder.setSelectionBackground(Display.getCurrent().getSystemColor(SWT.COLOR_TITLE_INACTIVE_BACKGROUND_GRADIENT));
 		
+		
+		boolean isOpr = PackConfigInfo.getInstance().selOperate();
+		
+		if(isOpr)
+			createPackConfig(tabFolder);
+		else
+			createUnPackConfig(tabFolder);
+		
+		return area;
+	}
+	
+	private void createPackConfig(CTabFolder tabFolder)
+	{
 		CTabItem tabItem = new CTabItem(tabFolder, SWT.NONE);
 		tabItem.setText("\u6253\u5305\u914D\u7F6E");
 		
@@ -185,9 +199,10 @@ public class PackConfigDialog extends TitleAreaDialog {
 		label.setText("\u5BF9\u65B0\u5EFA\u66F4\u65B0\u5305\u7684\u5FEB\u6377\u64CD\u4F5C\u7684\u6A21\u677F\u8FDB\u884C\u7EF4\u62A4");
 		new Label(composite, SWT.NONE);
 		
-		
-		
-		
+	}
+
+	private void createUnPackConfig(CTabFolder tabFolder)
+	{
 		CTabItem tabItem_1 = new CTabItem(tabFolder, SWT.NONE);
 		tabItem_1.setText("\u89E3\u5305\u914D\u7F6E");
 		
@@ -350,9 +365,8 @@ public class PackConfigDialog extends TitleAreaDialog {
 		
 
 		getProInfoTableData();
-		return area;
 	}
-
+	
 	private void getProInfoTableData()
 	{
 		table.removeAll();

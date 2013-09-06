@@ -32,4 +32,12 @@ public interface WisoftPackageClassMapper {
 	
 	List<PackageInfo> selectPackageInfoByClassid(String package_class_id);
 	
+	
+	/**
+	 * 获取一个默认更新包分类
+	 * @param type 1 pack 0 unpack
+	 * @return
+	 */
+	WisoftPackageClass selectDefaultClassInfo(int type);
+	
 }
