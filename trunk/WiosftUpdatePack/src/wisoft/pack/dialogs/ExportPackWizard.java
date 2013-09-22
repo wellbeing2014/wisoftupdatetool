@@ -165,12 +165,7 @@ public class ExportPackWizard extends Wizard {
 		sb.append("************************************************************************\r\n");
 		sb.append("\r\n");
 		sb.append("【更新范围】\r\n");
-		if(pack.getScopeFront())
-			sb.append("   前台");
-		if(pack.getScopeBack())
-			sb.append("   后台");
-		if(pack.getScopeDB())
-			sb.append("   数据库");
+		sb.append(pack.getScopeString());
 		sb.append("\r\n");
 		sb.append("\r\n");
 		sb.append("【更新说明】\r\n");

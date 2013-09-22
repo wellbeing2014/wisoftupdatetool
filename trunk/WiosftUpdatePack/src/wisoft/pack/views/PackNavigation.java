@@ -47,8 +47,6 @@ public class PackNavigation extends CommonNavigator{
 			@Override
 			public void doubleClick(DoubleClickEvent event) {
 				// TODO Auto-generated method stub
-				
-				if(isOper)
 					handledoubleclick_pack();
 			}
 		});

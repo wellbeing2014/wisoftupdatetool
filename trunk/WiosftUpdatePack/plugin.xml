@@ -38,6 +38,11 @@
             name="更新包列表"
             restorable="true">
       </view>
+      <view
+            class="wisoft.pack.views.PackManagerView"
+            id="wisoft.pack.views.PackManagerView"
+            name="更新包管理">
+      </view>
    </extension>
    <extension
          point="org.eclipse.ui.commands">

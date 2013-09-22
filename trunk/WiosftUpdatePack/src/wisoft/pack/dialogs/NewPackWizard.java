@@ -23,6 +23,7 @@ import wisoft.pack.app.Activator;
 import wisoft.pack.data.dao.NavigatorData;
 import wisoft.pack.data.dao.UUIDGenerator;
 import wisoft.pack.data.pojo.PackPackages;
+import wisoft.pack.data.pojo.IPackProperties;
 import wisoft.pack.data.pojo.WisoftPackageClass;
 import wisoft.pack.models.PackInfoModel;
 import wisoft.pack.utils.UpdateInfo;
@@ -135,7 +136,7 @@ public class NewPackWizard extends Wizard {
 					printlnToConsole(e.toString(),packname,Console.ConsoleType.ERROR);
 				}
 				printlnToConsole("更新包创建成功", packname, Console.ConsoleType.INFO);	
-				WisoftPackageClass wpc =NavigatorData.getDefaultClass(1);
+				WisoftPackageClass wpc =NavigatorData.getDefaultClass(IPackProperties.TYPE_PACK);
 				packinfo.setPackageClassId((wpc!=null)?wpc.getId():null);
 				packinfo.setId(UUIDGenerator.getUUID());
 				NavigatorData.insertPackPackage(packinfo);

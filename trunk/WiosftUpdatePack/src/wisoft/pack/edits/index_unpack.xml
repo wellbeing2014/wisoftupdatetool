@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<form>
+
+<p>许可平台(maea)1.23.1 更新说明</p>
+
+<li>1、更新前，<b>做好备份</b>，涉及到数据库，则备份数据库。</li>
+<li>2、由于更新包是，增量更新，在更新前，先<b>确认更新版本</b>，以免更新时跳过版本。</li>
+<li>3、更新时，<b>先停止服务</b>。</li>
+<li>4、请保持更新包的完整。在更新时，最好本机和服务器<b>保持空闲状态</b>。</li>
+<li>5、所有<b>带三位版本号</b>的都是经过公司内部测试的。请放心更新。</li>
+<li>6、更新时如遇到问题，应<b>保存错误信息</b>，及时与公司联系。</li>
+<li>7、中科惠软公司对此更新包拥有<b>最终解释权</b>。</li>
+<p></p>
+<table width="100%">
+    <thead>
+        <tr>
+            
+            <th colspan="5" scope="col" >问题单关联</th>
+        </tr>
+        
+        <tr>
+            <th scope="col" >问题单号</th>
+            <th scope="col" >申请人</th>
+          <th scope="col" >所属项目</th>
+          <th scope="col" >问题单内容</th>
+          <th scope="col" >完成情况</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <th scope="row">2</th>
+            <td>30mm</td>
+            <td>40mm</td>
+            <td width="60%">5omm</td>
+            <td>60mm</td>
+           
+        </tr>
+        <tr>
+            <th scope="row">3</th>
+            <td>17mm</td>
+            <td>40mm</td>
+            <td>5omm</td>
+            <td>60mm</td>
+        </tr>
+       
+    </tbody>
+</table>
+<p></p>
+<p>  <a href="www.wisoft.com.cn">wisoft</a>@版权所有</p>
+</form>

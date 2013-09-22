@@ -22,5 +22,6 @@
 	<classpathentry kind="lib" path="jars/swing2swt.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="lib" path="jars/commons-io-2.4.jar"/>
+	<classpathentry kind="lib" path="swt-grouplayout.jar" sourcepath="swt-grouplayout.zip"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

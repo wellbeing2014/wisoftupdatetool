@@ -134,7 +134,7 @@ public class PackageInfo {
 	
 	public void saveToDB()
 	{
-		if(type==PackProperties.TYPE_PACK)
+		if(type==IPackProperties.TYPE_PACK)
 		{
 			PackPackages ppg = NavigatorData.getPackPackageById(this.getId());
 			ppg.setPackageName(packageName);
@@ -148,7 +148,7 @@ public class PackageInfo {
 			
 			NavigatorData.UpdatePackPackage(ppg);
 		}
-		else if(type==PackProperties.TYPE_UNPACK)
+		else if(type==IPackProperties.TYPE_UNPACK)
 		{
 			UnpackPackages ppg = NavigatorData.getUPakageById(this.getId());
 			ppg.setPackageName(packageName);

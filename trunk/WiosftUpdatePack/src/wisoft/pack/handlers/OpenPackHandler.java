@@ -16,7 +16,7 @@ import org.eclipse.ui.handlers.HandlerUtil;
 import wisoft.pack.app.Activator;
 import wisoft.pack.data.dao.NavigatorData;
 import wisoft.pack.data.dao.UUIDGenerator;
-import wisoft.pack.data.pojo.PackProperties;
+import wisoft.pack.data.pojo.IPackProperties;
 import wisoft.pack.data.pojo.PackageInfo;
 import wisoft.pack.data.pojo.UnpackPackages;
 import wisoft.pack.models.PackInfoModel;
@@ -76,7 +76,7 @@ public class OpenPackHandler extends AbstractHandler implements IHandler {
 		pi.setModuleCode(pim.getModuleCode());
 		pi.setModuleName(pim.getModuleName());
 		pi.setModuleVer(pim.getVersion());
-		pi.setPackageClassId(NavigatorData.getDefaultClass(PackProperties.TYPE_UNPACK).getId());
+		pi.setPackageClassId(NavigatorData.getDefaultClass(IPackProperties.TYPE_UNPACK).getId());
 		pi.setId(UUIDGenerator.getUUID());
 		pi.setPackageFileId(UUIDGenerator.getUUID());//±∏”√
 		pi.setPackageName(pim.getName());
@@ -90,7 +90,7 @@ public class OpenPackHandler extends AbstractHandler implements IHandler {
 		try {
 			pim.getPackageinfo().fatherToChild(pi, upg);
 			upg.setUnpackPerson("÷Ï–¬≈‡");
-			upg.setState(PackProperties.UNPACK_STATE_01DOWNLOAD);
+			upg.setState(IPackProperties.UNPACK_STATE_01DOWNLOAD);
 			NavigatorData.insertUnPack(upg);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block

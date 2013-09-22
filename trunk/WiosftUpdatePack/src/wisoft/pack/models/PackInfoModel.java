@@ -10,7 +10,7 @@ import org.eclipse.ui.IEditorInput;
 import wisoft.pack.data.dao.NavigatorData;
 import wisoft.pack.data.dao.UUIDGenerator;
 import wisoft.pack.data.pojo.PackPackages;
-import wisoft.pack.data.pojo.PackProperties;
+import wisoft.pack.data.pojo.IPackProperties;
 import wisoft.pack.data.pojo.PackageInfo;
 import wisoft.pack.utils.UpdateInfo;
 import wisoft.pack.utils.XmlOperator;
@@ -152,6 +152,17 @@ public class PackInfoModel extends Model {
 		xmlo.save();
 	}
 	
+	public String getScopeString()
+	{
+		String ret ="";
+		if(getScopeBack())
+			ret+="后台    ";
+		if(getScopeDB())
+			ret+="数据库    ";
+		if(getScopeFront())
+			ret+="前台   ";
+		return ret;
+	}
 	
 	/** 获取更新包依赖数组
 	 * @return

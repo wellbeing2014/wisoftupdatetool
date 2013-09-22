@@ -116,7 +116,7 @@
   </select>
   
   <select id="selectPackClassWithPack" resultMap="ClassAndPacks" >
-  	select * from WISOFT_PACKAGE_CLASS where class_type=1 and parent_id is null order by order_no
+  	select * from WISOFT_PACKAGE_CLASS where class_type=1 order by order_no
   </select>
   <select id="selectClassInfoById" parameterType="String" resultMap="BaseResultMap" >
 	select * from WISOFT_PACKAGE_CLASS where id=#{id}  	
