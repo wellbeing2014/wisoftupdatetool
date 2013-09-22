@@ -28,6 +28,8 @@ import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IPathEditorInput;
 import org.eclipse.ui.texteditor.AbstractDocumentProvider;
 
+import wisoft.pack.utils.PackConfigInfo;
+
 public class SQLDocumentProvider extends AbstractDocumentProvider {
 
 	 protected void setupDocument(IDocument document) {
@@ -159,7 +161,7 @@ public class SQLDocumentProvider extends AbstractDocumentProvider {
 	}
 	@Override
     public boolean isModifiable(Object element) {
-		return true;
+		return PackConfigInfo.getInstance().selOperate();
 	}
 	@Override
 	protected IAnnotationModel createAnnotationModel(Object element)

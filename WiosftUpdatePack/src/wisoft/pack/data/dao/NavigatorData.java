@@ -7,7 +7,7 @@ import wisoft.pack.data.mapper.PackPackagesMapper;
 import wisoft.pack.data.mapper.UnpackPackagesMapper;
 import wisoft.pack.data.mapper.WisoftPackageClassMapper;
 import wisoft.pack.data.pojo.PackPackages;
-import wisoft.pack.data.pojo.PackProperties;
+import wisoft.pack.data.pojo.IPackProperties;
 import wisoft.pack.data.pojo.PackageInfo;
 import wisoft.pack.data.pojo.UnpackPackages;
 import wisoft.pack.data.pojo.WisoftPackageClass;
@@ -114,6 +114,6 @@ public class NavigatorData {
 	public static WisoftPackageClass getDefaultClass(int type)
 	{
 		return
-		 packageclass.selectDefaultClassInfo(PackProperties.TYPE_UNPACK);
+		 packageclass.selectDefaultClassInfo(type);
 	}
 }

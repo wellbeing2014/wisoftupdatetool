@@ -15,9 +15,10 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
 import wisoft.pack.edits.sql.SQLEditor;
 import wisoft.pack.edits.xml.XMLEditor;
 import wisoft.pack.models.PackInfoModel;
+import wisoft.pack.utils.PackConfigInfo;
 
 public class PackInfoEditor extends FormEditor {
-
+	private static boolean isOpr = PackConfigInfo.getInstance().selOperate();
 	public static final String ID = "wisoft.pack.edits.PackInfoEditor"; //$NON-NLS-1$
 	private SQLEditor sqleditor;
 	private XMLEditor xmleditor;
@@ -40,14 +41,19 @@ public class PackInfoEditor extends FormEditor {
 		
 		PackInfoModel pack = ((PackInfoInput)getEditorInput()).getPackinfo();
 		try {
-			addPage(bformpage,getEditorInput());
+			if(isOpr)
+				addPage(bformpage,getEditorInput());
+			else
+			{
+				addPage(new EFormPage(this,"EFormPage","版权"),getEditorInput());
+				addPage(new FFormPage(this,"FFormPage","更新过程"),getEditorInput());
+			}
 			addPage(new CFormPage(this,"CFormPage","文件列表"));
 			int i = addPage(sqleditor, new XmlSqlEditorInput(XmlSqlEditorInput.TYPE_SQL,pack));
 			setPageText(i,"SQL语句编写");
 			
 			int j = addPage(xmleditor, new XmlSqlEditorInput(XmlSqlEditorInput.TYPE_XML,pack));
 			setPageText(j,"updateinfo.xml");
-			addPage(new AFormPage(this,"AFormPage","版权"),getEditorInput());
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

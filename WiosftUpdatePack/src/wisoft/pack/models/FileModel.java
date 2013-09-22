@@ -188,4 +188,17 @@ public class FileModel extends Model {
 		FileModel parent = (FileModel)this.getParent();
 		parent.removeChild(this);
 	}
+	
+	/** 获取子文件数据量
+	 * @return
+	 */
+	public int countFiles()
+	{
+		int num = this.getChildren().size();
+		for(Model zfile:this.getChildren())
+		{
+			num+=((FileModel)zfile).countFiles();
+		}
+		return num;
+	}
 }

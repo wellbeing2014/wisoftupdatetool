@@ -1,6 +1,6 @@
 package wisoft.pack.data.pojo;
 
-public interface PackProperties {
+public interface IPackProperties {
 	public int TYPE_PACK =1;
 	public int TYPE_UNPACK =0;
 	

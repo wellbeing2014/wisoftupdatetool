@@ -66,7 +66,7 @@ public class AFormPage extends FormPage {
 		Section section =
 			toolkit.createSection(
 				form.getBody(),
-				Section.TWISTIE | Section.DESCRIPTION);
+				Section.DESCRIPTION | Section.TWISTIE);
 		section.setActiveToggleColor(
 			toolkit.getHyperlinkGroup().getActiveForeground());
 		section.setToggleColor(
@@ -86,8 +86,8 @@ public class AFormPage extends FormPage {
 		section.setExpanded(true);
 		section.setDescription("联系电话 0510-85219300"); //$NON-NLS-1$
 		TableWrapData td = new TableWrapData();
-		td.align = TableWrapData.FILL;
 		td.grabHorizontal = true;
+		td.align = TableWrapData.FILL;
 		section.setLayoutData(td);
 	}
 

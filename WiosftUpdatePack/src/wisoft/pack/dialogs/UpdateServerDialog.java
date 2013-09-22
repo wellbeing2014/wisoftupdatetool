@@ -196,7 +196,11 @@ public class UpdateServerDialog extends Dialog {
 		button.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				doStart();
+				//doStart();
+				for(int i = 0;i<1000;i++)
+				{
+					print("afasdf",true);
+				}
 			}
 		});
 		button.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
@@ -503,7 +507,7 @@ public class UpdateServerDialog extends Dialog {
 			//这个线程是调用UI线程控件
 			public void run() {   
 				try {
-					Thread.sleep(1);
+					Thread.sleep(10);
 				} catch (InterruptedException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -515,6 +519,16 @@ public class UpdateServerDialog extends Dialog {
 			}   
 		});   
 	}
+	
+	public void dodeal()
+	{
+		for(int i = 0;i<100;i++)
+		{
+			print("afasdf",true);
+		}
+	}
+	
+	
 }
 
 
@@ -531,8 +545,10 @@ class UpdateMainThread extends Thread {
 			@Override
 			public void run() {
 				// TODO Auto-generated method stub
-				ud.doUpdateFiles();
-				ud.doExecuteSql();
+//				ud.doUpdateFiles();
+//				ud.doExecuteSql();
+				
+				ud.dodeal();
 			}
 		});
     }  
