@@ -1,5 +1,8 @@
 package wisoft.pack.models;
 
+import wisoft.pack.data.pojo.PackageInfo;
+import wisoft.pack.utils.OracleDbAccess;
+
 import com.wisoft.wims.WimsProInfo;
 
 public class PackConfig_Server {
@@ -10,7 +13,14 @@ public class PackConfig_Server {
 	private String WebPort;
 	private String ServerUser;
 	private WimsProInfo proinfo;
+	private boolean isNewStruct;
 	
+	public boolean isNewStruct() {
+		return isNewStruct;
+	}
+	public void setNewStruct(boolean isNewStruct) {
+		this.isNewStruct = isNewStruct;
+	}
 	public WimsProInfo getProinfo() {
 		return proinfo;
 	}
@@ -60,4 +70,21 @@ public class PackConfig_Server {
 		ServerPwd = serverPwd;
 	}
 	private String ServerPwd;
+	
+	public String getPackUpdateTime(PackageInfo packinfo)
+	{
+		String ret ;
+		try {
+			OracleDbAccess ob = new OracleDbAccess();
+			ob.setValue(DBPath);
+			ret = ob.getFirstUnit("select update_date from system_version_info where modulecode='"+packinfo.getModuleCode()+"' and version ='"+packinfo.getModuleVer()+"' and modulename='"+packinfo.getModuleName()+"' order by update_date desc");
+			ob.close();
+		} catch (Exception e) {
+			ret = null;
+		}
+		if(ret==null)
+			return "Î´¸üÐÂ";
+		else
+			return ret;
+	}
 }

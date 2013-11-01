@@ -1,14 +1,19 @@
 package wisoft.pack.edits;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.InputStreamReader;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Vector;
 
+import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.SashForm;
 import org.eclipse.swt.custom.TableEditor;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.layout.FormData;
@@ -20,6 +25,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.ProgressBar;
+import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.TableItem;
@@ -34,11 +40,13 @@ import org.eclipse.ui.forms.widgets.ImageHyperlink;
 import org.eclipse.ui.forms.widgets.ScrolledForm;
 import org.eclipse.wb.swt.ResourceManager;
 
+import wisoft.pack.dialogs.UpdateServerDialog_EditConf;
 import wisoft.pack.models.FileModel;
 import wisoft.pack.models.Model;
 import wisoft.pack.models.PackConfig_Server;
 import wisoft.pack.models.PackInfoModel;
 import wisoft.pack.utils.FileUtil;
+import wisoft.pack.utils.OracleDbAccess;
 import wisoft.pack.utils.PackConfigInfo;
 import wisoft.pack.utils.UpdateInfo;
 
@@ -47,10 +55,13 @@ public class FFormPage extends FormPage {
 	private Table table;
 	public Text txtNewText;
 	Vector<ProgressBar> bars = new Vector<ProgressBar>(); 
+	Vector<Button> btns = new Vector<Button>(); 
 	private int serNo =0;
 	private PackInfoModel pm;
 	private boolean isstop = false;//是否中断
 	private PackConfig_Server selSever;//当前更新的服务器
+	PackConfig_Server[] servers ;
+	private Shell shell;
 	
 	/**
 	 * Create the form page.
@@ -73,6 +84,8 @@ public class FFormPage extends FormPage {
 	public FFormPage(FormEditor editor, String id, String title) {
 		super(editor, id, title);
 		pm =((PackInfoInput)editor.getEditorInput()).getPackinfo();
+		
+		shell = Display.getDefault().getActiveShell();
 	}
 
 	/**
@@ -105,7 +118,7 @@ public class FFormPage extends FormPage {
 		managedForm.getToolkit().paintBordersFor(composite_1);
 		composite_1.setLayout(new GridLayout(4, false));
 		
-		table = new Table(composite_1, SWT.BORDER | SWT.CHECK | SWT.FULL_SELECTION);
+		table = new Table(composite_1, SWT.BORDER | SWT.CHECK | SWT.FULL_SELECTION | SWT.MULTI);
 		table.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 3, 2));
 		managedForm.getToolkit().adapt(table);
 		managedForm.getToolkit().paintBordersFor(table);
@@ -114,15 +127,19 @@ public class FFormPage extends FormPage {
 		
 		TableColumn tableColumn = new TableColumn(table, SWT.NONE);
 		tableColumn.setText("\u670D\u52A1\u5668\u540D");
-		tableColumn.setWidth(140);
+		tableColumn.setWidth(130);
 		
 		TableColumn tableColumn_2 = new TableColumn(table, SWT.NONE);
-		tableColumn_2.setWidth(120);
+		tableColumn_2.setWidth(90);
 		tableColumn_2.setText("\u4E0A\u6B21\u66F4\u65B0\u65F6\u95F4");
 		
 		TableColumn tableColumn_3 = new TableColumn(table, SWT.NONE);
-		tableColumn_3.setWidth(100);
-		tableColumn_3.setText("\u8FDB\u5EA6");
+		tableColumn_3.setWidth(80);
+		tableColumn_3.setText("\u6587\u4EF6\u8FDB\u5EA6");
+		
+		TableColumn tableColumn_1 = new TableColumn(table, SWT.NONE);
+		tableColumn_1.setWidth(60);
+		tableColumn_1.setText("\u624B\u52A8\u914D\u7F6E");
 		
 		Button btnCheckButton = new Button(composite_1, SWT.CHECK);
 		managedForm.getToolkit().adapt(btnCheckButton, true, true);
@@ -131,7 +148,7 @@ public class FFormPage extends FormPage {
 		ImageHyperlink mghprlnkNewImagehyperlink = managedForm.getToolkit().createImageHyperlink(composite_1, SWT.NONE);
 		mghprlnkNewImagehyperlink.addHyperlinkListener(new HyperlinkAdapter() {
 			public void linkActivated(HyperlinkEvent e) {
-				updateSchedule();
+						updateSchedule();
 			}
 		});
 		mghprlnkNewImagehyperlink.setImage(ResourceManager.getPluginImage("WiosftUpdatePack", "icons/btn_deploy_normal.png"));
@@ -162,11 +179,16 @@ public class FFormPage extends FormPage {
 		
 		
 		Button button = new Button(composite_3, SWT.NONE);
+		button.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+			}
+		});
 		button.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, true, false, 1, 1));
 		managedForm.getToolkit().adapt(button, true, true);
 		button.setText("\u4FDD\u5B58\u2026\u2026");
 		
-		txtNewText = managedForm.getToolkit().createText(composite_2, "New Text", SWT.MULTI);
+		txtNewText = managedForm.getToolkit().createText(composite_2, "", SWT.MULTI);
 		FormData fd_txtNewText = new FormData();
 		fd_txtNewText.top = new FormAttachment(composite_3, 6);
 		fd_txtNewText.bottom = new FormAttachment(100);
@@ -174,20 +196,37 @@ public class FFormPage extends FormPage {
 		fd_txtNewText.left = new FormAttachment(composite_3, 0, SWT.LEFT);
 		txtNewText.setLayoutData(fd_txtNewText);
 		sashForm.setWeights(new int[] {15, 30});
-		PackConfig_Server[] servers = PackConfigInfo.getInstance().getUnPackProInfos();
+		servers = PackConfigInfo.getInstance().getUnPackProInfos();
+		
 		for(PackConfig_Server server:servers)
 		{
 			TableItem item = new TableItem(table, SWT.NULL);
 			
 			item.setText(0,server.getServerName());
-			item.setText(1,server.getWebappPath());
-			
+			String updateTime = server.getPackUpdateTime(this.pm.getPackageinfo()) ;
+			item.setText(1,updateTime);
 			TableEditor editor = new TableEditor(table);
-			 ProgressBar bar = new ProgressBar(table, SWT.NONE);
-			 bar.setMaximum(pm.getUpdateFileRoot().countFiles());
-	        editor.grabHorizontal = editor.grabVertical = true;
-	        editor.setEditor(bar, item, 2);
+			editor.grabHorizontal = editor.grabVertical = true;
+		
+			ProgressBar bar = new ProgressBar(table, SWT.NONE);
+			bar.setMaximum(pm.getUpdateFileRoot().countFiles());
+			editor.setEditor(bar, item, 2);
+			
+			TableEditor editor_1 = new TableEditor(table);
+			editor_1.grabHorizontal = editor_1.grabVertical = true;
+			Button innerbutton = new Button(table, SWT.NONE);
+			innerbutton.setText("未配置");
+			innerbutton.addSelectionListener(new SelectionAdapter() {
+				@Override
+				public void widgetSelected(SelectionEvent e) {
+					UpdateServerDialog_EditConf edit =new UpdateServerDialog_EditConf(shell,pm.getConfFiles());
+					edit.setServer(selSever);
+				}
+			});
+			innerbutton.setEnabled(false);//文件更新前设置按钮为false；
+			editor_1.setEditor(innerbutton, item, 3);
 	        bars.add(bar);
+	        btns.add(innerbutton);
 	        item.setData(server);
 		}
 	}
@@ -195,36 +234,60 @@ public class FFormPage extends FormPage {
 	
 	private void updateSchedule()
 	{
-		checkPack();
-		boolean b = MessageDialog.openQuestion(this.getSite().getShell(),"开始更新？","所有检查完毕，确定启动更新程序？");
-		if(!b)
-		{
-			print("【中断】：用户已取消！",true);
-			return;
-		}
-		for(final TableItem item:this.table.getItems())
+		//更新前，检查更新包
+		print("【检查】更新包完整性----"+pm.getName(),true );
+		print("   需要更新"+pm.getUpdateFileRoot().countFiles()+"个文件",false);
+		int confnum = pm.getConfFiles().size();
+		print("   需要配置"+confnum+"个文件",false);
+		
+		final PackConfig_Server[] selservers = this.table.getc
+		new Thread() {
+			public void run() {
+		for(PackConfig_Server item:servers)
 		{
 			//获取要更新的服务器
-			selSever = (PackConfig_Server)item.getData();
-			
+			selSever = item;
+			print("正在更新到服务器："+selSever.getServerName(),true);
 			print("【检查】服务文件夹是否存在----"+selSever.getWebappPath(),true );
+			
+			
 			try
 			{
 				File server = new File(selSever.getWebappPath());
 				if(!server.exists()&&!server.isDirectory())
 				{
 					print("【错误】：更新指向的服务器WEBAPP文件夹不存在！来自服务："+selSever.getServerName(),true );
-					break;
+					return;
 				}
 			}
 			catch(Exception e)
 			{
 				print("【错误】：检查服务器发生问题！来自："+e.getStackTrace().toString(),true );
-				break;
+				return;
 			}
 			print("检查通过服务器WEBAPP地址："+selSever.getWebappPath(),false);
+			boolean b = openDialog(MessageDialog.CONFIRM, "开始更新？","所有检查完毕，确定启动更新程序？");
+			if(!b)
+			{
+				print("【中断】：用户已取消！",true);
+				return;
+			}
 			copyCircle(pm.getUpdateFileRoot());
+			print("【复制完成】：更新文件全部复制完成，弹出手动处理文件开始……",true);
+			
+			Display.getDefault().syncExec(new Runnable() {   
+				//这个线程是调用UI线程控件
+				public void run() {   
+					UpdateServerDialog_EditConf edit =new UpdateServerDialog_EditConf(shell,pm.getConfFiles());
+					edit.setServer(selSever);
+					if(IDialogConstants.OK_ID!=edit.open())
+						print("【中断】：用户取消手动文件更新！",true);
+				}
+			});
+			serNo++;	
 		}
+			}
+		}.start();
 	}
 	
 	/**文件复制循环体
@@ -279,24 +342,47 @@ public class FFormPage extends FormPage {
 			copyCircle((FileModel)zfile);
 		}
 	}
-	/**
-	 * 更新前，检查更新包
-	 */
-	public void checkPack()
-	{
-		print("【检查】更新包完整性----"+pm.getName(),true );
-		print("   需要更新"+pm.getUpdateFileRoot().countFiles()+"个文件",false);
-		int confnum = pm.getConfFiles().size();
-		print("   需要配置"+confnum+"个文件",false);
-	}
 	
+	public void doExecuteSql()
+	{
+		if(isstop)
+			return;
+		print("【执行SQL】:开始",true);
+		String sql = "SQLPLUS "+selSever.getDBPath()+" @"+pm.getSavePath()+File.separator+UpdateInfo.SqlFileName;
+        try {
+        	final Process proc =Runtime.getRuntime().exec(sql);
+        	//读取打印数据流
+        	proc.getOutputStream().close();
+			final BufferedReader pin = new BufferedReader(
+		              new InputStreamReader(proc.getInputStream()));
+		    Thread errReadThread = new Thread() {
+	            public void run() {
+	              try {
+	                String line=null;
+	                while ( (line=pin.readLine()) != null) {
+	                	System.out.println(line);
+	                	print(line,false);
+	                }
+	                proc.waitFor();
+	                pin.close();
+	              }
+	              catch (Exception ex) {
+	                ex.printStackTrace();
+	              }
+	            }
+	          };
+	          errReadThread.start();
+        } catch (Exception e1) {
+            e1.printStackTrace();
+        }
+	}
 	
 	
 	/** 更新进度条
 	 */
 	private void updateprogressbar()
 	{
-		Display.getDefault().asyncExec(new Runnable() {   
+		Display.getDefault().syncExec(new Runnable() {   
 			//这个线程是调用UI线程控件
 			public void run() {   						
 					try {
@@ -311,21 +397,33 @@ public class FFormPage extends FormPage {
 		});
 	}
 	
+	private boolean openDialog(int type,final String title,final String content)
+	{
+		final OpenDialogWrapper ow = new OpenDialogWrapper();
+		Display.getDefault().syncExec(new Runnable() {   
+			//这个线程是调用UI线程控件
+			public void run() {   	
+				ow.uiValue = MessageDialog.openQuestion(shell,title,content);
+			}
+		});
+		return ow.uiValue;
+	}
+	
 	/**
 	 * 显示数据到text控件，为了防止界面假死，必须另起线程，异步调度执行线程
 	 * */
 	private void print(final String str,final boolean isShowTime)
 	{
 		final SimpleDateFormat sf =  new  SimpleDateFormat("yyyy-MM-dd HH:mm:ss:SSS");
-		Display.getDefault().asyncExec(new Runnable() {   
+		Display.getDefault().syncExec(new Runnable() {   
 			//这个线程是调用UI线程控件
 			public void run() {   
-				try {
-					Thread.sleep(10);
-				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
+//				try {
+//					Thread.sleep(10);
+//				} catch (InterruptedException e) {
+//					// TODO Auto-generated catch block
+//					e.printStackTrace();
+//				}
 				if(isShowTime)
 					txtNewText.append(sf.format(new Date())+": "+str+"\n");
 				else
@@ -335,3 +433,7 @@ public class FFormPage extends FormPage {
 	}
 	
 }
+
+class OpenDialogWrapper {
+	   public boolean uiValue;
+	}

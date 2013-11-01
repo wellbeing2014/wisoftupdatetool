@@ -16,12 +16,13 @@
 	<classpathentry exported="true" kind="lib" path="jars/mybatis-3.2.2.jar"/>
 	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
 	<classpathentry kind="src" path="src"/>
-	<classpathentry kind="lib" path="jars/ant.jar"/>
+	<classpathentry kind="lib" path="jars/ant.jar" sourcepath="E:/学习源码/apache-ant-1.8.4/src"/>
 	<classpathentry kind="lib" path="jars/dom4j-2.0.0-ALPHA-2.jar"/>
 	<classpathentry kind="lib" path="jars/jaxen-1.1.1.jar"/>
 	<classpathentry kind="lib" path="jars/swing2swt.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="lib" path="jars/commons-io-2.4.jar"/>
 	<classpathentry kind="lib" path="swt-grouplayout.jar" sourcepath="swt-grouplayout.zip"/>
+	<classpathentry kind="lib" path="jars/classes12.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

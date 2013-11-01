@@ -45,7 +45,10 @@ public class PackInfoEditor extends FormEditor {
 				addPage(bformpage,getEditorInput());
 			else
 			{
-				addPage(new EFormPage(this,"EFormPage","版权"),getEditorInput());
+				addPage(new EFormPage(this,"EFormPage","概要"),getEditorInput());
+				//addPage(new UpdateFormPage(this,"UpdateFormPage","更新"),getEditorInput());
+				
+				
 				addPage(new FFormPage(this,"FFormPage","更新过程"),getEditorInput());
 			}
 			addPage(new CFormPage(this,"CFormPage","文件列表"));

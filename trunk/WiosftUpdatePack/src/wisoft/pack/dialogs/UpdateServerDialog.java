@@ -300,8 +300,8 @@ public class UpdateServerDialog extends Dialog {
 				    {
 				    	
 				    	UpdateServerDialog_EditConf edit =new UpdateServerDialog_EditConf(shell);
-				    	edit.ConFile = conffile;
-				    	edit.UpdateNote = dataitem.getContent();
+//				    	edit.ConFile = conffile;
+//				    	edit.UpdateNote = dataitem.getContent();
 				    	if(IDialogConstants.OK_ID==edit.open())
 				    	{
 				    		System.out.println("µã»÷ok");
