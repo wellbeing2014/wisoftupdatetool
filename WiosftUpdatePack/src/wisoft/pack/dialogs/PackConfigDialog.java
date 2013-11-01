@@ -1,6 +1,7 @@
 package wisoft.pack.dialogs;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.eclipse.jface.dialogs.IDialogConstants;
@@ -33,7 +34,6 @@ import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.swt.widgets.ToolItem;
 
 import wisoft.pack.models.PackConfig_Server;
-import wisoft.pack.sourceprovider.AbstractSourceProvider;
 import wisoft.pack.sourceprovider.ResourceManager;
 import wisoft.pack.utils.PackConfigInfo;
 
@@ -50,6 +50,7 @@ public class PackConfigDialog extends TitleAreaDialog {
 	private Text text_5;
 	private Text text_6;
 	private Text text_7;
+	boolean isOpr = PackConfigInfo.getInstance().selOperate();
 	/**
 	 * Create the dialog.
 	 * @param parentShell
@@ -57,14 +58,8 @@ public class PackConfigDialog extends TitleAreaDialog {
 	public PackConfigDialog(Shell parentShell) {
 		super(parentShell);
 		PackConfig_Server[] pss = PackConfigInfo.getInstance().getUnPackProInfos();
-		for(PackConfig_Server ps:pss)
-		{
-			servers.add(ps);
-		}
-//		if(gets.size()>0)
-//		{
-//			servers = gets;
-//		}
+		servers = Arrays.asList(pss);
+
 	}
 	
 	@Override
@@ -89,7 +84,7 @@ public class PackConfigDialog extends TitleAreaDialog {
 		tabFolder.setSelectionBackground(Display.getCurrent().getSystemColor(SWT.COLOR_TITLE_INACTIVE_BACKGROUND_GRADIENT));
 		
 		
-		boolean isOpr = PackConfigInfo.getInstance().selOperate();
+		
 		
 		if(isOpr)
 			createPackConfig(tabFolder);
@@ -285,8 +280,7 @@ public class PackConfigDialog extends TitleAreaDialog {
 				PackConfigDialog_UpdateSev pu = new PackConfigDialog_UpdateSev(getParentShell(),server);
 				if(IDialogConstants.OK_ID == pu.open())
 				{
-					servers.remove(key);
-					servers.add(key, pu.server);
+					servers.set(key, pu.server);
 					getProInfoTableData();
 				}
 			}
@@ -381,9 +375,12 @@ public class PackConfigDialog extends TitleAreaDialog {
 	@Override
 	protected void okPressed() {
 		// TODO Auto-generated method stub
-		//PackConfigInfo.getInstance().setBuildServerPath(text.getText());
-		//PackConfigInfo.getInstance().setWimsTrackManagerPath(text_1.getText());
-		PackConfigInfo.getInstance().setDefaultExportPath(text_3.getText());
+		if(isOpr)
+		{
+			PackConfigInfo.getInstance().setBuildServerPath(text.getText());
+			PackConfigInfo.getInstance().setWimsTrackManagerPath(text_1.getText());
+			PackConfigInfo.getInstance().setDefaultExportPath(text_3.getText());
+		}
 		PackConfigInfo.getInstance().setUnPackProInfos(servers.toArray(new PackConfig_Server[0]));
 		super.okPressed();
 	}

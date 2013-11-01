@@ -40,6 +40,7 @@ public class PackConfigDialog_UpdateSev extends Dialog {
 	private Text text_5;
 	private Text text_6;
 	private Combo combo;
+	private Button btnCheckButton;
 
 	/**
 	 * Create the dialog.
@@ -67,6 +68,7 @@ public class PackConfigDialog_UpdateSev extends Dialog {
 		this.text_5.setText(this.server.getServerUser());
 		this.text_6.setText(this.server.getServerPwd());
 		this.combo.setText(this.server.getProinfo().getProname());
+		btnCheckButton.setSelection(this.server.isNewStruct());
 	}
 	
 	@Override
@@ -112,6 +114,7 @@ public class PackConfigDialog_UpdateSev extends Dialog {
 		server.setWebappPath(this.text_1.getText());
 		server.setWebPort(this.text_4.getText());
 		server.setWSMPath(this.text_3.getText());
+		server.setNewStruct(this.btnCheckButton.getSelection());
 		String proname= this.combo.getText();
 		if(proname.isEmpty())
 		{
@@ -269,14 +272,16 @@ public class PackConfigDialog_UpdateSev extends Dialog {
 		text_3.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 4, 1));
 		new Label(container, SWT.NONE);
 		
+		btnCheckButton = new Button(container, SWT.CHECK);
+		btnCheckButton.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false, 2, 1));
+		btnCheckButton.setText("\u662F\u5426\u4E3A\u65B0\u6846\u67B6\u7ED3\u6784");
+		
 		Label label_4 = new Label(container, SWT.NONE);
 		label_4.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
 		label_4.setText("\u670D\u52A1\u5668\u7AEF\u53E3");
 		
 		text_4 = new Text(container, SWT.BORDER);
 		text_4.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
-		new Label(container, SWT.NONE);
-		new Label(container, SWT.NONE);
 		new Label(container, SWT.NONE);
 		new Label(container, SWT.NONE);
 		

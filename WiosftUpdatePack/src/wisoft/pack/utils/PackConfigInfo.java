@@ -120,6 +120,7 @@ public class PackConfigInfo{
 			ps.setWebappPath(ele.elementText("WebappPath"));
 			ps.setWebPort(ele.elementText("WebPort"));
 			ps.setWSMPath(ele.elementText("WSMPath"));
+			ps.setNewStruct(Boolean.valueOf(ele.elementText("NewStruct")));
 			serverlist.add(ps);
 		}
 		return serverlist.toArray(new PackConfig_Server[0]);
@@ -141,6 +142,7 @@ public class PackConfigInfo{
 			ele.addElement("WebappPath").addText(server.getWebappPath());
 			ele.addElement("WebPort").addText(server.getWebPort());
 			ele.addElement("WSMPath").addText(server.getWSMPath());
+			ele.addElement("NewStruct").addText(Boolean.toString(server.isNewStruct()));
 		}
 		xmlo.save();
 	}
