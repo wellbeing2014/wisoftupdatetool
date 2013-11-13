@@ -2,9 +2,13 @@ package wisoft.pack.edits;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Vector;
 
 import org.eclipse.jface.dialogs.IDialogConstants;
@@ -23,6 +27,7 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.ProgressBar;
 import org.eclipse.swt.widgets.Shell;
@@ -46,8 +51,8 @@ import wisoft.pack.models.Model;
 import wisoft.pack.models.PackConfig_Server;
 import wisoft.pack.models.PackInfoModel;
 import wisoft.pack.utils.FileUtil;
-import wisoft.pack.utils.OracleDbAccess;
 import wisoft.pack.utils.PackConfigInfo;
+import wisoft.pack.utils.StringUtils;
 import wisoft.pack.utils.UpdateInfo;
 
 public class FFormPage extends FormPage {
@@ -55,12 +60,12 @@ public class FFormPage extends FormPage {
 	private Table table;
 	public Text txtNewText;
 	Vector<ProgressBar> bars = new Vector<ProgressBar>(); 
-	Vector<Button> btns = new Vector<Button>(); 
-	private int serNo =0;
 	private PackInfoModel pm;
 	private boolean isstop = false;//是否中断
 	private PackConfig_Server selSever;//当前更新的服务器
-	PackConfig_Server[] servers ;
+	Map<PackConfig_Server,TableItem> servers = new HashMap<PackConfig_Server,TableItem>() ;
+	Map<TableItem,Button> buttons = new HashMap<TableItem,Button>() ;
+	
 	private Shell shell;
 	
 	/**
@@ -124,7 +129,6 @@ public class FFormPage extends FormPage {
 		managedForm.getToolkit().paintBordersFor(table);
 		table.setHeaderVisible(true);
 		table.setLinesVisible(true);
-		
 		TableColumn tableColumn = new TableColumn(table, SWT.NONE);
 		tableColumn.setText("\u670D\u52A1\u5668\u540D");
 		tableColumn.setWidth(130);
@@ -141,11 +145,8 @@ public class FFormPage extends FormPage {
 		tableColumn_1.setWidth(60);
 		tableColumn_1.setText("\u624B\u52A8\u914D\u7F6E");
 		
-		Button btnCheckButton = new Button(composite_1, SWT.CHECK);
-		managedForm.getToolkit().adapt(btnCheckButton, true, true);
-		btnCheckButton.setText("\u91CD\u65B0\u66F4\u65B0");
-		
 		ImageHyperlink mghprlnkNewImagehyperlink = managedForm.getToolkit().createImageHyperlink(composite_1, SWT.NONE);
+		mghprlnkNewImagehyperlink.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 2));
 		mghprlnkNewImagehyperlink.addHyperlinkListener(new HyperlinkAdapter() {
 			public void linkActivated(HyperlinkEvent e) {
 						updateSchedule();
@@ -182,13 +183,17 @@ public class FFormPage extends FormPage {
 		button.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
+				FileDialog dialog = new FileDialog(shell,SWT.SAVE);
+				dialog.setFilterExtensions(new String[]{".log",".txt"});
+				String fileName = dialog.open();
+				//FileWriter fw = new File
 			}
 		});
 		button.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, true, false, 1, 1));
 		managedForm.getToolkit().adapt(button, true, true);
 		button.setText("\u4FDD\u5B58\u2026\u2026");
 		
-		txtNewText = managedForm.getToolkit().createText(composite_2, "", SWT.MULTI);
+		txtNewText = managedForm.getToolkit().createText(composite_2, "", SWT.READ_ONLY | SWT.V_SCROLL | SWT.MULTI);
 		FormData fd_txtNewText = new FormData();
 		fd_txtNewText.top = new FormAttachment(composite_3, 6);
 		fd_txtNewText.bottom = new FormAttachment(100);
@@ -196,60 +201,110 @@ public class FFormPage extends FormPage {
 		fd_txtNewText.left = new FormAttachment(composite_3, 0, SWT.LEFT);
 		txtNewText.setLayoutData(fd_txtNewText);
 		sashForm.setWeights(new int[] {15, 30});
-		servers = PackConfigInfo.getInstance().getUnPackProInfos();
-		
-		for(PackConfig_Server server:servers)
+		//servers = PackConfigInfo.getInstance().getUnPackProInfos();
+		getServerList();
+	}
+	
+	
+	
+	private void getServerList()
+	{
+		table.clearAll();
+		bars.clear();
+		buttons.clear();
+		for(final PackConfig_Server server:PackConfigInfo.getInstance().getUnPackProInfos())
 		{
 			TableItem item = new TableItem(table, SWT.NULL);
 			
 			item.setText(0,server.getServerName());
 			String updateTime = server.getPackUpdateTime(this.pm.getPackageinfo()) ;
 			item.setText(1,updateTime);
+			boolean isUpdated = StringUtils.checkStrFormat(updateTime);
+			
 			TableEditor editor = new TableEditor(table);
 			editor.grabHorizontal = editor.grabVertical = true;
-		
 			ProgressBar bar = new ProgressBar(table, SWT.NONE);
 			bar.setMaximum(pm.getUpdateFileRoot().countFiles());
+			if(isUpdated) bar.setSelection(pm.getUpdateFileRoot().countFiles());
 			editor.setEditor(bar, item, 2);
 			
 			TableEditor editor_1 = new TableEditor(table);
 			editor_1.grabHorizontal = editor_1.grabVertical = true;
 			Button innerbutton = new Button(table, SWT.NONE);
-			innerbutton.setText("未配置");
+			if(isUpdated)
+			{
+				innerbutton.setText("已配置");
+				innerbutton.setEnabled(true);
+			}
+			else
+			{
+				innerbutton.setText("未配置");
+				innerbutton.setEnabled(false);//文件更新前设置按钮为false；
+			}
 			innerbutton.addSelectionListener(new SelectionAdapter() {
 				@Override
 				public void widgetSelected(SelectionEvent e) {
 					UpdateServerDialog_EditConf edit =new UpdateServerDialog_EditConf(shell,pm.getConfFiles());
-					edit.setServer(selSever);
+					edit.setServer(server);
+					edit.open();
 				}
 			});
-			innerbutton.setEnabled(false);//文件更新前设置按钮为false；
 			editor_1.setEditor(innerbutton, item, 3);
+			//editors.add(editor_1);
 	        bars.add(bar);
-	        btns.add(innerbutton);
+	        buttons.put(item, innerbutton);
 	        item.setData(server);
 		}
 	}
 	
 	
+	private void getTableCheckedItem()
+	{
+		servers.clear();
+		for(TableItem item : this.table.getItems())
+		{
+			if(item.getChecked())
+				servers.put((PackConfig_Server)item.getData(), item);
+		}
+	}
+	
+	SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd-HH-ss-mm");
+	File logfile = null;
+	FileWriter fw  = null;
 	private void updateSchedule()
 	{
+		//
+		String logdate = sdf.format(new Date());
+		logfile = new File(pm.getSavePath()+File.separator+"UpdateLog_"+logdate+".log");
+		try {
+			fw = new FileWriter(logfile,true);
+		} catch (IOException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
 		//更新前，检查更新包
 		print("【检查】更新包完整性----"+pm.getName(),true );
 		print("   需要更新"+pm.getUpdateFileRoot().countFiles()+"个文件",false);
 		int confnum = pm.getConfFiles().size();
 		print("   需要配置"+confnum+"个文件",false);
-		
-		final PackConfig_Server[] selservers = this.table.getc
+		getTableCheckedItem();
 		new Thread() {
 			public void run() {
-		for(PackConfig_Server item:servers)
+		for(PackConfig_Server item:servers.keySet())
 		{
 			//获取要更新的服务器
 			selSever = item;
 			print("正在更新到服务器："+selSever.getServerName(),true);
 			print("【检查】服务文件夹是否存在----"+selSever.getWebappPath(),true );
 			
+			Display.getDefault().syncExec(new Runnable() {   
+				//这个线程是调用UI线程控件
+				public void run() {   						
+					int i = table.indexOf(servers.get(selSever));
+					ProgressBar bar =bars.get(i);
+					bar.setSelection(0);
+				}
+			});
 			
 			try
 			{
@@ -282,10 +337,22 @@ public class FFormPage extends FormPage {
 					edit.setServer(selSever);
 					if(IDialogConstants.OK_ID!=edit.open())
 						print("【中断】：用户取消手动文件更新！",true);
+					else
+						buttons.get(servers.get(selSever)).setText("已配置");
 				}
 			});
-			serNo++;	
+			doExecuteSql();
+			selSever.setPackVersionRecord(pm.getPackageinfo());
+			Display.getDefault().syncExec(new Runnable() {   
+				//这个线程是调用UI线程控件
+				public void run() {   						
+					TableItem item = servers.get(selSever);
+					item.setText(1,selSever.getPackUpdateTime(pm.getPackageinfo()));
+					buttons.get(item).setEnabled(true);
+				}
+			});
 		}
+		
 			}
 		}.start();
 	}
@@ -380,22 +447,25 @@ public class FFormPage extends FormPage {
 	
 	/** 更新进度条
 	 */
-	private void updateprogressbar()
+	private synchronized void  updateprogressbar()
 	{
 		Display.getDefault().syncExec(new Runnable() {   
 			//这个线程是调用UI线程控件
 			public void run() {   						
 					try {
-					Thread.sleep(100);
+					Thread.sleep(1);
 					} catch (InterruptedException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
-					ProgressBar bar =bars.get(serNo);
+					int i = table.indexOf(servers.get(selSever));
+					ProgressBar bar =bars.get(i);
 					bar.setSelection(bar.getSelection()+1);
 				}
 		});
 	}
+	
+	
 	
 	private boolean openDialog(int type,final String title,final String content)
 	{
@@ -412,22 +482,33 @@ public class FFormPage extends FormPage {
 	/**
 	 * 显示数据到text控件，为了防止界面假死，必须另起线程，异步调度执行线程
 	 * */
-	private void print(final String str,final boolean isShowTime)
+	private synchronized void print(final String str,final boolean isShowTime)
 	{
 		final SimpleDateFormat sf =  new  SimpleDateFormat("yyyy-MM-dd HH:mm:ss:SSS");
 		Display.getDefault().syncExec(new Runnable() {   
 			//这个线程是调用UI线程控件
 			public void run() {   
-//				try {
-//					Thread.sleep(10);
-//				} catch (InterruptedException e) {
-//					// TODO Auto-generated catch block
-//					e.printStackTrace();
-//				}
+				
 				if(isShowTime)
+				{
 					txtNewText.append(sf.format(new Date())+": "+str+"\n");
+					try {
+						fw.write(sf.format(new Date())+": "+str+"\n");
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
 				else
+				{
 					txtNewText.append(str+"\n");
+					try {
+						fw.write(str+"\n");
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
 			}   
 		});   
 	}
