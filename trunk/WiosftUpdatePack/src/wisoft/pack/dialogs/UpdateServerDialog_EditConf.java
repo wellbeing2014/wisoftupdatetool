@@ -189,7 +189,10 @@ public class UpdateServerDialog_EditConf extends Dialog {
 			@Override
 			public void selectionChanged(SelectionChangedEvent event) {
 				// TODO Auto-generated method stub
+				
 				StructuredSelection selection = (StructuredSelection) event.getSelection();
+				if(selection.getFirstElement()==null)
+					return;
 				ConFile = (FileModel)selection.getFirstElement();
 				styledText.setText(ConFile.getContent());
 				try { 

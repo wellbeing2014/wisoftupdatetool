@@ -58,7 +58,10 @@ public class PackConfigDialog extends TitleAreaDialog {
 	public PackConfigDialog(Shell parentShell) {
 		super(parentShell);
 		PackConfig_Server[] pss = PackConfigInfo.getInstance().getUnPackProInfos();
-		servers = Arrays.asList(pss);
+		for(PackConfig_Server server:pss)
+		{
+			servers.add(server);
+		}
 
 	}
 	
@@ -251,10 +254,12 @@ public class PackConfigDialog extends TitleAreaDialog {
 		tltmNewItem.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
+				PackConfig_Server  server = new PackConfig_Server();
 				PackConfigDialog_UpdateSev pu = new PackConfigDialog_UpdateSev(getParentShell());
+				server = pu.server;
 				if(IDialogConstants.OK_ID == pu.open())
 				{
-					servers.add(pu.server);
+					servers.add(server);
 					getProInfoTableData();
 				}
 			}

@@ -107,22 +107,22 @@ public class ExportPackWizard extends Wizard {
 							writer.close();
 						}
 					}
-					try {
-			            //打开一个写文件器，构造函数中的第二个参数true表示以追加形式写文件
-			            FileWriter writer = new FileWriter(sqlfile, true);
-			            writer.write("\r\n insert into system_version_info (ID, MODULENAME, MODULECODE, VERSION, PUBLISH_DATE, UPDATE_DATE, REMARK)");
-			            writer.write("select '',");
-			            writer.write("'"+pack.getModuleName()+"',");
-			            writer.write("'"+pack.getModuleCode()+"',");
-			            writer.write("'"+pack.getVersion()+"',");
-			            writer.write("'"+pack.getCreateTime()+"',");
-			            writer.write("to_char(sysdate,'yyyy-mm-dd hh24:mi:ss'),");
-			            writer.write("'"+pack.getKeyWord()+"' from dual;");
-			            
-			            writer.close();
-			        } catch (IOException e) {
-			            e.printStackTrace();
-			        }
+//					try {
+//			            //打开一个写文件器，构造函数中的第二个参数true表示以追加形式写文件
+//			            FileWriter writer = new FileWriter(sqlfile, true);
+//			            writer.write("\r\n insert into system_version_info (ID, MODULENAME, MODULECODE, VERSION, PUBLISH_DATE, UPDATE_DATE, REMARK)");
+//			            writer.write("select '',");
+//			            writer.write("'"+pack.getModuleName()+"',");
+//			            writer.write("'"+pack.getModuleCode()+"',");
+//			            writer.write("'"+pack.getVersion()+"',");
+//			            writer.write("'"+pack.getCreateTime()+"',");
+//			            writer.write("to_char(sysdate,'yyyy-mm-dd hh24:mi:ss'),");
+//			            writer.write("'"+pack.getKeyWord()+"' from dual;");
+//			            
+//			            writer.close();
+//			        } catch (IOException e) {
+//			            e.printStackTrace();
+//			        }
 			        if(isClassic)
 			        {	
 			        	zip.appendText(pack.getName()+"_RealseNote.txt", createRealseNote());

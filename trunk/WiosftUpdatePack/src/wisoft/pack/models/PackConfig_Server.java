@@ -1,5 +1,9 @@
 package wisoft.pack.models;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
+import oracle.sql.DATE;
 import wisoft.pack.data.pojo.PackageInfo;
 import wisoft.pack.utils.OracleDbAccess;
 
@@ -86,5 +90,33 @@ public class PackConfig_Server {
 			return "未更新";
 		else
 			return ret;
+	}
+	
+	/**向服务数据库写入更新包更新记录
+	 * @param packinfo
+	 * @return
+	 */
+	public boolean setPackVersionRecord(PackageInfo packinfo)
+	{
+		
+		try {
+			OracleDbAccess ob = new OracleDbAccess();
+			ob.setValue(DBPath);
+		    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");  
+			String SQL = "insert into system_version_info values( '','";
+			//    ID    MODULENAME                 MODULECODE         VERSION  PUBLISH_DATE   UPDATE_DATE        REMARK
+			SQL+= packinfo.getModuleName()
+				 +"','"+packinfo.getModuleCode()
+				 +"','"+packinfo.getModuleVer()
+				 +"','"+packinfo.getPackagePublishdate()
+				 +"','"+sdf.format(new Date())
+				 +"','')";
+			ob.getInt(SQL);
+			ob.close();
+			return true;
+		} catch (Exception e) {
+			return false;
+		}
+		
 	}
 }
